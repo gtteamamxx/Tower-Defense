@@ -1,0 +1,14 @@
+// overview description file for td_castlepark_bypd311.tga
+
+global 
+{
+	ZOOM	1.03
+	ORIGIN	368 	-88	-352
+	ROTATED	0
+}
+
+layer 
+{
+	IMAGE	"overviews/td_castlepark_bypd311.tga"
+	HEIGHT	-257
+}
