@@ -1,0 +1,26 @@
+dodac:
+
+Pokazywanie efektu glow kiedy wybierze siê wie¿yczke
+
+TESTOWANIE Z GRACZAMI
+
+@@@@@@@@ cos ze spowolnieniem
+
+@@@@@@@@ pulpaki na trasie| W TRAKCIE
+
+potwory atakuja graczy
+
+itemy do sklepu
+
+forwardy
+
+Zapis fragow[opcjonalny]
+
+najlepszy gracz wave (ile dmg dla potwora)
+
+
+expmod
+
+osi¹gniêcia
+
+misje?
