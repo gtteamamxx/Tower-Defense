@@ -27,3 +27,13 @@ misje?
 aaaaaaafasfasfasfdsfsdfsfsdfsdfsdfsdfsdf
 test2
 aaa
+
+if(is_user_alive(id))
+{
+    set_user_health(id, 300);
+}
+else
+{
+    client_print(id, print_center, "You are not alive");
+
+}
