@@ -37,7 +37,7 @@ if(is_user_alive(id))
     /* Music has to be clean */
 }
 else
-{
+{a
     /* test */ xd
     client_print(id, print_center, "You are not alive. Please re entry commandss");
     return PLUGIN_CONTINUE;
