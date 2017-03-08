@@ -26,9 +26,4 @@ osi�gni�cia
 misje?
 aaaaaaafasfasfasfdsfsdfsfsdfsdfsdfsdfsdf
 test2
-<<<<<<< HEAD
-<<<<<<< HEAD
-cholerajasna
-=======
-aaa
->>>>>>> 2a40dcf2c2e362297d5ccd432538b889ed7675cf
+.tcholerajasna
