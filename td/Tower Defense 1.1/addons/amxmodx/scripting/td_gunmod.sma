@@ -34,8 +34,18 @@
 #define MAX_LEVEL 24 // All default weapons
 #define MAX_WEAPONS_PER_LEVEL 3
 
+enum
+{
+	HUD_SMALL = 1,
+	HUD_NORMAL, 
+	HUD_BIG
+}
+
 new const g_MaxBpAmmo[CSW_P90 +1] = {-2, 52, 0, 90, 1, 32, 0, 100, 90, 1, 120, 100, 100, 90, 90, 90, 100, 120, 30,
 120, 200, 32, 90, 120, 90, 2, 35, 90, 90, 0, 100};
+
+new g_ExpTable[] = {0, 172, 288, 682, 1148, 1617, 2200, 3012, 4819, 7800, 10789, 
+    14592, 19363, 25160, 32024, 41200, 50314, 62883, 77982, 95723, 116785, 141532, 999999};
 
 new bool:DEBUG = false;
 
@@ -65,22 +75,12 @@ new g_PlayerExp[33];
 new g_LevelsNum;
 new g_LevelWeaponsNum[MAX_LEVEL];
 
-new g_ExpTable[] = {0, 172, 288, 682, 1148, 1617, 2200, 3012, 4819, 7800, 10789, 
-    14592, 19363, 25160, 32024, 41200, 50314, 62883, 77982, 95723, 116785, 141532, 999999};
-
 new g_HudStatusText;
 
 public fillConfigValuesWithNullValues()
 {
 	for(new i; i < _:eCONFIG; i++)
 		g_ConfigValues[i] = -1;
-}
-
-enum
-{
-	HUD_SMALL = 1,
-	HUD_NORMAL, 
-	HUD_BIG
 }
 
 public plugin_end()
@@ -94,7 +94,25 @@ public plugin_precache()
 {
 	if(is_plugin_loaded("td_debug.amxx", true) != -1)
 		DEBUG = true;
-		
+	
+	g_LevelsNum = loadWeaponLevels();
+	
+	g_isGameAvailable = g_LevelsNum > 0;
+
+	new nVaultFile;
+
+	if(g_isGameAvailable && (nVaultFile = nvault_open("TowerDefenseGunMod")) == INVALID_HANDLE)
+		if(DEBUG)
+			log_to_file("TDGUNMOD.txt", "DEBUG: Users config file data/vault/TowerDefenseGunMod.vault is not exist. This message can be showed when you run first time Tower Defense GunMod on your server.");
+	
+	nvault_close(nVaultFile);
+	
+	if(!g_isGameAvailable)
+	{
+		set_fail_state("Plugin has some problems [g_LevelsNum = %d]. Check and fix it please. If you don't see helpmessage above, add before td_debug.amxx.", g_LevelsNum);
+		return;
+	}
+
 	if(file_exists(g_SoundLevelUp))
 		precache_sound(g_SoundLevelUp);
 	else if(DEBUG)
@@ -137,26 +155,12 @@ public plugin_init()
 	BlockBuy();
 	
 	fillConfigValuesWithNullValues();
-	
-	g_LevelsNum = loadWeaponLevels();
-	
-	g_isGameAvailable = g_LevelsNum > 0;
 
-	new nVaultFile;
-	if(g_isGameAvailable && (nVaultFile = nvault_open("TowerDefenseGunMod")) == INVALID_HANDLE)
-		if(DEBUG)
-			log_to_file("TDGUNMOD.txt", "DEBUG: Users config file data/vault/TowerDefenseGunMod.vault is not exist. This message can be showed when you run first time Tower Defense GunMod on your server.");
-	nvault_close(nVaultFile);
-	
-	if(!g_isGameAvailable)
+	if(g_isGameAvailable)
 	{
-		set_fail_state("Plugin has some problems [g_LevelsNum = %d]. Check and fix it please. If you don't see helpmessage above, add before td_debug.amxx.", g_LevelsNum);
-		return;
+		removeMapBuyZoneEntities();
+		set_task(2.5, "DisplayHud", TASK_SHOW_INFO, _, _, "b");
 	}
-
-	removeMapBuyZoneEntities();
-	
-	set_task(2.5, "DisplayHud", TASK_SHOW_INFO, _, _, "b");
 }
 
 public _setUserExp(id, exp)
@@ -265,9 +269,7 @@ public td_monster_killed(iEnt, iPlayer, iMonsterType, IsKilledByWeapon)
 		}
 	}
 	else
-	{
 		g_PlayerExp[iPlayer] += g_ConfigValues[CFG_KILL_NO_WEAPON_XP];
-	}
 	
 	checkIfUserEarnedNewLevel(iPlayer);
 }

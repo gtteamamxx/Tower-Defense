@@ -156,7 +156,8 @@ public IncreaseSpeed()
 	return;
 }
 
-public RemoveLasers(id) remove_task(1018+id)
+public RemoveLasers(id) 
+    remove_task(1018+id)
 
 public BeamRotate()
 {
