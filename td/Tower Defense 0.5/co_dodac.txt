@@ -26,4 +26,8 @@ osi�gni�cia
 misje?
 aaaaaaafasfasfasfdsfsdfsfsdfsdfsdfsdfsdf
 test2
+<<<<<<< HEAD
 cholerajasna
+=======
+aaa
+>>>>>>> ff52134362247ce7517bbb9b48547e136c3b76ac
