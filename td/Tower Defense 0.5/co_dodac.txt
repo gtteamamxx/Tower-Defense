@@ -30,7 +30,7 @@ aaa
 
 if(is_user_alive(id))
 {
-    set_user_health(id, 34343434343434343 );
+    set_user_health(id, dupasiupa );
     /* Music has to be clean */
 }
 else
