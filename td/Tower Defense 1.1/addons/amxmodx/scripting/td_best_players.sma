@@ -32,12 +32,12 @@ public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR)
 	
-	g_CvarPointer[CVAR_SHOW_WAVE_INFO] 	= register_cvar("td_show_best_of_wave", "1");
+	g_CvarPointer[CVAR_SHOW_WAVE_INFO] 		= register_cvar("td_show_best_of_wave", "1");
 	g_CvarPointer[CVAR_SHOW_ENDGAME_INFO] 	= register_cvar("td_show_best_of_game", "1");
 	g_CvarPointer[CVAR_HOW_MANY_PLAYERS] 	= register_cvar("td_show_best_num", "3");
 	g_CvarPointer[CVAR_BEST_PLAYER_GOLD] 	= register_cvar("td_show_best_gold", "1");
 	g_CvarPointer[CVAR_BEST_PLAYER_MONEY] 	= register_cvar("td_show_best_money", "150");
-	g_CvarPointer[CVAR_SHOW_USER_STATS_CMD] 	= register_cvar("td_show_user_stats_cmd", "1");
+	g_CvarPointer[CVAR_SHOW_USER_STATS_CMD] = register_cvar("td_show_user_stats_cmd", "1");
 	
 	register_clcmd("say /best", "ShowActuallyBestPlayers");
 	register_clcmd("say /mystats", "ShowUserStats");
@@ -54,7 +54,7 @@ public client_disconnected(id)
 
 public td_settings_refreshed()
 {
-	g_CvarValues[CVAR_SHOW_WAVE_INFO] 	= get_pcvar_num(g_CvarPointer[CVAR_SHOW_WAVE_INFO]);
+	g_CvarValues[CVAR_SHOW_WAVE_INFO] 		= get_pcvar_num(g_CvarPointer[CVAR_SHOW_WAVE_INFO]);
 	g_CvarValues[CVAR_SHOW_ENDGAME_INFO] 	= get_pcvar_num(g_CvarPointer[CVAR_SHOW_ENDGAME_INFO]);
 	g_CvarValues[CVAR_HOW_MANY_PLAYERS] 	= get_pcvar_num(g_CvarPointer[CVAR_HOW_MANY_PLAYERS]);
 	g_CvarValues[CVAR_BEST_PLAYER_GOLD] 	= get_pcvar_num(g_CvarPointer[CVAR_BEST_PLAYER_GOLD]);
@@ -70,6 +70,7 @@ public td_take_damage(iPlayer, iEnt, iWeapon, Float:fOutDamage, szInDamage[3])
 	g_PlayerWaveDamage[iPlayer] += damage;
 	g_PlayerTotalDamage[0] += damage;
 }
+
 public td_monster_killed(iEnt, iPlayer, iMonsterType)
 {
 	g_PlayerTotalKills[iPlayer] += 1;
@@ -79,22 +80,20 @@ public td_monster_killed(iEnt, iPlayer, iMonsterType)
 
 
 public ShowBestPlayersOfWave(id)
-{
 	td_wave_ended(-1);
-}
+
 public ShowActuallyBestPlayers(id)
 	td_game_ended(-1)
+
 public GetAlivePlayers()
 {
 	new num = 0;
 	for(new i = 1 ; i <= g_MaxPlayers; i ++)
-	{
 		if(is_user_alive(i))
 			num++;
-	}
-	
 	return num;
 }
+
 public td_wave_ended(iEndedWave)
 {
 	if(!g_CvarValues[CVAR_SHOW_WAVE_INFO])
@@ -112,7 +111,7 @@ public td_wave_ended(iEndedWave)
 	
 	for(new i; i < numOfPlayers; i++)
 	{
-		new player_id = players[i];
+		static player_id; player_id = players[i];
 		
 		if(!is_user_alive(player_id))
 			continue
@@ -131,7 +130,7 @@ public td_wave_ended(iEndedWave)
 			
 			if(g_CvarValues[CVAR_BEST_PLAYER_MONEY] && iEndedWave != -1)
 			{
-				new money = cs_get_user_money(player_id);
+				static money; money = cs_get_user_money(player_id);
 				
 				cs_set_user_money(player_id, (money + g_CvarValues[CVAR_BEST_PLAYER_MONEY]) > 16000 ? 16000 : money+g_CvarValues[CVAR_BEST_PLAYER_MONEY]);
 				ColorChat(player_id, GREEN, "[TD]^x01 You got^x04 $%d^x01 for being best player of this wave.",g_CvarValues[CVAR_BEST_PLAYER_MONEY]);
@@ -169,7 +168,7 @@ public td_game_ended(iEntResult)
 	
 	for(new i; i < numOfPlayers; i++)
 	{
-		new player_id = players[i];
+		static player_id; player_id = players[i];
 		
 		if(!is_user_alive(player_id))
 			continue
@@ -189,7 +188,6 @@ public ShowUserStats(id)
 	if(!g_CvarValues[CVAR_SHOW_USER_STATS_CMD])
 		return;
 		
-		
 	set_hudmessage(0, 255, 0, 0.51, 0.33, 2, 2.0, 7.0, 0.05, 0.5)
 	show_hudmessage(id, "Your total kills: %d^nYour total taked damage: %d^n^nYour wave kills: %d^nYour wave taken damage: %d", 
 		g_PlayerTotalKills[id], g_PlayerTotalDamage[id], g_PlayerWaveKills[id], g_PlayerWaveDamage[id]);
@@ -197,7 +195,7 @@ public ShowUserStats(id)
 
 get_best_players(players[32], bool:waveBest = true)
 {
-	new num
+	new num = 0;
 	get_players(players, num);
 	SortCustom1D(players, num, (waveBest? "SortWaveBest" : "SortGameBest"))
 }
