@@ -14,7 +14,7 @@ public plugin_init()
 {
 	new id = register_plugin(PLUGIN, VERSION, AUTHOR)
 	
-	iItem = td_shop_register_item("1.5x damage for 3 waves", "1.5x damage for all wepaons for 3 waves", 350, 0, id)
+	iItem = td_shop_register_item("2x damage for 3 waves", "2x damage for all wepaons for 3 waves", 350, 0, id)
 }
 
 public td_reset_player_info(iPlayer)
@@ -29,7 +29,7 @@ public td_shop_item_selected(id, itemid)
 	{
 		g_iWaveNums[id] += 3;
 		
-		ColorChat(id, GREEN, "[TD]^x01 3x damage now will be enabled for %d waves!", g_iWaveNums[id]);
+		ColorChat(id, GREEN, "[TD]^x01 2x damage now will be enabled for %d waves!", g_iWaveNums[id]);
 		
 		SetOff(id + 54155);
 	}
@@ -48,13 +48,13 @@ public SetOff(id)
 	if(g_iWaveNums[id] == 0)
 	{
 		set_hudmessage(200, 255, 0, 0.60, 0.79, 0, 0.1, 4.0, 0.1, 0.1, -1)
-		show_hudmessage(id,"1.5x damage time down!")
+		show_hudmessage(id,"2x damage time down!")
 
-		ColorChat(id, GREEN, "[TD]^x01 1.5x damage time down.");
+		ColorChat(id, GREEN, "[TD]^x01 2x damage time down.");
 		return;
 	}
 	set_hudmessage(200, 255, 0, 0.60, 0.79, 1, 0.1, 1.1, 0.1, 0.1, -1)
-	show_hudmessage(id,"1.5x damage: %d %s left", g_iWaveNums[id], g_iWaveNums[id] == 1 ? "wave" : "waves")
+	show_hudmessage(id,"2x damage: %d %s left", g_iWaveNums[id], g_iWaveNums[id] == 1 ? "wave" : "waves")
 	
 	set_task(1.0, "SetOff", id + 54155);
 }	
