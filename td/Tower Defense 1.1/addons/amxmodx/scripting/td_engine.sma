@@ -730,9 +730,9 @@ public plugin_init()
 	register_clcmd("say /wymien", 	"CmdSwapMoney")
 	register_clcmd("say /zamien", 	"CmdSwapMoney")
 	register_concmd("ShowOptionsMenu","ShowPlayerOptionsMenu")
-	register_clcmd("radio1", 	"BlockCommand")
+	register_clcmd("radio1", 		"BlockCommand")
 	register_clcmd("radio2",     	"CmdUseLighting")
-	register_clcmd("radio3", 	"BlockCommand")
+	register_clcmd("radio3", 		"BlockCommand")
 	
 	register_clcmd("startzone_select_width", 	"ChangeWidthOfStartZone", ADMIN_CVAR)
 	register_clcmd("startzone_select_length", 	"ChangeLengthOfStartZone", ADMIN_CVAR)
@@ -741,44 +741,44 @@ public plugin_init()
 	register_clcmd("repairzone_select_length", 	"ChangeLengthOfRepairZone", ADMIN_CVAR)
 	
 	register_clcmd("mapvotezone_select_width", 	"ChangeWidthOfMapVoteZone", ADMIN_CVAR)
-	register_clcmd("mapvotezone_select_length", 	"ChangeLengthOfMapVoteZone", ADMIN_CVAR)
+	register_clcmd("mapvotezone_select_length", "ChangeLengthOfMapVoteZone", ADMIN_CVAR)
 
-	register_clcmd("say", "PlayerSaysSomething");
-	register_clcmd("say /vip", "cmdVipInfo");
+	register_clcmd("say", 		"PlayerSaysSomething");
+	register_clcmd("say /vip", 	"cmdVipInfo");
 	
 	register_message(get_user_msgid("ScoreAttrib"), 	"messageScoreAttrib");
-	register_message(get_user_msgid("SayText"),	"handleSayText");
+	register_message(get_user_msgid("SayText"),			"handleSayText");
 	
-	register_impulse(100, "FlashlightTurn")
+	register_impulse(100, 			"FlashlightTurn")
 	
-	register_touch("startzone", "player", 	"fwStartZoneTouched");
-	register_touch("repairzone", "player", 	"fwRepairZoneTouched");
+	register_touch("startzone", 	"player", 	"fwStartZoneTouched");
+	register_touch("repairzone", 	"player", 	"fwRepairZoneTouched");
 	
 	register_think("startzone",		"fwStartZoneDisplay");
-	register_think("repairzone",		"fwRepairZoneDisplay");
+	register_think("repairzone",	"fwRepairZoneDisplay");
 	
-	register_event("Money", "EventMoney","be")
-	register_event("HLTV", "HLTV", "a", "1=0", "2=0")
-	register_logevent("LogEventNewRound", 2, "1=Round_Start")
+	register_event("Money", 			"EventMoney",	"be")
+	register_event("HLTV", 				"HLTV", 		"a", "1=0", "2=0")
+	register_logevent("LogEventNewRound", 2, 			"1=Round_Start")
 	
 	/* Block attacking players */
-	register_forward(FM_TraceLine, "BlockAttackingPlayer", 1)
-	register_forward(FM_SetModel, "fw_SetModel")
-	register_forward(FM_ClientKill, "CmdKill")
+	register_forward(FM_TraceLine, 			"BlockAttackingPlayer", 1)
+	register_forward(FM_SetModel, 			"fw_SetModel")
+	register_forward(FM_ClientKill, 		"CmdKill")
 	 
-	RegisterHam(Ham_Touch, 			"info_target", 	"MonsterChangeTrack", 0)
+	RegisterHam(Ham_Touch, 					"info_target", 		"MonsterChangeTrack", 0)
 	
-	RegisterHam(Ham_Think, 			"grenade", 	"fw_ThinkGrenade")
-	RegisterHam(Ham_TraceAttack, 		"info_target", 	"MonsterHitHeadshot");
-	RegisterHam(Ham_TakeDamage, 		"info_target", 	"TakeDamage")
-	RegisterHam(Ham_TakeDamage, 		"info_target", 	"ShowDamage", 1)
-	RegisterHam(Ham_TakeDamage, 		"player",	"BlockKillPlayer")
-	RegisterHam(Ham_Killed, 		"info_target", 	"MonsterKilled")
-	RegisterHam(Ham_CS_Player_ResetMaxSpeed,"player", 	"SetPlayerSpeed", 1);
-	RegisterHam(Ham_Item_Deploy, 		"weapon_hegrenade", "fw_Item_Deploy_Post", 1)
-	RegisterHam(Ham_Item_Deploy, 		"weapon_smokegrenade", "fw_Item_Deploy_Post", 1)
-	RegisterHam(Ham_Item_Deploy, 		"weapon_flashbang", "fw_Item_Deploy_Post", 1)
-	RegisterHam(Ham_Spawn,			"player",	"PlayerSpawned", 1);
+	RegisterHam(Ham_Think, 					"grenade", 			"fw_ThinkGrenade")
+	RegisterHam(Ham_TraceAttack, 			"info_target", 		"MonsterHitHeadshot");
+	RegisterHam(Ham_TakeDamage, 			"info_target", 		"TakeDamage")
+	RegisterHam(Ham_TakeDamage, 			"info_target", 		"ShowDamage", 1)
+	RegisterHam(Ham_TakeDamage, 			"player",			"BlockKillPlayer")
+	RegisterHam(Ham_Killed, 				"info_target", 		"MonsterKilled")
+	RegisterHam(Ham_CS_Player_ResetMaxSpeed,"player", 			"SetPlayerSpeed", 1);
+	RegisterHam(Ham_Item_Deploy, 			"weapon_hegrenade", "fw_Item_Deploy_Post", 1)
+	RegisterHam(Ham_Item_Deploy, 			"weapon_smokegrenade", "fw_Item_Deploy_Post", 1)
+	RegisterHam(Ham_Item_Deploy, 			"weapon_flashbang", "fw_Item_Deploy_Post", 1)
+	RegisterHam(Ham_Spawn,					"player",			"PlayerSpawned", 1);
 	
 	if(nvault_open(NVAULT_FILE_NAME) == INVALID_HANDLE)
 		if(DEBUG)
@@ -788,22 +788,22 @@ public plugin_init()
 	register_forward(FM_AddToFullPack, "fwAddToFullPack", 1)
 	
 	g_ForwardShopItemSelected 	= 	CreateMultiForward("td_shop_item_selected", ET_CONTINUE, FP_CELL, FP_CELL);
-	g_ForwardTakeDamage		=	CreateMultiForward("td_take_damage", ET_CONTINUE, FP_CELL, FP_CELL,  FP_CELL, FP_FLOAT, FP_ARRAY);
+	g_ForwardTakeDamage			=	CreateMultiForward("td_take_damage", 		ET_CONTINUE, FP_CELL, FP_CELL,  FP_CELL, FP_FLOAT, FP_ARRAY);
 	g_ForwardSettingsRefreshed	=	CreateMultiForward("td_settings_refreshed", ET_CONTINUE);
-000	g_ForwardMonsterKilled		=	CreateMultiForward("td_monster_killed", ET_CONTINUE, FP_CELL, FP_CELL, FP_CELL, FP_CELL)
-	g_ForwardWaveStarted 		= 	CreateMultiForward("td_wave_started", ET_CONTINUE, FP_CELL, FP_CELL, FP_CELL)
-	g_ForwardWaveEnded		= 	CreateMultiForward("td_wave_ended", ET_CONTINUE, FP_CELL);
-	g_ForwardGameEnded		= 	CreateMultiForward("td_game_ended", ET_CONTINUE, FP_CELL);
-	g_ForwardRemoveData		= 	CreateMultiForward("td_remove_data", ET_CONTINUE);
-	g_ForwardTakeDamagePost	=	CreateMultiForward("td_take_damage_post", ET_CONTINUE, FP_CELL, FP_CELL,  FP_CELL, FP_FLOAT, FP_ARRAY);
+	g_ForwardMonsterKilled		=	CreateMultiForward("td_monster_killed", 	ET_CONTINUE, FP_CELL, FP_CELL, FP_CELL, FP_CELL)
+	g_ForwardWaveStarted 		= 	CreateMultiForward("td_wave_started", 		ET_CONTINUE, FP_CELL, FP_CELL, FP_CELL)
+	g_ForwardWaveEnded			= 	CreateMultiForward("td_wave_ended", 		ET_CONTINUE, FP_CELL);
+	g_ForwardGameEnded			= 	CreateMultiForward("td_game_ended", 		ET_CONTINUE, FP_CELL);
+	g_ForwardRemoveData			= 	CreateMultiForward("td_remove_data", 		ET_CONTINUE);
+	g_ForwardTakeDamagePost		=	CreateMultiForward("td_take_damage_post", 	ET_CONTINUE, FP_CELL, FP_CELL,  FP_CELL, FP_FLOAT, FP_ARRAY);
 
-	g_MaxPlayers 			= 	get_maxplayers();
-	g_HudStatusText 		= 	get_user_msgid("StatusText");
+	g_MaxPlayers 				= 	get_maxplayers();
+	g_HudStatusText 			= 	get_user_msgid("StatusText");
 	
-	g_SyncHudInfo 			= CreateHudSyncObj();
-	g_SyncHudDamage 		= CreateHudSyncObj();
-	g_SyncHudGameInfo		= CreateHudSyncObj();
-	g_SyncHudRepair	 		= CreateHudSyncObj();
+	g_SyncHudInfo 				= CreateHudSyncObj();
+	g_SyncHudDamage 			= CreateHudSyncObj();
+	g_SyncHudGameInfo			= CreateHudSyncObj();
+	g_SyncHudRepair	 			= CreateHudSyncObj();
 	
 	/* This is player hud task, 2.0 is refreshing time */
 	set_task(2.0, "DisplayHud", TASK_PLAYER_HUD, _, _, "b");
@@ -814,7 +814,7 @@ public plugin_init()
 	new szFormat[15]
 	for(new i; i < VOTE_MAP_COUNT; i++)
 	{
-		formatex(szFormat, 14, "mapvote%d", i+1)
+		formatex(szFormat, 14, 		"mapvote%d", i+1)
 		register_think(szFormat, "fwThink");
 		register_touch(szFormat, "player", "fwTouch");
 	}
@@ -824,7 +824,6 @@ public plugin_init()
 
 public testt(id)
 {
-	
 	new result[3]
 	GetMapIndexWithMostVotes(result[0], result[1]);
 	client_print(id, print_chat, "executed, %d, %d, %d", result[0], result[1], result[2]);
@@ -840,38 +839,40 @@ public CheckGunModIsEnabled()
 public PlayerSaysSomething(id)
 {
 	static szText[32];
-    	read_args(szText, charsmax(szText));
-   	remove_quotes(szText);
-   	trim(szText);
-   	
-    	if(strlen(szText) < 5 || !equali(szText, "/info", 5) || equali(szText, "/info"))
-    		return PLUGIN_CONTINUE;
-
-    	static szTemp[2][3];
-
-    	parse(szText, szTemp[0], 2, szTemp[1], 2);
-
+	read_args(szText, charsmax(szText));
+	
+	remove_quotes(szText);
+	trim(szText);
+	
+	if(strlen(szText) < 5 || !equali(szText, "/info", 5) || equali(szText, "/info"))
+		return PLUGIN_CONTINUE;
+	
+	static szTemp[2][3];
+			
+	parse(szText, szTemp[0], 2, szTemp[1], 2);
+	
 	if(!strlen(szTemp[1]))
 		return PLUGIN_CONTINUE;
-
+	
 	trim(szTemp[1]);
 	
 	static iWave; iWave = str_to_num(szTemp[1])
-
+	
 	if(!(1 <= iWave <= g_WavesNum))
 	{
 		ColorChat(id, GREEN, "%s^x01 You can check only waves from 1 to %d!", CHAT_PREFIX, g_WavesNum);
 		return PLUGIN_CONTINUE;
 	}
+	
 	client_print(id,3, "%s %s %s %d", szText, szTemp[0], szTemp[1], iWave);
-    	DisplayWaveInfo(id, iWave);
-
-    	return PLUGIN_HANDLED;
+	DisplayWaveInfo(id, iWave);
+	
+	return PLUGIN_HANDLED;
 }
 
 public CmdGoToSpec(id)
 {
-	if(get_user_team(id) == 3)
+	if(get_user_team(id) == 3 || get_user_team(id) == 0)
 	{
 		ColorChat(id, GREEN, "%s^x01 You cannot join to^x03 Spectacors^x01 if you are spectactor", CHAT_PREFIX);
 		return PLUGIN_HANDLED;
