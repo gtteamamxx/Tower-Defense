@@ -2,8 +2,11 @@
   "ExpandedNodes": [
     "",
     "\\td",
-    "\\td\\Tower Defense 1.0"
+    "\\td\\Tower Defense 1.1",
+    "\\td\\Tower Defense 1.1\\addons",
+    "\\td\\Tower Defense 1.1\\addons\\amxmodx",
+    "\\td\\Tower Defense 1.1\\addons\\amxmodx\\configs"
   ],
-  "SelectedNode": "\\td\\Tower Defense 1.0\\test.sma",
+  "SelectedNode": "\\td\\Tower Defense 1.1",
   "PreviewInSolutionExplorer": false
 }
