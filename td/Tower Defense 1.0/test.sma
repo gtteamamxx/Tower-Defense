@@ -1,6 +1,7 @@
 #include <amxmodx>
 #include <iostream>
 #include <fun>
+#include <cstrike>
 
 public plugin_init()
 {
@@ -15,5 +16,7 @@ public test(id)
         return;
 
     set_user_health(id, get_user_health(id) + 50);
+    cs_set_user_armor(id, 100);
+    return;
 }
 
