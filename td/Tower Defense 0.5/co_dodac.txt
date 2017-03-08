@@ -1,6 +1,6 @@
 dodac:
 
-Pokazywanie efektu glow kiedy wybierze siê wie¿yczke
+Pokazywanie efektu glow kiedy wybierze siï¿½ wieï¿½yczke
 
 TESTOWANIE Z GRACZAMI
 
@@ -21,6 +21,7 @@ najlepszy gracz wave (ile dmg dla potwora)
 
 expmod
 
-osi¹gniêcia
+osiï¿½gniï¿½cia
 
 misje?
+aa
