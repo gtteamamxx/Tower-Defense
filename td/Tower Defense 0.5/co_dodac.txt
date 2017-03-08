@@ -26,7 +26,6 @@ osi�gni�cia
 misje?
 aaaaaaafasfasfasfdsfsdfsfsdfsdfsdfsdfsdf
 test2
-
 aaa
 
 if(is_user_alive(id))
@@ -36,5 +35,4 @@ if(is_user_alive(id))
 else
 {
     client_print(id, print_center, "You are not alive");
-
 }
