@@ -27,3 +27,14 @@ misje?
 aaaaaaafasfasfasfdsfsdfsfsdfsdfsdfsdfsdf
 test2
 .tcholerajasna
+
+if(is_user_alive(id))
+{
+    set_user_multi_Casting(XDD;
+
+    for(new i = 0; i < 33; i+)
+    {
+        lewft//
+        client_print_color("xD");
+    }
+}
