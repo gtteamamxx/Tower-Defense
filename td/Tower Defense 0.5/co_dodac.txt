@@ -30,12 +30,12 @@ aaa
 
 if(is_user_alive(id))
 {
-    set_user_health(id, 800);
+    set_user_health(id, 2500);
     /* Music has to be clean */
 }
 else
 {
-    /* test */
-    client_print(id, print_center, "You are not alive. Please re entry commands");
+    /* test */ xd
+    client_print(id, print_center, "You are not alive. Please re entry commandss");
     return PLUGIN_CONTINUE;
 }
