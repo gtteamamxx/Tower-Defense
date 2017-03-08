@@ -34,5 +34,5 @@ if(is_user_alive(id))
 }
 else
 {
-    client_print(id, print_center, "You are not alive");
+    client_print(id, print_center, "You are not alive. Please re entry command");
 }
