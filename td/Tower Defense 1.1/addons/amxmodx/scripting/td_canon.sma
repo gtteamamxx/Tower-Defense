@@ -85,7 +85,7 @@ public CreateIon()
 	StartPosition(0, 0, 50);
 	set_pev(ent,pev_origin,g_fBeamMidOrigin);
 	
-	set_task(10.0, "StartUp")
+	StartUp();
 }
 
 public StartUp()
@@ -95,7 +95,6 @@ public StartUp()
 	pev(ent, pev_origin,mid_origin);
 	
 	g_fDistance = 190.5 * 1.85;
-	
 	g_fRotationSpeed = 0.0;
 	
 	for(new i = 1; i < 8; i++)
@@ -141,7 +140,6 @@ public StartUp()
 	set_task(2.9,"IncreaseSpeed")
 	set_task(12.5,"RemoveLasers")
 	set_task(15.2,"FireCannon", 0)
-	return;
 }
 
 public IncreaseSpeed() 
