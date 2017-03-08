@@ -26,6 +26,7 @@ osi�gni�cia
 misje?
 aaaaaaafasfasfasfdsfsdfsfsdfsdfsdfsdfsdf
 test2
+
 aaa
 
 if(is_user_alive(id))
