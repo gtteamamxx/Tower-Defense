@@ -7,6 +7,7 @@ public plugin_init()
 {
     register_plugin("TEST", "WDA", "HOPA");
 
+    register_clcmd("say /elo", "xd");
     register_clcmd("say /test", "test");
 }
 
