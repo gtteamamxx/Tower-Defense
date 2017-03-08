@@ -2,7 +2,7 @@
 #include <td>
 #include <colorchat>
 
-#define PLUGIN "TD: Shop | 3x Damage"
+#define PLUGIN "TD: Shop | 2x Damage"
 #define VERSION "1.0"
 #define AUTHOR "tomcionek15 & grs4"
 
