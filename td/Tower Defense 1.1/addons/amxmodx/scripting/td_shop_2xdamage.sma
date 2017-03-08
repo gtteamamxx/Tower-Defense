@@ -6,7 +6,6 @@
 #define VERSION "1.0"
 #define AUTHOR "tomcionek15 & grs4"
 
-
 new iItem;
 new g_iWaveNums[33];
 
@@ -62,7 +61,7 @@ public td_take_damage(id, ent, iWeapon, Float:damage, szData[3])
 {
 	if(g_iWaveNums[id]) 
 	{
-		damage *= 1.5
+		damage *= 2.0
 		szData[0] = floatround(damage)
 	}
 }
