@@ -117,7 +117,10 @@ public plugin_precache()
 
 	formatex(g_SoundLevelUp, charsmax(g_SoundLevelUp), "sound/%s", g_SoundLevelUp);
 	if(file_exists(g_SoundLevelUp))
+	{
+		replace(g_SoundLevelUp, charsmax(g_SoundLevelUp), "sound/", "");
 		precache_sound(g_SoundLevelUp);
+	}
 	else if(DEBUG)
 		log_to_file("TDGUNMOD.txt", "DEBUG: Sound of levelup '%s' is not exist", g_SoundLevelUp);
 }
@@ -1058,6 +1061,3 @@ stock givePlayerWeapon(id, const weaponName[])
 	give_item(id, weaponName);
 	cs_set_user_bpammo(id, weaponId, g_MaxBpAmmo[weaponId]);
 }  
-/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
-*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang1045\\ f0\\ fs16 \n\\ par }
-*/
