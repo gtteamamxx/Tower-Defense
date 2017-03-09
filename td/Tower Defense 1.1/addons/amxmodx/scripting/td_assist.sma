@@ -118,7 +118,6 @@ public td_take_damage_post(iPlayer, iEnt, iWeapon, Float:fOutDamage, szInDamage[
 	num_to_str(iEnt, ent, charsmax(ent));
 	if(!addMonserToDatabaseIfNotExist(ent, iPlayer, floatround(fOutDamage)))
 	{
-		
 		new arrayId = getDatabaseIdFromMonster(ent), arraypos;
 		new playerId = getPlayerArrayIndexInDatabase(Array:arrayId, iPlayer, arraypos);
 		if(playerId)

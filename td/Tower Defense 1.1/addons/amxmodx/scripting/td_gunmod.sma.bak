@@ -95,8 +95,6 @@ public plugin_precache()
 	if(is_plugin_loaded("td_debug.amxx", true) != -1)
 		DEBUG = true;
 	
-	fillConfigValuesWithNullValues();
-	
 	g_LevelsNum = loadWeaponLevels();
 	
 	g_isGameAvailable = g_LevelsNum > 0;
@@ -155,6 +153,8 @@ public plugin_init()
 	RegisterHam(Ham_Touch, "weaponbox", "HamTouchPre", 0);
 	RegisterHam(Ham_Touch, "armoury_entity", "HamTouchPre", 0);
 	BlockBuy();
+	
+	fillConfigValuesWithNullValues();
 
 	if(g_isGameAvailable)
 	{
@@ -293,6 +293,7 @@ public playerSpawned(id)
 {
 	if(!strlen(g_PlayerSelectedWeapons[id][0]) && !strlen(g_PlayerSelectedWeapons[id][1]))
 		showWeaponMenu(id);
+
 	set_task(0.5, "givePlayerWeapons", id + 516);
 }
 
@@ -1057,6 +1058,3 @@ stock givePlayerWeapon(id, const weaponName[])
 	give_item(id, weaponName);
 	cs_set_user_bpammo(id, weaponId, g_MaxBpAmmo[weaponId]);
 }  
-/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
-*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang1045\\ f0\\ fs16 \n\\ par }
-*/
