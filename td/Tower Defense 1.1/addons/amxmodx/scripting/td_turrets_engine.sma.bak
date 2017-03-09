@@ -16,7 +16,7 @@
 // was 32768
 
 #define PLUGIN "Tower Defense Mod: Turrets"
-#define VERSION "1.1 Rebuild"
+#define VERSION "0.6 Rebuild"
 #define AUTHOR "tomcionek15 & grs4"
 
 #define TURRETS_CONFIG_PATH		"addons/amxmodx/configs/Tower Defense/Turrets/"
@@ -30,34 +30,27 @@
 #define MAX_TURRETS_LEVEL		10
 
 #define EV_INT_turret_index 		EV_INT_iuser1
-#define EV_INT_turret_type 			EV_INT_iuser2
+#define EV_INT_turret_type 		EV_INT_iuser2
 #define EV_INT_turret_canshoot 		EV_INT_iuser3
 #define EV_INT_turret_target		EV_INT_iuser4
-#define EV_INT_place_owner			EV_INT_iuser1
-#define EV_INT_turret_ammo			EV_INT_team
-#define EV_INT_turret_level			EV_INT_flSwimTime
+#define EV_INT_place_owner		EV_INT_iuser1
+#define EV_INT_turret_ammo		EV_INT_team
+#define EV_INT_turret_level		EV_INT_flSwimTime
 #define EV_INT_turret_move_entity	EV_INT_flTimeStepSound
-#define EV_ENT_ranger_owner			EV_ENT_owner
+#define EV_ENT_ranger_owner		EV_ENT_owner
 
 #define EV_ENT_turret_owner 		EV_ENT_owner
 #define EV_ENT_turret_ranger		EV_ENT_euser4
 
-#define EV_SZ_turret_name			EV_SZ_targetname
+#define EV_SZ_turret_name		EV_SZ_targetname
 #define EV_VEC_turret_old_origin	EV_VEC_vuser1
-
-#define EV_INT_totem_time			EV_INT_iuser1
-#define EV_INT_totem_type			EV_INT_iuser2
-#define EV_ENT_turret_totem_bit 	EV_ENT_euser3
-#define EV_ENT_totem_owner			EV_ENT_owner
-
-#define EV_INT_rocket_turretent		EV_INT_iuser3
 
 #define TASK_CREATE_TURRET		4000
 #define TASK_RELOAD_TURRET		4500
 #define TASK_MOVE_TURRET		5000
-#define TASK_CHECK_IS_IN_RANGE	5500
+#define TASK_CHECK_IS_IN_RANGE		5500
 #define TASK_UPGRADE_TURRET		6000
-#define TASK_OPEN_TURRET_MENU	6500
+#define TASK_OPEN_TURRET_MENU		6500
 
 /* Configs */
 new bool:DEBUG_T;
@@ -224,7 +217,6 @@ new Float:g_PlayerExtraTaskTime[33];
 
 enum _:TOTEMS
 {
-	TOTEM_NONE,
 	TOTEM_RANGE,
 	TOTEM_DAMAGE,
 	TOTEM_FIRERATE,
@@ -232,7 +224,6 @@ enum _:TOTEMS
 }
 
 new g_TotemsShopIndex[_:TOTEMS];
-new g_PlayerTotems[33];
 
 public plugin_natives()
 {
@@ -321,11 +312,6 @@ public plugin_precache()
 	else if(DEBUG_T)
 		log_to_file(LOG_FILE, "DEBUG_T: 'models/TD/sentrygun_5.mdl' is not exist!");
 	
-	if(file_exists("models/TD/totem.mdl"))
-		precache_model("models/TD/totem.mdl");
-	else if(DEBUG_T)
-		log_to_file(LOG_FILE, "DEBUG_T: 'models/TD/totem.mdl' is not exist!");
-
 	if(DEBUG_T)
 		log_to_file(LOG_FILE, "DEBUG_T: Precaching resources finished");	
 }
@@ -337,15 +323,8 @@ public plugin_init()
 	register_clcmd("say /turrets", 		"ShowUserTurretsMenu")
 	register_clcmd("say /turret", 		"ShowUserTurretsMenu")
 	register_clcmd("turret_change_name", 	"MessageModeTurretChangeName")
-	register_clcmd("1", "test1");
-	register_clcmd("2", "test2");
-	register_clcmd("3", "test3");
-	register_clcmd("4", "test4");
-	//for totem
-	register_clcmd("radio3",		"PlayerPlaceTotem");
-	
+
 	register_think("turret", 		"TurretThink")
-	register_think("totem",			"TotemThink")
 	register_touch("turret", 		"player", "TurretTouched");
 	register_touch("turret_rocket", 	"worldspawn", 	"RocketHitSomething")
 	register_touch("turret_rocket", 	"monster",	"RocketHitSomething");
@@ -353,31 +332,12 @@ public plugin_init()
 	register_forward(FM_AddToFullPack,	"fwAddToFullPack", 1)
 	register_forward(FM_CmdStart,		"CmdUse");
 
-	//g_TotemsShopIndex[TOTEM_DAMAGE] = td_shop_register_item("Turret damage totem", "+30% of damage to all nearest turrets for 3 waves.", 150, 0, plugin_id)
-	//g_TotemsShopIndex[TOTEM_RANGE] = td_shop_register_item("Turret range totem", "+25% of range to all nearest turrets for 3 waves.", 150, 0, plugin_id)
-	//g_TotemsShopIndex[TOTEM_FIRERATE] = td_shop_register_item("Turret firerate totem", "+15% to attack speed to all nearest turrets. for 3 waves.", 150, 0, plugin_id)
-	//g_TotemsShopIndex[TOTEM_ALL] = td_shop_register_item("Turret super totem", "+25% to all nearest turrets for 5 waves.", 400, 0, plugin_id)
+	g_TotemsShopIndex[TOTEM_DAMAGE] = td_shop_register_item("Turret damage totem", "+30% of damage to all nearest turrets for 3 waves.", 150, 0, plugin_id)
+	g_TotemsShopIndex[TOTEM_RANGE] = td_shop_register_item("Turret range totem", "+25% of range to all nearest turrets for 3 waves.", 150, 0, plugin_id)
+	g_TotemsShopIndex[TOTEM_FIRERATE] = td_shop_register_item("Turret firerate totem", "+15% to attack speed to all nearest turrets. for 3 waves.", 150, 0, plugin_id)
+	g_TotemsShopIndex[TOTEM_ALL] = td_shop_register_item("Turret super totem", "+25% to all nearest turrets for 5 waves.", 400, 0, plugin_id)
 }
-public test1(id)
-{
-	g_PlayerTotems[id] = TOTEM_DAMAGE
-	PlayerPlaceTotem(id)
-}
-public test2(id)
-{
-	g_PlayerTotems[id] = TOTEM_RANGE
-	PlayerPlaceTotem(id)
-}
-public test3(id)
-{
-	g_PlayerTotems[id] = TOTEM_FIRERATE
-	PlayerPlaceTotem(id)
-}
-public test4(id)
-{
-	g_PlayerTotems[id] = TOTEM_ALL
-	PlayerPlaceTotem(id)
-}
+
 public td_shop_item_selected(id, itemId)
 {
 	new item;
@@ -387,11 +347,6 @@ public td_shop_item_selected(id, itemId)
 
 		if(itemId == item)
 		{
-			if(g_PlayerTotems[id])
-			{
-				client_print(id, print_center, "You can't have more than one totem!");
-				return PLUGIN_HANDLED;
-			}
 			new totemName[20];
 			switch(item)
 			{
@@ -401,136 +356,12 @@ public td_shop_item_selected(id, itemId)
 				case TOTEM_ALL: formatex(totemName, charsmax(totemName), "SUPER");
 			}
 
-			client_print(id, print_center, "Press 'C' in place where you want to place %s totem.", totemName);
+			client_print(id, print_center, "Press 'C' in place where you want to place %s totem.", totenName);
 
-			g_PlayerTotems[id] = item;
-			return PLUGIN_CONTINUE;
-		}
-	}
-	return PLUGIN_CONTINUE;
-}
-
-public PlayerPlaceTotem(id)
-{
-	if(g_PlayerTotems[id] != TOTEM_NONE && is_user_alive(id))
-	{
-		CreateTotem(id, g_PlayerTotems[id]);
-		return PLUGIN_HANDLED;
-	}
-	
-	return PLUGIN_CONTINUE;
-}
-
-public CreateTotem(id, totemType)
-{
-	if(totemType == TOTEM_NONE)
-		return;
-
-	new ent = g_PlayerTotems[id] = CreateTotemEnt(id);
-	SetTotemAbilities(ent, totemType, id);
-	emit_sound(id, CHAN_AUTO, g_SoundFile[SOUND_TURRET_PLANT], 1.0, 0.7, 0, PITCH_NORM);
-}
-
-SetTotemAbilities(ent, totemType, player)
-{
-	entity_set_int(ent, EV_INT_totem_type, totemType);
-	entity_set_int(ent, EV_INT_totem_time, totemType == TOTEM_ALL ? 5 : 3);
-	entity_set_float(ent, EV_FL_nextthink, get_gametime() + 1.0);
-	entity_set_edict(ent, EV_ENT_totem_owner, player);
-}
-
-CreateTotemEnt(id)
-{
-	new Float:fPlayerOrigin[3];
-	entity_get_vector(id, EV_VEC_origin, fPlayerOrigin);
-
-	new ent = create_entity("info_target");
-	entity_set_origin(ent, fPlayerOrigin);
-	drop_to_floor(ent);
-	entity_set_model(ent, "models/TD/totem.mdl");
-	entity_set_string(ent, EV_SZ_classname, "totem");
-	return ent;
-}
-
-public TotemThink(ent)
-{
-	if(!is_valid_ent(ent))
-		return;
-	
-	static entlist[15];
-	new num = find_sphere_class(ent, "turret", 500.0, entlist, 14);
-	ResetTotemEffectForTurrets(ent);
-	if(num > 0)
-	{
-		static iTotemType; iTotemType = entity_get_int(ent, EV_INT_totem_type);
-		CreateFromTotemToTurretLineEffect(ent, entlist, num, iTotemType);
-		SetTurretInTotemRangeAbilities(ent, entlist, num)
-	}
-	entity_set_float(ent, EV_FL_nextthink, get_gametime() + 5.0);
-}
-
-public ResetTotemEffectForTurrets(totemEnt)
-{
-	new maskRemove = (1 << entity_get_edict(totemEnt, EV_ENT_totem_owner));
-	for(new i = 1; i < 33; i++)
-	{
-		if(!is_user_connected(i))
-			continue;
-		
-		for(new j = 0; j < MAX_PLAYER_TURRETS; j++)
-		{
-			if(!g_PlayerBoughtSlot[i][j])
-				continue;
 			
-			static ent; ent = g_PlayerTurretEnt[i][j];
-			if(!is_valid_ent(ent))
-				continue;
 
-			static turretBit; turretBit = entity_get_edict(ent, EV_ENT_turret_totem_bit);
-
-			turretBit &= ~(maskRemove);
-			entity_set_edict(ent, EV_ENT_turret_totem_bit, turretBit);
+			return;
 		}
-	}
-}
-public CreateFromTotemToTurretLineEffect(totemEnt, turretEnts[], len, totemType)
-{
-	for(new i = 0; i < len; i++)
-	{
-		message_begin(MSG_BROADCAST ,SVC_TEMPENTITY)
-		write_byte(TE_BEAMENTS)
-		write_short(totemEnt)	// start entity
-		write_short(turretEnts[i])  // end entity
-		write_short(g_SpriteLaserBeam)	// sprite index
-		write_byte(0)	// starting frame
-		write_byte(0)	// frame rate in 0.1's
-		write_byte(49)	// life in 0.1's
-		write_byte(20)	// line width in 0.1's
-		write_byte(1)	// noise amplitude in 0.01's
-		write_byte(totemType == TOTEM_DAMAGE ? 255 : totemType == TOTEM_ALL ? 255 : 0) // r 
-		write_byte(totemType == TOTEM_RANGE ? 255 : totemType == TOTEM_ALL ? 255 : 0) // g
-		write_byte(totemType == TOTEM_FIRERATE ? 255 : totemType == TOTEM_ALL ? 255 : 0) // b
-		write_byte(90)	// brightness
-		write_byte(10)	// scroll speed in 0.1's
-		message_end()
-	}
-}
-public SetTurretInTotemRangeAbilities(totemEnt, turretEnts[], len)
-{
-	new turretEnt;
-	for(new i = 0; i < len; i++)
-	{
-		turretEnt = turretEnts[i];
-		
-		if(!is_valid_ent(turretEnt))
-			continue;
-		
-		
-		static bit, allBit;
-		bit = (1 << entity_get_edict(totemEnt, EV_ENT_totem_owner));
-		allBit = entity_get_edict(turretEnt, EV_ENT_turret_totem_bit);
-		if(!(bit & allBit))
-			entity_set_edict(turretEnt, EV_ENT_turret_totem_bit, allBit | bit);
 	}
 }
 public RocketHitSomething(iRocket, ent)
@@ -543,15 +374,7 @@ public RocketHitSomething(iRocket, ent)
 
 	new iTurretDamagelevel = g_PlayerTurretDamageLevel[iRocketOwner][iTurretIndex];
 	new Float:dmg = random_float(float(g_TurretsDamageData[iTurretType][iTurretDamagelevel][0]), float(g_TurretsDamageData[iTurretType][iTurretDamagelevel][1]))
-
-	new turretEnt = entity_get_int(iRocket, EV_INT_rocket_turretent);
-	if(is_valid_ent(turretEnt))
-	{
-		new totemAbilities[3];
-		GetTurretAbilitiesFromTotem(turretEnt, totemAbilities);
-		dmg *= (1.0 + (totemAbilities[0] / 100.0));
-	}
-	
+			
 	static iShowDeathMsg;
 	if(iShowDeathMsg == 0) 
 	{
@@ -649,30 +472,8 @@ stock explode(const string[],const character,output[][],const maxs,const maxlen)
 public td_wave_ended(iWave)
 {
 	SavePlayersConfig();
-	RemoveTotemsEffectAndEntities();
 }
 
-
-public RemoveTotemsEffectAndEntities()
-{
-	new ent = find_ent_by_class(-1, "totem")
-
-	while(is_valid_ent(ent))
-	{
-		ResetTotemEffectForTurrets(ent);
-		
-		new waveLeft = entity_get_int(ent, EV_INT_totem_time);
-		waveLeft--;
-		entity_set_int(ent, EV_INT_totem_time, waveLeft);
-			
-		if(waveLeft == 0)
-		{
-			g_PlayerTotems[entity_get_edict(ent, EV_ENT_totem_owner)] = TOTEM_NONE;
-			remove_entity(ent)
-		}
-		ent = find_ent_by_class(ent, "totem")
-	}
-}
 public SavePlayersConfig()
 {
 	new iFile = nvault_open(NVAULT_FILE_NAME);
@@ -1458,6 +1259,7 @@ public CreateTurretMoveEffect(id , iEntity, iRange, iTurretType, iRangerLevel)
 
 public CreateTurretRanger(iPlayer, iEnt, iRangerLevel)
 {
+	
 	if(is_valid_ent(entity_get_edict(iEnt, EV_ENT_turret_ranger)))
 		return;
 
@@ -1479,15 +1281,7 @@ public CreateTurretRanger(iPlayer, iEnt, iRangerLevel)
 	fFloatVal[2] += 1.0
 	entity_set_origin(iRanger, fFloatVal)
 	
-	new totemAbilities[3], iRange;
-	GetTurretAbilitiesFromTotem(iEnt, totemAbilities);
-
-	iRange = g_TurretsRangeData[entity_get_int(iEnt, EV_INT_turret_type)][iRangerLevel];
-	
-	if(totemAbilities[1])
-		iRange = (iRange + floatround(iRange * (totemAbilities[1] / 100.0)));
-	
-	entity_set_float(iRanger, EV_FL_scale, iRange / 250.0)
+	entity_set_float(iRanger, EV_FL_scale, g_TurretsRangeData[ entity_get_int(iEnt, EV_INT_turret_type) ][iRangerLevel] / 250.0)
 	entity_set_edict(iRanger, EV_ENT_ranger_owner, iPlayer)
 
 	fm_set_rendering(iRanger, kRenderFxNone, 0, 255, 0, kRenderTransAdd, 255)
@@ -1514,8 +1308,6 @@ public TurretThink(iTurretEntity)
 	static Float:TargetOrigin[3]
 	static iTurretAmmo ; iTurretAmmo = entity_get_int(iTurretEntity, EV_INT_turret_ammo)
 
-	new totemAbbilities[3];
-	GetTurretAbilitiesFromTotem(iTurretEntity, totemAbbilities);
 	/* If turret ammo is 0 stop fire */
 	if(iTurretAmmo == 0) 
 	{
@@ -1560,6 +1352,7 @@ public TurretThink(iTurretEntity)
 			return PLUGIN_CONTINUE
 		}
 		
+		/* If entities are visible, check distance between them */
 		entity_get_vector(iTarget, EV_VEC_origin, TargetOrigin)
 		entity_get_vector(iTurretEntity, EV_VEC_origin, TurretOrigin)
 		
@@ -1567,9 +1360,13 @@ public TurretThink(iTurretEntity)
 		if(get_distance_f(TargetOrigin, TurretOrigin) > g_TurretsRangeData[iTurretType][g_PlayerTurretRangeLevel[iPlayer][iTurretIndex]])
 			goto STOP_FIRE;
 		
+		/* If monster is alive and monster is in turret attack range */
 		TurretTurnToTarget(iTurretEntity, iTarget);
+		
+		/* Take one ammo */
 		entity_set_int(iTurretEntity, EV_INT_turret_ammo, --iTurretAmmo);
 		
+		/* If turret reached alarm value, tell player */
 		if(iTurretAmmo == g_PlayerAmmoAlarmValue[iPlayer])
 		{
 			/*new iRet;
@@ -1669,8 +1466,11 @@ public TurretThink(iTurretEntity)
 		if(iTurretType == TURRET_MULTI_LASER || iTurretType == TURRET_ROCKET)
 		{
 			new bool:isRocketTurret = iTurretType == TURRET_ROCKET;
+			
 			new Float:fRange = isRocketTurret ? (305.0 + (iTurretLevel * 15.0)) : (500.0 + (iTurretLevel * 50.0));
+
 			iNearestMonstersNum = find_sphere_class(iTarget, "monster", fRange, iNearestMonsters, isRocketTurret ? sizeof iNearestMonsters : 4)
+
 			new iNearestMonster;
 			for(new i ; i < iNearestMonstersNum ; i++)
 			{
@@ -1682,7 +1482,8 @@ public TurretThink(iTurretEntity)
 					iNearestMonsters[i] = 0;
 			}
 		}
-	
+
+			
 		switch(iTurretType) 
 		{
 			case TURRET_BULLET: 
@@ -1722,6 +1523,8 @@ public TurretThink(iTurretEntity)
 				write_coord(iTurretOrigin[2]);
 				write_byte(41) //num of 'sparks'
 				message_end()
+
+
 			}
 			case TURRET_LASER: 
 			{
@@ -1963,7 +1766,6 @@ public TurretThink(iTurretEntity)
 				entity_set_int(iRocket, EV_INT_movetype, MOVETYPE_FLY)
 				
 				entity_set_edict(iRocket, EV_ENT_owner, iPlayer)
-				entity_set_int(iRocket, EV_INT_rocket_turretent, iTurretEntity)
 				entity_set_int(iRocket,  EV_INT_turret_index, iTurretIndex);
 				entity_set_int(iRocket, EV_INT_turret_type, iTurretType);
 				
@@ -1981,7 +1783,9 @@ public TurretThink(iTurretEntity)
 				write_byte(255)
 				write_byte(255)
 				write_byte(255);
-				message_end();	
+				message_end();
+
+				
 			}
 
 			case TURRET_GATLING:
@@ -2039,8 +1843,7 @@ public TurretThink(iTurretEntity)
 		{
 			new iTurretDamagelevel = g_PlayerTurretDamageLevel[iPlayer][iTurretIndex];
 			new Float:dmg = random_float(float(g_TurretsDamageData[iTurretType][iTurretDamagelevel][0]), float(g_TurretsDamageData[iTurretType][iTurretDamagelevel][1]))
-			dmg *= (1.0 + (totemAbbilities[0] / 100.0));
-
+			
 			static iShowDeathMsg;
 			if(iShowDeathMsg == 0) 
 			{
@@ -2080,8 +1883,6 @@ public TurretThink(iTurretEntity)
 		
 		/* Set shot next think */
 		new Float:fTime = ((g_TurretsFreqData[iTurretType] / 100.0) * (g_TurretsFireRateData[iTurretType][g_PlayerTurretFireRateLevel[iPlayer][iTurretIndex]] / 100.0));
-		fTime *= (1.0 - (totemAbbilities[2] / 100.0));
-
 		entity_set_float(iTurretEntity, EV_FL_nextthink, get_gametime() + fTime);
 		return PLUGIN_CONTINUE	
 	}
@@ -2092,9 +1893,7 @@ public TurretThink(iTurretEntity)
 	}
 		
 	/* Every stand-by think try to find closest monster in range */
-	static Float:fRange; fRange = float(g_TurretsRangeData[iTurretType][g_PlayerTurretRangeLevel[iPlayer][iTurretIndex]])
-	fRange *= (1.0 + (totemAbbilities[1] / 100.0));
-	iTarget = TurretGetClosestMonster(iTurretEntity, TurretOrigin, fRange);
+	iTarget = TurretGetClosestMonster(iTurretEntity, TurretOrigin, float(g_TurretsRangeData[iTurretType][g_PlayerTurretRangeLevel[iPlayer][iTurretIndex]]))
 
 	/* If monster finded and are visible */
 	if(iTarget && fm_is_ent_visible(iTurretEntity, iTarget))
@@ -2113,6 +1912,7 @@ public TurretThink(iTurretEntity)
 	/*  Freeze time  */
 	if(!iCanShoot) 
 	{
+		
 		new controler1 = entity_get_byte(iTurretEntity, EV_BYTE_controller1)+2;
 		if(controler1 > 255)
 			controler1 = 0;
@@ -2257,37 +2057,6 @@ public client_PostThink(id)
 	}	
 }
 
-public GetTurretAbilitiesFromTotem(turretEnt, outData[3])
-{
-	new turretTotemBit = entity_get_edict(turretEnt, EV_ENT_turret_totem_bit);
-	
-	for(new i; i <= 30; i++)
-	{
-		if(!((1 << i) & turretTotemBit))
-			continue;
-		
-		static ent; ent = g_PlayerTotems[i];
-
-		if(ent <= _:TOTEMS)
-			continue;
-		
-		static totemType; totemType = entity_get_int(ent, EV_INT_totem_type);
-
-		switch(totemType)
-		{
-			case TOTEM_DAMAGE: outData[0] += 30;
-			case TOTEM_RANGE: outData[1] += 25;
-			case TOTEM_FIRERATE: outData[2] += 15;
-			case TOTEM_ALL: 
-			{
-				outData[0] += 25;
-				outData[1] += 25;
-				outData[2] += 25;
-			}
-		}
-	}
-}
-
 public ShowTurretMenu(id, iTurretIndex) 
 {	
 	client_cmd(id, "spk sound/%s", g_SoundFile[SOUND_MENU_SELECT]);
@@ -2313,20 +2082,10 @@ public ShowTurretMenu(id, iTurretIndex)
 
 	CreateTurretRanger(id, iEnt, g_PlayerTurretRangeLevel[id][iTurretIndex]);
 
-	new totemAbbilities[3];
-	GetTurretAbilitiesFromTotem(iEnt, totemAbbilities);
-
-	if(totemAbbilities[0] || totemAbbilities[1] || totemAbbilities[2])
-		format(szTitle, charsmax(szTitle), "%s\w + TOTEM EFFECT\r", szTitle);
-
-	new iDamageMin = floatround(g_TurretsDamageData[iTurretType][iDamageLevel][0] * (1.0 + totemAbbilities[0] / 100.0));
-	new iDamageMax = floatround(g_TurretsDamageData[iTurretType][iDamageLevel][1] * (1.0 + totemAbbilities[0] / 100.0));
-	new iRange = floatround(g_TurretsRangeData[iTurretType][g_PlayerTurretRangeLevel[id][iTurretIndex]] * (1.0 + totemAbbilities[1] / 100.0));
-	fFireRate *= (1.0 - (totemAbbilities[2] / 100.0));
-
 	formatex(szTitle, charsmax(szTitle), "%s^n[ \yLevel: \w%d\r ] [ \yAmmo: \w%d\r ]^n[ \yDamage: \w%d\y ~\w %d\r ] [ \yRange:\w %d\r ]^n[ \yAccuracy: \w%d%%\r ] [\yFirerate: \w%0.2fs\r ]", 
 	szTitle, entity_get_int(iEnt, EV_INT_turret_level), iTurretAmmo ?  iTurretAmmo : 0, 
-	iDamageMin, iDamageMax, iRange, g_TurretsAccuracyData[iTurretType][ g_PlayerTurretAccuracyLevel[id][iTurretIndex]], fFireRate)
+	g_TurretsDamageData[iTurretType][iDamageLevel][0], g_TurretsDamageData[iTurretType][iDamageLevel][1],
+	g_TurretsRangeData[iTurretType][g_PlayerTurretRangeLevel[id][iTurretIndex]], g_TurretsAccuracyData[iTurretType][ g_PlayerTurretAccuracyLevel[id][iTurretIndex] ], fFireRate)
 	
 	if(g_PlayerTouchingTurret[id] !=  iEnt)
 		formatex(szTitle, charsmax(szTitle), "%s^n\w- You must stay near your turret -", szTitle);
@@ -2339,11 +2098,11 @@ public ShowTurretMenu(id, iTurretIndex)
 	
 	switch(iTurretType)
 	{
-		case TURRET_BULLET:		formatex(szFormat, 32, "Buy %d ammo for %d gold", g_ConfigValues[CFG_TURRET_BULLET_AMMO_NUM], g_ConfigValues[CFG_TURRET_BULLET_AMMO_COST])
-		case TURRET_LASER:		formatex(szFormat, 32, "Buy %d ammo for %d gold", g_ConfigValues[CFG_TURRET_LASER_AMMO_NUM], g_ConfigValues[CFG_TURRET_LASER_AMMO_COST])
+		case TURRET_BULLET:	formatex(szFormat, 32, "Buy %d ammo for %d gold", g_ConfigValues[CFG_TURRET_BULLET_AMMO_NUM], g_ConfigValues[CFG_TURRET_BULLET_AMMO_COST])
+		case TURRET_LASER:	formatex(szFormat, 32, "Buy %d ammo for %d gold", g_ConfigValues[CFG_TURRET_LASER_AMMO_NUM], g_ConfigValues[CFG_TURRET_LASER_AMMO_COST])
 		case TURRET_LIGHTING:	formatex(szFormat, 32, "Buy %d ammo for %d gold", g_ConfigValues[CFG_TURRET_LIGHTING_AMMO_NUM], g_ConfigValues[CFG_TURRET_LIGHTING_AMMO_COST])
 		case TURRET_MULTI_LASER:formatex(szFormat, 32, "Buy %d ammo for %d gold", g_ConfigValues[CFG_TURRET_M_LASER_AMMO_NUM], g_ConfigValues[CFG_TURRET_M_LASER_AMMO_COST])
-		case TURRET_ROCKET:		formatex(szFormat, 32, "Buy %d ammo for %d gold", g_ConfigValues[CFG_TURRET_ROCKET_AMMO_NUM], g_ConfigValues[CFG_TURRET_ROCKET_AMMO_COST])
+		case TURRET_ROCKET:	formatex(szFormat, 32, "Buy %d ammo for %d gold", g_ConfigValues[CFG_TURRET_ROCKET_AMMO_NUM], g_ConfigValues[CFG_TURRET_ROCKET_AMMO_COST])
 		case TURRET_GATLING:	formatex(szFormat, 32, "Buy %d ammo for %d gold", g_ConfigValues[CFG_TURRET_GATLING_AMMO_NUM], g_ConfigValues[CFG_TURRET_GATLING_AMMO_COST])
 	}
 	// 0
@@ -3134,13 +2893,6 @@ public client_disconnected(id)
 	g_PlayerTouchingTurret[id]	= 0
 	g_PlayerExtraTaskTime[id]	= 0.0
 	g_PlayerTurretShowingOption[id] = TURRET_SHOW_TRANSPARENT;
-	
-	if(g_PlayerTotems[id] > _:TOTEMS)
-	{
-		ResetTotemEffectForTurrets(g_PlayerTotems[id]);
-		remove_entity(g_PlayerTotems[id]);
-	}
-	g_PlayerTotems[id] = 0;
 }
 
 public client_connect(id)

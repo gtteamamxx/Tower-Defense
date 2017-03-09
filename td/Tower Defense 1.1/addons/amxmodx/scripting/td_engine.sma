@@ -19,7 +19,7 @@
 #pragma dynamic 131072 
 
 #define PLUGIN 				"Tower Defense Mod"
-#define VERSION 			"0.6 Rebuild"
+#define VERSION 			"1.1 Rebuild"
 #define AUTHOR 				"tomcionek15 & grs4"
 
 #define CHAT_PREFIX			"[TD]"
@@ -3781,12 +3781,8 @@ public TakeDamage(ent, idinflictor, attacker, Float:damage, damagetype)
 			szData[1] = isCritical ? 1 : 0;
 			szData[2] = isHs ? 1 : 0;
 			
-			new iRet
-			
+			new iRet;
 			ExecuteForward(g_ForwardTakeDamage, iRet, attacker, ent, iWeapon, damage, PrepareArray(szData, 3, 1))
-
-			if(iRet != HAM_IGNORED)
-				return iRet;
 
 			damage = float(szData[0]) 
 
@@ -3808,9 +3804,6 @@ public TakeDamage(ent, idinflictor, attacker, Float:damage, damagetype)
 			}
 
 			ExecuteForward(g_ForwardTakeDamagePost, iRet, attacker, ent, iWeapon, damage, PrepareArray(szData, 3, 0))
-
-			if(iRet != HAM_IGNORED)
-				return iRet;
 		}
 		else if(damagetype & DMG_BURN)
 		{
@@ -5550,13 +5543,13 @@ public fwAddToFullPack(es_handle, e, ENT, HOST, hostflags, player, set) {
 	static Float:fOrigin[3]
 	static iHealthbar 
 	
-	iHealthbar  = entity_get_edict(ENT, EV_ENT_monster_healthbar)
+	iHealthbar = entity_get_edict(ENT, EV_ENT_monster_healthbar)
 	
 	if(is_valid_ent(iHealthbar)) 
 	{	
 		entity_get_vector(ENT, EV_VEC_origin, fOrigin)
 		
-		if(g_IsBonusThief &&  entity_get_int(ENT,EV_INT_monster_type) == ROUND_BONUS)
+		if(g_IsBonusThief && entity_get_int(ENT,EV_INT_monster_type) == ROUND_BONUS)
 		{
 			fOrigin[2] -= 20.0
 			entity_set_origin(entity_get_edict(ENT, EV_ENT_owner), fOrigin) 
@@ -8356,6 +8349,3 @@ stock Float:power_float(Float:value, which)
 	
 	return value;
 }
-/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
-*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang1045\\ f0\\ fs16 \n\\ par }
-*/
