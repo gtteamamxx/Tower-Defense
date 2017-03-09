@@ -7,6 +7,8 @@
 
 #define MAKE_ENTITY 564
 
+/* This is a test comment for test GitHub*/
+
 new const SOUND_ATTACK[] = "TD/ic_attack.wav"
 new const SOUND_READY[] = "TD/ic_ready.wav"
 
@@ -425,6 +427,3 @@ stock Float:tlx_distance_to_sky(id)
 	return SkyOrigin
 }
 
-/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
-*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang1045\\ f0\\ fs16 \n\\ par }
-*/
