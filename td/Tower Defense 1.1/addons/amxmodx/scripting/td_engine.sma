@@ -1339,7 +1339,6 @@ public handleSayText(msgId, msgDest, msgEnt)
 	}
 	else if(g_ConfigValues[CFG_CHAT_SHOW_LEVEL])
 		formatex(szPrefix, charsmax(szPrefix), "[%d lvl]", g_PlayerInfo[id][PLAYER_LEVEL])	
-)
 	
 	if(!equal(szTmp, "#Cstrike_Chat_All")) 
 	{
