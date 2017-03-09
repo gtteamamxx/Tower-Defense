@@ -1343,11 +1343,15 @@ public handleSayText(msgId, msgDest, msgEnt)
 			formatex(szPrefix, charsmax(szPrefix), "^x04%s", g_szVipChatPrefix)	
 		else if(chatColor == 3)
 			formatex(szPrefix, charsmax(szPrefix), "^x03%s", g_szVipChatPrefix)	
+
+		if(g_ConfigValues[CFG_CHAT_SHOW_LEVEL])
+			formatex(szPrefix, charsmax(szPrefix), "%s^x01 [%d lvl]", szPrefix, g_PlayerInfo[id][PLAYER_LEVEL])	
+
 	}
-
-	if(g_ConfigValues[CFG_CHAT_SHOW_LEVEL])
-		formatex(szPrefix, charsmax(szPrefix), "%s^x01 [%d lvl]", szPrefix, g_PlayerInfo[id][PLAYER_LEVEL])	
-
+	else if(g_ConfigValues[CFG_CHAT_SHOW_LEVEL])
+		formatex(szPrefix, charsmax(szPrefix), "[%d lvl]", g_PlayerInfo[id][PLAYER_LEVEL])	
+)
+	
 	if(!equal(szTmp, "#Cstrike_Chat_All")) 
 	{
 		add(szTmp2, charsmax(szTmp2), szPrefix);
