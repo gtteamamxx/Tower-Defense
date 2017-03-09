@@ -998,7 +998,7 @@ public ShowMenuCreateTurret(id,  iTurretType, iTurretIndex)
 	g_TurretsRangeData[iTurretType][0], g_TurretsAccuracyData[iTurretType][0], ((g_TurretsFreqData[iTurretType] / 100.0) * (g_TurretsFireRateData[iTurretType][0] / 100.0)))
 
 	if(g_TurretsMaxLevelData[iTurretType][1] == 1) 
-		formatex(szTitle, charsmax(szTitle), "Where do you want to place turret?^n%s^n\rWARNING!\w There is only one level of range!", szTurretInfo);
+		formatex(szTitle, charsmax(szTitle), "Where do you want to place turret?^n%s^n\rWARNING!\w On this map is only one level of range!", szTurretInfo);
 	else
 		formatex(szTitle, charsmax(szTitle), "Where do you want to place turret?^n%s", szTurretInfo);
 		
@@ -2533,7 +2533,7 @@ public ShowMenuMoveTurret(id, iTurretIndex)
 	new iMenu ;
 	
 	if(g_TurretsMaxLevelData[  entity_get_int( g_PlayerTurretEnt[id][iTurretIndex], EV_INT_turret_type)][1] == 1) 
-		iMenu = menu_create("Where do you want to move this turret?^n\rWARNING!\w There is only one level of range!", "ShowMenuMoveTurretH")
+		iMenu = menu_create("Where do you want to move this turret?^n\rWARNING!\w On this map is only one level of range!", "ShowMenuMoveTurretH")
 	else
 		iMenu = menu_create("Where do you want to move this turret?", "ShowMenuMoveTurretH")
 	

@@ -5,12 +5,8 @@
 #include <td>
 #include <engine>
 
-#define MAKE_ENTITY 564
-
-/* This is a test comment for test GitHub*/
-
-new const SOUND_ATTACK[] = "TD/ic_attack.wav"
-new const SOUND_READY[] = "TD/ic_ready.wav"
+new const SOUND_ATTACK[] 	= "TD/ic_attack.wav"
+new const SOUND_READY[] 	= "TD/ic_ready.wav"
 
 new BlueFire, 
 LaserFlame, 
