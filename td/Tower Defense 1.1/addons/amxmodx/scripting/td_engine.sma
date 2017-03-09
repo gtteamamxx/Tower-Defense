@@ -34,8 +34,8 @@
 #define MAP_CONFIG_FILE			"addons/amxmodx/configs/maps-td.cfg"
 #define SPAWN_SPRITE			"sprites/TD/spawn.spr"
 
-#define MAX_WAVES 			50
-#define MAX_MONSTERS_PER_WAVE 		40
+#define MAX_WAVES 				200
+#define MAX_MONSTERS_PER_WAVE 	40
 #define MAX_SHOP_ITEMS 			50
 
 //#define DEBUG
