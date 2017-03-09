@@ -95,6 +95,8 @@ public plugin_precache()
 	if(is_plugin_loaded("td_debug.amxx", true) != -1)
 		DEBUG = true;
 	
+	fillConfigValuesWithNullValues();
+	
 	g_LevelsNum = loadWeaponLevels();
 	
 	g_isGameAvailable = g_LevelsNum > 0;
@@ -153,8 +155,6 @@ public plugin_init()
 	RegisterHam(Ham_Touch, "weaponbox", "HamTouchPre", 0);
 	RegisterHam(Ham_Touch, "armoury_entity", "HamTouchPre", 0);
 	BlockBuy();
-	
-	fillConfigValuesWithNullValues();
 
 	if(g_isGameAvailable)
 	{
@@ -278,11 +278,12 @@ public td_take_damage(id, iEnt, iWeapon, Float:fOutDamage, szInDamage[3])
 {
 	if(!g_isGameAvailable || !is_user_alive(id))
 		return;
+
 	g_PlayerTakedDamage[id] += floatround(fOutDamage);
 		
 	if(g_PlayerTakedDamage[id] >= g_ConfigValues[CFG_DAMAGE_RATIO])
 	{
-		g_PlayerTakedDamage[id] = 0;
+		g_PlayerTakedDamage[id] -= g_ConfigValues[CFG_DAMAGE_RATIO];
 		g_PlayerExp[id] += g_ConfigValues[CFG_DAMAGE_XP];
 		checkIfUserEarnedNewLevel(id);
 	}
@@ -825,30 +826,35 @@ public loadWeaponLevels()
 			isLoadingLevels = true;
 			continue;
 		}
-		
-		line_len = str_to_num(szLine[3]);
-		
-		if(equali(szLine[1], "KILL_XP"))
-			g_ConfigValues[CFG_KILL_XP] = line_len;
-		else if(equali(szLine[1], "KILL_BONUS_XP"))
-			g_ConfigValues[CFG_KILL_BONUS_XP] = line_len;
-		else if(equali(szLine[1], "KILL_BOSS_XP"))
-			g_ConfigValues[CFG_KILL_BOSS_XP] = line_len;
-		else if(equali(szLine[1], "KILL_PREMIUM_XP"))
-			g_ConfigValues[CFG_KILL_PREMIUM_XP] = line_len;
-		else if(equali(szLine[1], "DAMAGE_RATIO"))
-			g_ConfigValues[CFG_DAMAGE_RATIO] = line_len;
-		else if(equali(szLine[1], "DAMAGE_XP"))
-			g_ConfigValues[CFG_DAMAGE_XP] = line_len;
-		else if(equali(szLine[1], "LEVELUP_SOUND"))
+		else
 		{
-			remove_quotes(szLine[3]);
-			copy(g_SoundLevelUp, 63, szLine[3]);
+			line_len = str_to_num(szLine[3]);
+			
+			if(equali(szLine[1], "KILL_XP"))
+				g_ConfigValues[CFG_KILL_XP] = line_len;
+			else if(equali(szLine[1], "KILL_BONUS_XP"))
+				g_ConfigValues[CFG_KILL_BONUS_XP] = line_len;
+			else if(equali(szLine[1], "KILL_BOSS_XP"))
+				g_ConfigValues[CFG_KILL_BOSS_XP] = line_len;
+			else if(equali(szLine[1], "KILL_PREMIUM_XP"))
+				g_ConfigValues[CFG_KILL_PREMIUM_XP] = line_len;
+			else if(equali(szLine[1], "DAMAGE_RATIO"))
+				g_ConfigValues[CFG_DAMAGE_RATIO] = line_len;
+			else if(equali(szLine[1], "DAMAGE_XP"))
+				g_ConfigValues[CFG_DAMAGE_XP] = line_len;
+			else if(equali(szLine[1], "LEVELUP_SOUND"))
+			{
+				remove_quotes(szLine[3]);
+				copy(g_SoundLevelUp, 63, szLine[3]);
+			}
+			else if(equali(szLine[1], "KILL_NO_WEAPON_XP"))
+				g_ConfigValues[CFG_KILL_NO_WEAPON_XP] = line_len;
+			else if(equali(szLine[1], "VIP_EXTRA_KILL_XP"))
+				g_ConfigValues[CFG_VIP_EXTRA_KILL_XP] = line_len;
+			
+
+			log_to_file("TDGUNMOD.txt", "%s = %s", szLine[1], szLine[3]);
 		}
-		else if(equali(szLine[1], "KILL_NO_WEAPON_XP"))
-			g_ConfigValues[CFG_KILL_NO_WEAPON_XP] = line_len;
-		else if(equali(szLine[1], "VIP_EXTRA_KILL_XP"))
-			g_ConfigValues[CFG_VIP_EXTRA_KILL_XP] = line_len;
 	}
 	
 	for(new i = 0; i < _:eCONFIG; i++)
@@ -1052,3 +1058,6 @@ stock givePlayerWeapon(id, const weaponName[])
 	give_item(id, weaponName);
 	cs_set_user_bpammo(id, weaponId, g_MaxBpAmmo[weaponId]);
 }  
+/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
+*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang1045\\ f0\\ fs16 \n\\ par }
+*/
