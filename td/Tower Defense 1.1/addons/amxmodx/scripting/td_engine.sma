@@ -3792,6 +3792,10 @@ public TakeDamage(ent, idinflictor, attacker, Float:damage, damagetype)
 			new iRet
 			
 			ExecuteForward(g_ForwardTakeDamage, iRet, attacker, ent, iWeapon, damage, PrepareArray(szData, 3, 1))
+
+			if(iRet != HAM_IGNORED)
+				return iRet;
+
 			damage = float(szData[0]) 
 
 			isCritical = szData[1] == 1;
@@ -3812,6 +3816,9 @@ public TakeDamage(ent, idinflictor, attacker, Float:damage, damagetype)
 			}
 
 			ExecuteForward(g_ForwardTakeDamagePost, iRet, attacker, ent, iWeapon, damage, PrepareArray(szData, 3, 0))
+
+			if(iRet != HAM_IGNORED)
+				return iRet;
 		}
 		else if(damagetype & DMG_BURN)
 		{
@@ -8354,3 +8361,6 @@ stock Float:power_float(Float:value, which)
 	
 	return value;
 }
+/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
+*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang1045\\ f0\\ fs16 \n\\ par }
+*/
