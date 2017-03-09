@@ -822,16 +822,6 @@ public plugin_init()
 	//SetMapLight()
 }
 
-public testt(id)
-{
-	new result[3]
-	GetMapIndexWithMostVotes(result[0], result[1]);
-	client_print(id, print_chat, "executed, %d, %d, %d", result[0], result[1], result[2]);
-}
-	
-public ttt(id)
-	EndGame(PLAYERS_WIN);
-
 public CheckGunModIsEnabled()
 	if(is_plugin_loaded("td_gunmod.amxx", true) != -1)
 		g_isGunModEnabled = true;
@@ -863,8 +853,7 @@ public PlayerSaysSomething(id)
 		ColorChat(id, GREEN, "%s^x01 You can check only waves from 1 to %d!", CHAT_PREFIX, g_WavesNum);
 		return PLUGIN_CONTINUE;
 	}
-	
-	client_print(id,3, "%s %s %s %d", szText, szTemp[0], szTemp[1], iWave);
+
 	DisplayWaveInfo(id, iWave);
 	
 	return PLUGIN_HANDLED;
@@ -1223,7 +1212,7 @@ public LoadDefaultValues()
 		l - g3sg1
 		m - sg550
 	*/
-	g_szVipStartWeapons 			= 	"bgl";
+	g_szVipStartWeapons 		= 	"bgl";
 	g_szVipChatPrefix 			= 	"[VIP]";
 	g_szVipFlag 				= 	"t";
 
@@ -3236,7 +3225,7 @@ public ShowPlayerOptionsHudMenu(id)
 	menu_additem(iMenu, szFormat,  _, _, iCb);
 	menu_additem(iMenu,  "Change HUD size", _, _, iCb);
 
-	formatex(szFormat, charsmax(szFormat), "Show hit crosshair effect: \y %s", g_PlayerShowHitCrosshair[id] ? "\yEnabled" : "\rDisabled");
+	formatex(szFormat, charsmax(szFormat), "Show hit crosshair effect(& sound): \y %s", g_PlayerShowHitCrosshair[id] ? "\yEnabled" : "\rDisabled");
 	menu_additem(iMenu, szFormat);
 	
 	menu_setprop(iMenu, MPROP_EXITNAME, "Back");
