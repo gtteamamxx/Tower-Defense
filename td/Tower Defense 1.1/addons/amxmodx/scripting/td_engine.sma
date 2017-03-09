@@ -2295,7 +2295,7 @@ public CheckArePlayersInStartZone()
 	if(iAlivePlayers == 0)
 	{
 		set_hudmessage(255, 0, 0, 0.06, 0.63, 1, 1.0, 1.1, 0.2, 0.2, 3)
-		ShowSyncHudMsg(0, g_SyncHudGameInfo,"Waiting for players...!");
+		ShowSyncHudMsg(0, g_SyncHudGameInfo, "Waiting for players...!");
 		
 		return
 	}
@@ -3533,7 +3533,7 @@ public MonsterKilled(iEnt, id) //zabicie potwora
 			get_user_name(id, szNick, 32);
 			iEarnedGold = g_ConfigValues[CFG_KILL_BONUS_GOLD] + g_BonusRobbedGold;
 			
-			ColorChat(0, GREEN, "%s^x01 Player %s killed a BONUS and get %d gold!", CHAT_PREFIX, szNick, iEarnedGold);
+			ColorChat(0, GREEN, "%s^x01 Defender %s killed a BONUS and get %d gold!", CHAT_PREFIX, szNick, iEarnedGold);
 			
 		} 
 		else if(iMonsterType == ROUND_BOSS) 
@@ -3541,7 +3541,7 @@ public MonsterKilled(iEnt, id) //zabicie potwora
 			new szNick[33];
 			get_user_name(id, szNick, 32);
 			
-			ColorChat(0, GREEN, "%s^x01 Player %s killed a BOSS!",CHAT_PREFIX, szNick);
+			ColorChat(0, GREEN, "%s^x01 Defender %s killed a BOSS!",CHAT_PREFIX, szNick);
 			iEarnedGold = g_ConfigValues[CFG_KILL_BOSS_GOLD]
 		}
 			
@@ -4123,11 +4123,14 @@ public CmdRespawnPlayer(id)
 					}
 				}
 			}
+
+			engclient_cmd(id, "jointeam 5; joinclass 5");
+
 			if(iTT == iCT || iTT > iCT)
 				cs_set_user_team(id, CS_TEAM_CT, CS_DONTCHANGE);
 			else
 				cs_set_user_team(id, CS_TEAM_T, CS_DONTCHANGE);
-
+			
 			ColorChat(id, GREEN, "%s^x01 Wait a few seconds for respawn...", CHAT_PREFIX);
 		}
 		return PLUGIN_HANDLED;
