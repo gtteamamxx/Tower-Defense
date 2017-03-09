@@ -967,7 +967,6 @@ public GiveUserSkillsByLevel(iPlayer, iLevel)
 		case 7: g_PlayerInfo[iPlayer][PLAYER_EXTRA_SPEED] 	+= 50
 		case 8: g_PlayerInfo[iPlayer][PLAYER_EXTRA_DAMAGE] 	+= 16;
 		case 9: set_task(120.0, "GiveUserFrozenTask", iPlayer + TASK_GIVE_FROZEN, _, _, "b");	
-		
 	}
 }
 stock explode(const string[],const character,output[][],const maxs,const maxlen)
@@ -1049,6 +1048,7 @@ public AddMapToLastMaps()
 	new szData[LAST_MAPS_SAVE][64];
 	new currentMap[33];
 	get_mapname(currentMap, 32)
+
 	/* Load every line in waves file */
 	if(file_exists("addons/amxmodx/data/td-lastmapsplayed.cfg"))
 	{
@@ -1070,10 +1070,9 @@ public AddMapToLastMaps()
 		log_to_file(LOG_FILE, "DEBUG: Map %s added to td-lastmapsplayed.cfg.", currentMap)
 		
 	write_file("addons/amxmodx/data/td-lastmapsplayed.cfg", currentMap, 0);
+	
 	for(new i = 1; i < LAST_MAPS_SAVE ; i++)
-	{
 		write_file("addons/amxmodx/data/td-lastmapsplayed.cfg", szData[i - 1], i);
-	}
 }
 
 public tess(id)
@@ -1328,7 +1327,8 @@ public handleSayText(msgId, msgDest, msgEnt)
 	}
 
 	static chatColor;
-	if(!chatColor) chatColor = g_ConfigValues[CFG_VIP_CHAT_COLOR];
+	if(!chatColor) 
+		chatColor = g_ConfigValues[CFG_VIP_CHAT_COLOR];
 	
 	new id = get_msg_arg_int(1);
 
@@ -1532,9 +1532,8 @@ public SetPlayerRespawnEntitiesVisible()
 	}
 
 	if(fOrigin[0] != 0.0 || fOrigin[1] != 0.0 || fOrigin[2] != 0.0)
-	{
 		set_task(2.0, "CheckIfAdminIsInMenu");
-	}
+ 
 }
 
 public CheckIfAdminIsInMenu()
@@ -4405,12 +4404,12 @@ public EndGame(end)
 		
 		client_cmd(0, "spk %s", g_SoundFile[SND_DEFENDERS_WIN])
 
-		for(new i = 1; i < g_MaxPlayers; i++)
+		/*for(new i = 1; i < g_MaxPlayers; i++)
 		{
 			if(!is_user_connected(i) || !is_user_alive(i))
 			{
 			}
-		}
+		} todo */
 	}
 	else 
 	{
@@ -4504,7 +4503,7 @@ public LoadMaps()
 			if(line[0] == ';' || !line[0])
 				continue
 				
-			/* If is valid map, add to list of vote */
+
 			if(DEBUG)	
 				log_to_file(LOG_FILE, "DEBUG: Loaded map to vote: %s.", line)
 				
@@ -5410,9 +5409,11 @@ public MakeBonusFx(iEnt)
 	{
 		new Float:fOrigin[3], Origin[3];
 		
+		new iPlayer, iRandom;
+
 		for(new i ; i < num ; i++)
 		{
-			new iPlayer = entlist[i];
+			iPlayer = entlist[i];
 			if(!is_user_alive(iPlayer))
 				continue;
 				
@@ -5427,7 +5428,7 @@ public MakeBonusFx(iEnt)
 				static iMin, iMax;
 				if(!iMin) iMin = g_ConfigValues[CFG_BONUS_MIN_GOLD]
 				if(!iMax) iMax = g_ConfigValues[CFG_BONUS_MAX_GOLD]
-				new iRandom = random_num(iMin, iMax)
+				iRandom = random_num(iMin, iMax)
 				
 				if(iRandom == 0)
 					continue;
@@ -5475,7 +5476,7 @@ public MakeBonusFx(iEnt)
 				
 				client_cmd(iPlayer, "spk sound/%s", g_SoundFile[SND_COIN]);
 			
-				new szName[33];
+				static szName[33];
 				get_user_name(iPlayer, szName, 32);
 
 				g_BonusRobbedGold += iRandom;
@@ -6162,10 +6163,7 @@ public CheckMap()
 		g_IsGamePossible = false;
 
 		return PLUGIN_CONTINUE;
-
 	} 
-
-	
 
 	if(DEBUG)
 		log_to_file(LOG_FILE, "DEBUG: Checking map finished.")
