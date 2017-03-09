@@ -88,7 +88,7 @@ public plugin_end()
 	SavePlayersConfig();
 }
 
-new g_SoundLevelUp[64];
+new g_SoundLevelUp[64 + 8];
 
 public plugin_precache()
 {
@@ -115,6 +115,7 @@ public plugin_precache()
 		return;
 	}
 
+	formatex(g_SoundLevelUp, charsmax(g_SoundLevelUp), "sound/%s", g_SoundLevelUp);
 	if(file_exists(g_SoundLevelUp))
 		precache_sound(g_SoundLevelUp);
 	else if(DEBUG)
