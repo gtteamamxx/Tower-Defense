@@ -13,7 +13,7 @@
 #include <colorchat>
 
 #define PLUGIN "Tower Defense: Gun mod"
-#define VERSION "1.0"
+#define VERSION "1.1"
 #define AUTHOR "tomcionek15 & grs4"
 
 #define PISTOL_WEAPONS_BIT  	(1<<CSW_GLOCK18|1<<CSW_USP|1<<CSW_DEAGLE|1<<CSW_P228|1<<CSW_FIVESEVEN|1<<CSW_ELITE)
