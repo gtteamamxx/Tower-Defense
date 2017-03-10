@@ -88,7 +88,7 @@ public ShowActuallyBestPlayers(id)
 public GetAlivePlayers()
 {
 	new num = 0;
-	for(new i = 1 ; i <= g_MaxPlayers; i ++)
+	for(new i = 1 ; i <= 33; i ++)
 		if(is_user_alive(i))
 			num++;
 	return num;
