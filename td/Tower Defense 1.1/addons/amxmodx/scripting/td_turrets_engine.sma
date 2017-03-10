@@ -5,11 +5,11 @@
 
 #include <amxmodx>
 #include <engine>
-#include <td>
 #include <fakemeta_util>
 #include <hamsandwich>
 #include <ColorChat>
 #include <nvault>
+#include <td>
 
 /*  Declare more allocation memory to plugin */
 #pragma dynamic 131072 
@@ -77,16 +77,6 @@ new g_SpriteExplosion;
 new g_SpriteWhite;
 
 /* Main data */
-enum _:ENUM_TURRETS_TYPE
-{
-	TURRET_NONE,
-	TURRET_BULLET,
-	TURRET_LASER,
-	TURRET_LIGHTING,
-	TURRET_MULTI_LASER,
-	TURRET_ROCKET,
-	TURRET_GATLING
-}
 
 new g_ServerTurretsNum;
 new g_TurretsFreqData[ENUM_TURRETS_TYPE]
@@ -183,12 +173,6 @@ new g_TurretSlotCost[MAX_PLAYER_TURRETS] =
 }
 
 new g_PlayerTurretShowingOption[33];
-enum 
-{ 
-	TURRET_SHOW_NONE, 
-	TURRET_SHOW_GLOW, 
-	TURRET_SHOW_TRANSPARENT 
-}
 
 new g_TurretsLevelColor[TURRETS_MODELS_LEVEL][3] = 
 {
@@ -221,23 +205,14 @@ new g_PlayerTouchingTurret[33];
 
 new Float:g_PlayerExtraTaskTime[33];
 
-
-enum _:TOTEMS
-{
-	TOTEM_NONE,
-	TOTEM_RANGE,
-	TOTEM_DAMAGE,
-	TOTEM_FIRERATE,
-	TOTEM_ALL,
-}
-
-new g_TotemsShopIndex[_:TOTEMS];
 new g_PlayerTotems[33];
 
 public plugin_natives()
 {
 	register_native("ShowTurretsMenu", "ShowUserTurretsMenu", 1);
 	register_native("ShowTurretsSettingsMenu", "ShowUserSettingsMenu", 1);
+	register_native("td_turrets_get_player_totem", "_td_turrets_get_player_totem", 1);
+	register_native("td_turrets_set_player_totem", "_td_turrets_set_player_totem", 1);
 }
 public plugin_precache()
 {
@@ -332,15 +307,12 @@ public plugin_precache()
 
 public plugin_init() 
 {
-	new plugin_id = register_plugin(PLUGIN, VERSION, AUTHOR)
+	register_plugin(PLUGIN, VERSION, AUTHOR)
 	
 	register_clcmd("say /turrets", 		"ShowUserTurretsMenu")
 	register_clcmd("say /turret", 		"ShowUserTurretsMenu")
 	register_clcmd("turret_change_name", 	"MessageModeTurretChangeName")
-	register_clcmd("1", "test1");
-	register_clcmd("2", "test2");
-	register_clcmd("3", "test3");
-	register_clcmd("4", "test4");
+
 	//for totem
 	register_clcmd("radio1",		"PlayerPlaceTotem");
 	
@@ -352,67 +324,32 @@ public plugin_init()
 	
 	register_forward(FM_AddToFullPack,	"fwAddToFullPack", 1)
 	register_forward(FM_CmdStart,		"CmdUse");
+}
 
-	//g_TotemsShopIndex[TOTEM_DAMAGE] = td_shop_register_item("Turret damage totem", "+30% of damage to all nearest turrets for 3 waves.", 150, 0, plugin_id)
-	//g_TotemsShopIndex[TOTEM_RANGE] = td_shop_register_item("Turret range totem", "+25% of range to all nearest turrets for 3 waves.", 150, 0, plugin_id)
-	//g_TotemsShopIndex[TOTEM_FIRERATE] = td_shop_register_item("Turret firerate totem", "+15% to attack speed to all nearest turrets. for 3 waves.", 150, 0, plugin_id)
-	//g_TotemsShopIndex[TOTEM_ALL] = td_shop_register_item("Turret super totem", "+25% to all nearest turrets for 5 waves.", 400, 0, plugin_id)
-}
-public test1(id)
+public _td_turrets_set_player_totem(id, value)
 {
-	g_PlayerTotems[id] = TOTEM_DAMAGE
-	PlayerPlaceTotem(id)
-}
-public test2(id)
-{
-	g_PlayerTotems[id] = TOTEM_RANGE
-	PlayerPlaceTotem(id)
-}
-public test3(id)
-{
-	g_PlayerTotems[id] = TOTEM_FIRERATE
-	PlayerPlaceTotem(id)
-}
-public test4(id)
-{
-	g_PlayerTotems[id] = TOTEM_ALL
-	PlayerPlaceTotem(id)
-}
-public td_shop_item_selected(id, itemId)
-{
-	new item;
-	for(new i = 0; i < _:TOTEMS; i++)
+	g_PlayerTotems[id] = value;
+	
+	new totemName[20];
+	switch(value)
 	{
-		item = g_TotemsShopIndex[i];
-
-		if(itemId == item)
-		{
-			if(g_PlayerTotems[id])
-			{
-				client_print(id, print_center, "You can't have more than one totem!");
-				return PLUGIN_HANDLED;
-			}
-			new totemName[20];
-			switch(item)
-			{
-				case TOTEM_DAMAGE: formatex(totemName, charsmax(totemName), "DAMAGE");
-				case TOTEM_RANGE: formatex(totemName, charsmax(totemName), "RANGE");
-				case TOTEM_FIRERATE: formatex(totemName, charsmax(totemName), "FIRERATE");
-				case TOTEM_ALL: formatex(totemName, charsmax(totemName), "SUPER");
-			}
-
-			client_print(id, print_center, "Press 'Z' in place where you want to place %s totem.", totemName);
-
-			g_PlayerTotems[id] = item;
-			return PLUGIN_CONTINUE;
-		}
+		case TOTEM_DAMAGE: formatex(totemName, charsmax(totemName), "DAMAGE");
+		case TOTEM_RANGE: formatex(totemName, charsmax(totemName), "RANGE");
+		case TOTEM_FIRERATE: formatex(totemName, charsmax(totemName), "FIRERATE");
+		case TOTEM_ALL: formatex(totemName, charsmax(totemName), "SUPER");
 	}
-	return PLUGIN_CONTINUE;
+
+	client_print(id, print_center, "Press 'Z' in place where you want to place %s totem.", totemName);
 }
+
+public _td_turrets_get_player_totem(id)
+	return g_PlayerTotems[id];
 
 public PlayerPlaceTotem(id)
 {
-	if(g_PlayerTotems[id] != TOTEM_NONE && is_user_alive(id))
+	new playerTotem = g_PlayerTotems[id];
+	
+	if(playerTotem <= TOTEMS && playerTotem != TOTEM_NONE && is_user_alive(id))
 	{
 		CreateTotem(id, g_PlayerTotems[id]);
 		return PLUGIN_HANDLED;
@@ -3957,3 +3894,6 @@ public IsPlayerTurretOwner(iEnt, iPlayer)
 
 public GetTurretOwner(iEnt)
 	return entity_get_edict(iEnt, EV_ENT_turret_owner);
+/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
+*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang1045\\ f0\\ fs16 \n\\ par }
+*/

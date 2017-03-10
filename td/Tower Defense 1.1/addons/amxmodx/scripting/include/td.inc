@@ -7,7 +7,7 @@
 	#include <td_const>
 #endif
 
-#if !defined towerdefense_const_included
+#if !defined _towerdefense_turrets_included
 	#include <td_turrets>
 #endif
 

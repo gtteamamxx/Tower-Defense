@@ -6,7 +6,6 @@
 /* Returns a max turrets can be placed on map*/
 native td_get_max_map_turrets()
 
-
 /* Returns 'true' if turret's are enabled on actually played map */
 native td_are_turrets_enabled();
 
@@ -123,3 +122,9 @@ native td_get_max_turrets_per_player()
 
 /* Zwraca maksymalna ilosc wiezyczek, jaka moze byc na serwerze */
 native td_get_max_server_turrets()
+
+/* Returns player totem */
+native td_turrets_get_player_totem(index)
+
+/* Sets player totem */
+native td_turrets_set_player_totem(index, value)
