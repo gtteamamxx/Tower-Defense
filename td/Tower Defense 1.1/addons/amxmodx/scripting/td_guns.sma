@@ -419,15 +419,6 @@ GiveUserAmmo(id, weapon, iPrice = 0)
 	return PLUGIN_HANDLED_MAIN
 }
 
-GetUserWeapon(id,&wid=0)
-{
-	const m_pActiveItem = 373
-	const m_iId = 43
-	if(!is_user_alive(id) || pev_valid((wid = get_pdata_cbase(id,m_pActiveItem,5))) != 2)	return 0
-	
-	return get_pdata_int(wid,m_iId,4)
-}
-
 GetUserAmmo(id,&ammo=0,&bpammo=0,weapon=0)
 {
 	const m_iPrimaryAmmoType = 49
