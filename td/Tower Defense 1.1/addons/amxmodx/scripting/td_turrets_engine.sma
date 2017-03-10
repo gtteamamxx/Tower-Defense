@@ -318,6 +318,7 @@ public plugin_init()
 	
 	register_think("turret", 		"TurretThink")
 	register_think("totem",			"TotemThink")
+	register_think("turret_move",		"TurretMoveThink");
 	register_touch("turret", 		"player", "TurretTouched");
 	register_touch("turret_rocket", 	"worldspawn", 	"RocketHitSomething")
 	register_touch("turret_rocket", 	"monster",	"RocketHitSomething");
@@ -374,6 +375,12 @@ SetTotemAbilities(ent, totemType, player)
 	entity_set_int(ent, EV_INT_totem_time, totemType == TOTEM_ALL ? 5 : 3);
 	entity_set_float(ent, EV_FL_nextthink, get_gametime() + 1.0);
 	entity_set_edict(ent, EV_ENT_totem_owner, player);
+	
+	new red = totemType == TOTEM_DAMAGE ? 255 : totemType == TOTEM_ALL ? 255 : 0;
+	new green = totemType == TOTEM_RANGE ? 255 : totemType == TOTEM_ALL ? 255 : 0;
+	new blue = totemType == TOTEM_FIRERATE ? 255 : totemType == TOTEM_ALL ? 255 : 0;
+	
+	fm_set_rendering(ent, kRenderFxGlowShell, red, green, blue, kRenderNormal, 16);
 }
 
 CreateTotemEnt(id)
@@ -389,6 +396,29 @@ CreateTotemEnt(id)
 	return ent;
 }
 
+public TurretMoveThink(ent)
+{
+	if(!is_valid_ent(ent))
+		return;
+	
+	static entlist[15];
+	new num = find_sphere_class(ent, "totem", 500.0, entlist, 14);
+	
+	if(num > 0)
+	{
+		new totemEnt;
+		for(new i = 0; i < num ; i++)
+		{
+			totemEnt = entlist[i];
+			if(!is_valid_ent(totemEnt))
+				continue;
+			entlist[0] = ent;
+			CreateFromTotemToTurretLineEffect(totemEnt, entlist, 1, entity_get_int(totemEnt, EV_INT_totem_type), 9);
+		}
+	}
+	
+	entity_set_float(ent, EV_FL_nextthink, get_gametime() +  1.0);
+}
 public TotemThink(ent)
 {
 	if(!is_valid_ent(ent))
@@ -400,7 +430,7 @@ public TotemThink(ent)
 	if(num > 0)
 	{
 		static iTotemType; iTotemType = entity_get_int(ent, EV_INT_totem_type);
-		CreateFromTotemToTurretLineEffect(ent, entlist, num, iTotemType);
+		CreateFromTotemToTurretLineEffect(ent, entlist, num, iTotemType, 49);
 		SetTurretInTotemRangeAbilities(ent, entlist, num)
 	}
 	entity_set_float(ent, EV_FL_nextthink, get_gametime() + 5.0);
@@ -430,7 +460,7 @@ public ResetTotemEffectForTurrets(totemEnt)
 		}
 	}
 }
-public CreateFromTotemToTurretLineEffect(totemEnt, turretEnts[], len, totemType)
+public CreateFromTotemToTurretLineEffect(totemEnt, turretEnts[], len, totemType, duration)
 {
 	for(new i = 0; i < len; i++)
 	{
@@ -441,7 +471,7 @@ public CreateFromTotemToTurretLineEffect(totemEnt, turretEnts[], len, totemType)
 		write_short(g_SpriteLaserBeam)	// sprite index
 		write_byte(0)	// starting frame
 		write_byte(0)	// frame rate in 0.1's
-		write_byte(49)	// life in 0.1's
+		write_byte(duration)	// life in 0.1's
 		write_byte(20)	// line width in 0.1's
 		write_byte(1)	// noise amplitude in 0.01's
 		write_byte(totemType == TOTEM_DAMAGE ? 255 : totemType == TOTEM_ALL ? 255 : 0) // r 
@@ -1390,7 +1420,9 @@ public CreateTurretMoveEffect(id , iEntity, iRange, iTurretType, iRangerLevel)
 
 	CreateTurretRanger(id, iEnt, iRangerLevel);
 	
-	g_PlayerMovingTurretEntity[id] = iEnt	
+	g_PlayerMovingTurretEntity[id] = iEnt;
+	
+	entity_set_float(iEnt, EV_FL_nextthink, get_gametime() +  0.5);
 }
 
 public CreateTurretRanger(iPlayer, iEnt, iRangerLevel)
