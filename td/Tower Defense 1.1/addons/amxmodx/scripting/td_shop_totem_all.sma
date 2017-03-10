@@ -5,7 +5,7 @@ new iItem;
 public plugin_init()
 {
 	new id = register_plugin("TD: SHOP| Super totem", "1.0", "GT Team")
-	iItem = td_shop_register_item("Super totem for turrets", "+25%% to all attributes for nearest turrets.", 400, 0, id)
+	iItem = td_shop_register_item("Super totem for turrets", "+25 percent to all attributes for nearest turrets.", 400, 0, id)
 }
 
 public td_shop_item_selected(id, itemid)

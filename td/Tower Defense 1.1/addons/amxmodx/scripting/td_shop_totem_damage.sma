@@ -5,7 +5,7 @@ new iItem;
 public plugin_init()
 {
 	new id = register_plugin("TD: SHOP| Damage totem", "1.0", "GT Team")
-	iItem = td_shop_register_item("Damage totem for turrets", "+30%% to damage for nearest turrets.", 100, 0, id)
+	iItem = td_shop_register_item("Damage totem for turrets", "+30 percent to damage for nearest turrets.", 100, 0, id)
 }
 
 public td_shop_item_selected(id, itemid)
