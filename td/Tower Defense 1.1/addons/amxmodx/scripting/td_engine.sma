@@ -95,12 +95,12 @@ new g_TowerUpgradingPlayerIndex;
 
 //new gszClassConfigFile[] = "addons/amxmodx/configs/td_player_class.cfg";
 
-new g_EntityBars[4][] = 
+new g_HealthbarsSprite[4][] = 
 {
-	"",
+	"",								//0
 	"sprites/TD/healthbar1.spr",	//1
 	"sprites/TD/healthbar2.spr",	//2
-	"sprites/TD/healthbar3.spr"	//3
+	"sprites/TD/healthbar3.spr"		//3
 }
 
 new g_SpriteBloodDrop
@@ -646,12 +646,12 @@ public plugin_precache()
 		log_to_file(LOG_FILE, "DEBUG: Precaching healthbars started.")
 	}
 	/* Precache healthbars */
-	for(new i = 1; i < ( sizeof g_EntityBars ) ; i++)
+	for(new i = 1; i < ( sizeof g_HealthbarsSprite ) ; i++)
 	{
-		if(file_exists(g_EntityBars[i]))
-			precache_model(g_EntityBars[i])
+		if(file_exists(g_HealthbarsSprite[i]))
+			precache_model(g_HealthbarsSprite[i])
 		else if(DEBUG)
-			log_to_file(LOG_FILE, "DEBUG: %s is not exist!", g_EntityBars[i]);
+			log_to_file(LOG_FILE, "DEBUG: %s is not exist!", g_HealthbarsSprite[i]);
 	}
 		
 	if(DEBUG)
@@ -5559,7 +5559,7 @@ public fwAddToFullPack(es_handle, e, ENT, HOST, hostflags, player, set) {
 		fOrigin[ 2 ] += 45.0;		
 		
 		entity_set_origin(iHealthbar, fOrigin)
-		entity_set_model(iHealthbar, g_EntityBars[g_PlayerHealthbar[HOST]]);
+		entity_set_model(iHealthbar, g_HealthbarsSprite[g_PlayerHealthbar[HOST]]);
 		entity_set_float(iHealthbar, EV_FL_scale, g_PlayerHealthbarScale[HOST])
 		
 		iHealthbar = 0
