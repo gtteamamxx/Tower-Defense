@@ -1,7 +1,7 @@
-/* Jest to plugin w g³ównej mierze stworozny po to by móc dodaæ do menu w³asne bronie oraz
-	zmieniæ ich ceny nie u¿yhwaj¹c modu³u Orpheu.
+/* Jest to plugin w gï¿½ï¿½wnej mierze stworozny po to by mï¿½c dodaï¿½ do menu wï¿½asne bronie oraz
+	zmieniï¿½ ich ceny nie uï¿½yhwajï¿½c moduï¿½u Orpheu.
 	
-   Podziêkowania dla nie-RGB u¿ytkowników amxx.pl [z wyj¹tkiem Gwyna]
+   Podziï¿½kowania dla nie-RGB uï¿½ytkownikï¿½w amxx.pl [z wyjï¿½tkiem Gwyna]
 */
 #include <amxmodx>
 #include <cstrike>
@@ -12,7 +12,7 @@
 #include <hamsandwich>
 
 #define PLUGIN "Tower Defense: Guns"
-#define VERSION "1.0"
+#define VERSION "1.1"
 #define AUTHOR "GT Team"
 
 #define TASK_BUY_GUN	6242
@@ -36,7 +36,7 @@ new const giMaxAmmo[31] = {0,52,0,90,1,32,1,100,90,1,120,100,100,90,90,90,100,12
 
 /* ======================================== */
 
-// Nazwy scriptingowe broni g³ównych
+// Nazwy scriptingowe broni gï¿½ï¿½wnych
 new const gszPrimaryWeapons[][] = {
 	"weapon_scout",
 	"weapon_xm1014",
@@ -56,7 +56,7 @@ new const gszPrimaryWeapons[][] = {
 	"weapon_ak47",
 	"weapon_p90"
 }
-// -||- broni podrzêdnych
+// -||- broni podrzï¿½dnych
 
 new const gszSecondaryWeapons[][] = {
 	"weapon_p228",
@@ -67,7 +67,7 @@ new const gszSecondaryWeapons[][] = {
 	"weapon_deagle"
 }
 
-/* Jeœli nie chceszm mieæ danej broni w mneu to usuñ wszystkie jej pozycje przed plugin_init. */
+/* Jeï¿½li nie chceszm mieï¿½ danej broni w mneu to usuï¿½ wszystkie jej pozycje przed plugin_init. */
 
 /* ======================================== */
 
@@ -364,7 +364,7 @@ public cmdOpenBuyMenu(id) {
 }
 
 /* ======================================== */
-/* Amunicja do broni podrzêdnej */
+/* Amunicja do broni podrzï¿½dnej */
 public cmdBuyAmmo1(id) {
 	if(!userHasSecondary(id))
 		return PLUGIN_HANDLED_MAIN
@@ -454,7 +454,7 @@ GetUserAmmo(id,&ammo=0,&bpammo=0,weapon=0)
 }
 
 /* ======================================== */
-/* Amunicja do broni pierwszorzêdnej */
+/* Amunicja do broni pierwszorzï¿½dnej */
 public cmdBuyAmmo2(id) {
 	if(!userHasPrimary(id))
 		return PLUGIN_HANDLED_MAIN
