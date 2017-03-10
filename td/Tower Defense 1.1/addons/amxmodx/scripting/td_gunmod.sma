@@ -111,7 +111,7 @@ public plugin_precache()
 	
 	if(!g_isGameAvailable)
 	{
-		set_fail_state("Plugin has some problems [g_LevelsNum = %d]. Check and fix it please. If you don't see helpmessage above, add before td_debug.amxx.", g_LevelsNum);
+		set_fail_state("Plugin has some problems [g_LevelsNum = %d]. Check and fix it please. If you don't see helpmessages above, add before td_debug.amxx.", g_LevelsNum);
 		return;
 	}
 

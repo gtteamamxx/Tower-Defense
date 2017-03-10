@@ -28,23 +28,23 @@ new g_PlayerUse[33]
 public plugin_init() 
 {
 	new plugin = register_plugin("IonCannon", "1.0", "MarWit");
-	shop_item = td_shop_register_item("Canon", "Press 'E' to use canon", 500, 0, plugin);
+	shop_item = td_shop_register_item("Canon", "Press 'C' to use canon", 500, 0, plugin);
 	IonShake = get_user_msgid("ScreenShake")
-	
-	register_forward(FM_CmdStart, "cmdstart", 1);
+	register_clcmd("radio3", "CmdUseCanon");
 }
 
-public cmdstart(id, uc_handle)
+
+public CmdUseCanon(id)
 {
 	if(!g_PlayerUse[id])
-		return;
+		return PLUGIN_HANDLED;
 	
-	if((get_uc(uc_handle, UC_Buttons) & IN_USE) && !(get_user_oldbutton(id) & IN_USE))
-	{
-		g_PlayerUse[id]--;
-		FireCannon(id);
-	}
+	g_PlayerUse[id]--;
+	FireCannon(id);
+
+	return PLUGIN_HANDLED;
 }
+
 public client_disconnected(id)
 	g_PlayerUse[id] = 0;
 
@@ -52,7 +52,7 @@ public td_shop_item_selected(id, item)
 {
 	if(item == shop_item)
 	{
-		client_print(id, print_center, "Press 'E' somwhere you want to use canon.");
+		client_print(id, print_center, "Press 'C' somewhere you want to use canon.");
 		g_PlayerUse[id]++;
 	}
 }

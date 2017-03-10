@@ -342,7 +342,7 @@ public plugin_init()
 	register_clcmd("3", "test3");
 	register_clcmd("4", "test4");
 	//for totem
-	register_clcmd("radio3",		"PlayerPlaceTotem");
+	register_clcmd("radio1",		"PlayerPlaceTotem");
 	
 	register_think("turret", 		"TurretThink")
 	register_think("totem",			"TotemThink")
@@ -401,7 +401,7 @@ public td_shop_item_selected(id, itemId)
 				case TOTEM_ALL: formatex(totemName, charsmax(totemName), "SUPER");
 			}
 
-			client_print(id, print_center, "Press 'C' in place where you want to place %s totem.", totemName);
+			client_print(id, print_center, "Press 'Z' in place where you want to place %s totem.", totemName);
 
 			g_PlayerTotems[id] = item;
 			return PLUGIN_CONTINUE;
