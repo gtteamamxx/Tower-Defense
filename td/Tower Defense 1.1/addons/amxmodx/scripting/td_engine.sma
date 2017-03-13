@@ -2459,7 +2459,10 @@ public ResetGame()
 	ResetPlayersIsInRepairZone();
 
 	RemoveAllMonsters();
-	
+
+	if(g_IsTowerModelOnMap)
+		ResetTowerOrigin();
+
 	g_ActualWave = 0;
 
 	remove_task(TASK_START_WAVE);
@@ -2478,6 +2481,23 @@ public ResetGame()
 	set_task(1.0, "CheckArePlayersInStartZone", TASK_CHECK_STARTZONE, _, _, "b")
 }
 
+public ResetTowerOrigin()
+{
+	if(g_TowerHealth == g_ConfigValues[CFG_TOWER_HEALTH])
+		return;
+
+	new iTower;
+	if( (iTower = find_ent_by_class(-1, "tower")) )
+	{
+		new Float:fOrigin[3];
+		entity_get_vector(iTower, EV_VEC_origin, fOrigin);
+
+		fOrigin[2] += 225.0;
+
+		entity_set_origin(iTower, fOrigin);
+		drop_to_floor(iTower);
+	}
+}
 public GetAlivePlayers()
 {
 	new num = 0;
@@ -7121,7 +7141,7 @@ public _td_update_tower_origin(iMode, Float:fDamage, iExplode)
 		new iTower = find_ent_by_class(-1, "tower");
 		entity_get_vector(iTower, EV_VEC_origin, fOrigin);
 		
-		if(!iMode)
+		if(iMode == 0)
 			fOrigin[2] -= ( 225.0 / ( float( g_ConfigValues[CFG_TOWER_HEALTH])  / fDamage ) )
 		else 
 			fOrigin[2] += ( 225.0 / ( float( g_ConfigValues[CFG_TOWER_HEALTH])  / fDamage ) )
