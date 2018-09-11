@@ -17,6 +17,8 @@
 #define TRAP_SLOWMO 0.50
 #define TRAP_SLOWMO_DURATION 6.0
 
+#define EV_INT_TRAP_TYPE EV_ENT_euser2
+
 enum {
 	NONE = 0,
 	HURTING = 1,
@@ -45,16 +47,16 @@ public plugin_init() {
 	loadTracks(MAX_TRACKS)
 }
 
-
 public asd(trap, monster) {	
-	switch(entity_get_edict(trap, EV_ENT_euser2)) {
+	switch(entity_get_edict(trap, EV_INT_TRAP_TYPE)) {
 		case HURTING: {
 			if(!td_is_special_monster(monster)) {
 				fm_set_rendering(monster, kRenderFxGlowShell, 255, 50, 0, _, 16)
 			}
+
 			if(entity_get_float(monster, EV_FL_health) - TRAP_DAMAGE <= 0.0) {
 				td_kill_monster(monster, entity_get_edict(trap, EV_ENT_owner))
-				goto set
+				break;
 			}
 			
 			ExecuteHam(Ham_TakeDamage, monster, entity_get_edict(trap, EV_ENT_owner), entity_get_edict(trap, EV_ENT_owner), TRAP_DAMAGE, DMG_CLUB)
@@ -73,25 +75,27 @@ public asd(trap, monster) {
 		}
 		default: return
 	}
-	set:
+
 	g_iPlayerTrapEnt[entity_get_edict(trap, EV_ENT_owner)] = 0
 	g_iTracksTraps[entity_get_edict(trap, EV_ENT_euser1)] = 0
 	remove_entity(trap)
-	
 }
+
 public endRendering(monster) {
-	monster-=1552
+	monster -= 1552
 	fm_set_rendering(monster, kRenderFxGlowShell, 0, 0, 0, _ , 0)
 }
+
 public endSlowmotion(szData[5], monster) { 
-	monster-=1992
+	monster -= 1992
 	new bef_speed = str_to_num(szData)
+
 	if(td_is_monster(monster)) {
 		fm_set_rendering(monster, kRenderFxGlowShell, td_is_special_monster(monster)?255:0, td_is_special_monster(monster)==2?255:0, 0, _, td_is_special_monster(monster)?17:0)
 		
 		new act_speed = td_get_monster_speed(monster)
-		
 		new speed = bef_speed - act_speed
+
 		td_set_monster_speed(monster, td_get_monster_speed(monster)+speed)
 	}
 }
@@ -115,7 +119,6 @@ public trapMenu(id) {
 }
 
 public trapMenuH(id, menu, item) {
-	
 	if(item == MENU_EXIT) {
 		menu_destroy(menu)
 		return
@@ -129,24 +132,30 @@ public trapMenuType(id, type) {
 		return
 	}
 	new num
+
 	for(new i = 1; i < g_iTrackNum; i ++) {
 		if(g_iTracksTraps[i]) {
 			num++
 		}
 	}
+
 	if(num == g_iTrackNum) {
 		client_print(id, print_center, "Map reached limit [%d]!", num)
 		client_print_color(id, 0, "Map reached limit [%d]!", num)
 		return
 	}
+
 	if(g_iPlayerTrapEnt[id]) {
 		client_print(id, print_center, "You alerady have a trap !")
 		client_print_color(id, 0, "^4You alerady have a trap !")
 		return
 	}
+
 	g_bPlayerIsChoosing[id] = true
+
 	new menu = menu_create("Select place of trap^nby aiming on corner of track", "trapMenuTypeH")
 	new index[3]
+
 	num_to_str(type, index, 2)
 	menu_additem(menu, "Place it here", index)
 	menu_additem(menu, "Back")
@@ -183,26 +192,30 @@ public trapMenuTypeH(id, menu, item) {
 	
 	if(type == HURTING)
 	{
-		td_set_user_info(id, PLAYER_GOLD, td_get_user_info(id, PLAYER_GOLD)-25)
+		new cost = 25;
+		td_set_user_info(id, PLAYER_GOLD, td_get_user_info(id, PLAYER_GOLD) - cost)
 	}
-	entity_set_edict(g_iPlayerTrapEnt[id], EV_ENT_euser2, type);
+
+	entity_set_edict(g_iPlayerTrapEnt[id], EV_INT_TRAP_TYPE, type);
 	entity_set_int(g_iPlayerTrapEnt[id], EV_INT_solid, SOLID_TRIGGER)
 	fm_set_rendering(g_iPlayerTrapEnt[id], kRenderFxGlowShell, (type==HURTING?255:0), 50, (type==SLOWING?200:0), _, 16)
 	g_iTracksTraps[entity_get_edict(g_iPlayerTrapEnt[id], EV_ENT_euser1)] = g_iPlayerTrapEnt[id]
 }
 
-public client_disconnected(id) 
-{
+public client_disconnected(id) {
 	ResetUserInfo(id)
 }
+
 public ResetUserInfo(id)
 {
 	g_bPlayerIsChoosing[id] = false
+
 	if(is_valid_ent(g_iPlayerTrapEnt[id]))
 		remove_entity(g_iPlayerTrapEnt[id])
 
 	g_iPlayerTrapEnt[id] = 0
 }
+
 public td_reset_game(imode, Float:fTime) {
 	for(new i = 1 ;i < 33; i++ ) {
 		if(is_user_connected(i)) {
@@ -210,9 +223,11 @@ public td_reset_game(imode, Float:fTime) {
 		}
 	}
 }
+
 public td_reset_player_info(id) {
 	ResetUserInfo(id)
 }
+
 public plugin_precache() {
 	precache_model(g_szTrapModel)
 }
@@ -223,6 +238,7 @@ public client_PostThink(id) {
 	}
 
 	new bool:bCreated = false
+
 	if(!bCreated && !g_iPlayerTrapEnt[id]) 
 	{
 		new iTrackIndex = getClosestTrack(id, 0), iEnt
@@ -232,6 +248,7 @@ public client_PostThink(id) {
 					remove_entity(g_iPlayerTrapEnt[id])
 					g_iPlayerTrapEnt[id] = 0
 				}
+
 				g_iPlayerTrapEnt[id] = iEnt = create_entity("info_target")
 				bCreated = true
 				entity_set_string(iEnt, EV_SZ_classname, "trap")
@@ -241,11 +258,10 @@ public client_PostThink(id) {
 				entity_set_edict(iEnt, EV_ENT_euser1, iTrackIndex)
 				entity_set_size(iEnt, Float:{-40.0, -40.0, -40.0}, Float:{40.0, 40.0, 100.0})
 				entity_set_origin(iEnt, g_fTracksOrigin[iTrackIndex])
-
-				
 			}
 		}
 	}
+
 	if(!bCreated) {
 		if(g_iPlayerTrapEnt[id]) {
 			new Float:fUserOrigin[3]
@@ -289,47 +305,44 @@ public client_PostThink(id) {
 	}
 }
 
-public getClosestTrack(id, mode) {	
+public getClosestTrack(id, findByOrigin) {	
 	new iEntList[9], iNum, szFormat[16]
 	static iOrigin[3], Float:fOrigin[3], Float:fOrigin2[3]
-	if(!mode) {
+
+	if(!findByOrigin) {
 		iNum = find_sphere_class(id, "info_target", 230.0, iEntList, 9)
-		} else if(mode) {
+	} else {
 		get_user_origin(id, iOrigin, 3)
 		IVecFVec(iOrigin, fOrigin)
 		entity_get_vector(id, EV_VEC_origin, fOrigin2)
 		iNum = find_sphere_class(0, "info_target", 100.0, iEntList, 9, fOrigin)
 	}
+
 	for( new i; i < iNum ; i++ ) {
-		if(is_valid_ent(iEntList[i])) 
-		{			
-			if(iEntList[i] == g_iPlayerTrapEnt[i]) {
-				continue
-			}
-			
-			entity_get_string(iEntList[i], EV_SZ_classname, szFormat, charsmax(szFormat))
-			if(containi(szFormat, "monster") != -1) {
-				continue
-			}
-			
-			entity_get_string(iEntList[i], EV_SZ_targetname, szFormat, charsmax(szFormat))
-			if(containi(szFormat, "track") != -1) {
-				if(mode) {
-					
-					if(get_distance_f(fOrigin, fOrigin2) >= 750.0) {
-						continue
-					}
+		if(!is_valid_ent(iEntList[i])
+		   || iEntList[i] == g_iPlayerTrapEnt[i]) {
+			continue;
+		}	
+
+		entity_get_string(iEntList[i], EV_SZ_classname, szFormat, charsmax(szFormat))
+		if(containi(szFormat, "monster") != -1) {
+			continue
+		}
+		
+		entity_get_string(iEntList[i], EV_SZ_targetname, szFormat, charsmax(szFormat))
+		if(containi(szFormat, "track") != -1) {
+			if(findByOrigin) {
+				if(get_distance_f(fOrigin, fOrigin2) >= 750.0) {
+					continue
 				}
-				replace_string(szFormat, charsmax(szFormat), "track", "")
-				trim(szFormat)
-				return str_to_num(szFormat)
 			}
+			replace_string(szFormat, charsmax(szFormat), "track", "")
+			trim(szFormat)
+			return str_to_num(szFormat)
 		}
 	}
 	
 	return -1
-}
-public client_PreThink(id) {
 }
 
 public loadTracks(iTracksNum) {
