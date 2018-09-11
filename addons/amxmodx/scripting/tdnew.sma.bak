@@ -901,7 +901,7 @@ public cmdmenuPlayerSkill(id) {
 	new iCb = menu_makecallback("cmdmenuPlayerSkillCb");
 	
 	for(new i ; i < MAX_LEVEL-1 ; i++) {
-		formatex(szSkill, 95, "%s \y[POZIOM %d] [FRAGI %d]", gszSkills[i], i+1, giLevelFrags[i]) 
+		formatex(szSkill, 95, "%s \y[POZIOM %d]", gszSkills[i], i+1) 
 		menu_additem(iMenu, szSkill, _, _, iCb);
 	}
 	
@@ -1273,23 +1273,15 @@ public PlayerSpawn(id){
 	if(!is_user_connected(id) || !is_user_alive(id) || !gGame || id == 0)
 		return PLUGIN_CONTINUE
 		
-	if(get_playersnum() <= 2 && get_playersnum() > 0 && !gOnePlayerMode && get_pcvar_num(gCvarInfo[CVAR_ONE_PLAYER_MODE])) {
-		client_print(id, 3, "%s Znajdujesz sie na serwerze Tower Defense Mod by GT Team!", gszPrefix)
+	if(get_playersnum() == 1 && !gOnePlayerMode && get_pcvar_num(gCvarInfo[CVAR_ONE_PLAYER_MODE])) {
+		client_print(id, 3, "%s Znajdujesz sie sam na serwerze!", gszPrefix)
 		client_print(id, 3, "%s Aby roczpocac rozgrywke wpisz ^"/start^"!", gszPrefix)
 		client_print(id, 3, "%s Przewidywany poziom trudnosci: ULTRA HIGH!", gszPrefix)
 	}
-	new num;
-	for(new i = 1; i< 33;i++)
-	{
-		if(!is_user_alive(i) || !is_user_connected(i) || is_user_hltv(i))
-			continue
-		num++
-	}
-	if(num >= 2 && !gOnePlayerMode && !gWaveIsStarted && !gGameIsStarted)
+	if(get_playersnum() >= 2 && !gOnePlayerMode && !gWaveIsStarted && !gGameIsStarted)
 	{
 		client_cmd(0, "spk sound/%s", gSounds[SOUND_CLEAR_WAVE]);
-		client_print(id, 3, "%s Gra sie rozpocznie za 15 sekund!", gszPrefix)
-		set_task(15.0, "StartWave", 9123)
+		set_task(5.0, "StartWave", 9123)
 	}
 
 	if(get_playersnum() > 1 && gOnePlayerMode && gGameIsStarted) {
@@ -1323,7 +1315,7 @@ public cmdOnePlayerMode(id) {
 	if(!is_user_alive(id)) {
 		client_print(id, 3, "%s Nie mozesz rozpoczac rozgrywki niezyjac!", gszPrefix)
 		return PLUGIN_CONTINUE
-	} else if(get_playersnum() > 2 || !gGame) {
+	} else if(get_playersnum() > 1 || !gGame) {
 		client_print(id, 3, "%s Niedozwolone uzycie komendy!", gszPrefix)
 		return PLUGIN_CONTINUE
 	} else if(gOnePlayerMode) {
@@ -1360,7 +1352,7 @@ public StartWave() {
 		EndGame(PLAYERS_WIN);
 		return PLUGIN_CONTINUE
 	}
-		
+
 	new szText[128];
 
 	gGameIsStarted = true
@@ -1368,7 +1360,7 @@ public StartWave() {
 	giSendsMonster = 0;
 	gWaveIsStarted = false
 	giWave++;
-	
+
 	gszData[0] = gWaveInfo[giWave][WAVE_ROUND_TYPE]
 	gszData[1] = is_special_wave(giWave)?gWaveInfo[giWave][WAVE_MONSTER_NUM]+1:gWaveInfo[giWave][WAVE_MONSTER_NUM]
 	gszData[2] = gWaveInfo[giWave][WAVE_MONSTER_HEALTH]
@@ -1417,7 +1409,6 @@ public PreSendMonsters(szData[])
 	ExecuteForward(gForward[FORWARD_STARTWAVE], iRet, giWave, e_RoundType:szData[0], szData[1])
 	
 	gWaveIsStarted = true
-	client_cmd(0, "spk sound/%s", gSounds[SOUND_START_WAVE]);
 	
 	switch(szData[0])
 	{
@@ -2779,6 +2770,3 @@ public _td_get_round_name(e_RoundType:iRoundType, szOutpout[], len)
 
 public _td_get_max_map_turrets()
 	return MAX_MAP_TURRETS
-/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
-*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang1045\\ f0\\ fs16 \n\\ par }
-*/
