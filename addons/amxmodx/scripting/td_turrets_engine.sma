@@ -848,14 +848,16 @@ public td_remove_data()
 		}
 	}
 }
+
 public IsEntityRanger(iEnt)
 {
 	static szClassName[16]; entity_get_string(iEnt, EV_SZ_classname, szClassName, 15);
 	return equali(szClassName, "ranger");
 }
 
-public IsEntityPlayerTurret(iEnt, iPlayer)
+public IsEntityPlayerTurret(iEnt, iPlayer) {
 	return entity_get_edict(iEnt, EV_ENT_turret_owner) == iPlayer && entity_get_int(iEnt, EV_INT_turret_level)
+}
 
 public fwAddToFullPack(es_handle, e, ENT, HOST, hostflags, player, set) 
 {
@@ -869,6 +871,7 @@ public fwAddToFullPack(es_handle, e, ENT, HOST, hostflags, player, set)
 		set_es( es_handle, ES_RenderAmt, 0);  
 		return FMRES_OVERRIDE
 	}
+
 	static iEffectType ; iEffectType = g_PlayerTurretShowingOption[HOST]
 	if(iEffectType != TURRET_SHOW_NONE && IsEntityPlayerTurret(ENT, HOST))
 	{
@@ -930,7 +933,7 @@ public ShowEditOwnTurretEffect(id)
 }
 
 public ShowEditOwnTurretEffectCb(id, menu, item)
-	return item ==  g_PlayerTurretShowingOption[id] ? ITEM_DISABLED : ITEM_ENABLED;
+	return item == g_PlayerTurretShowingOption[id] ? ITEM_DISABLED : ITEM_ENABLED;
 
 public ShowEditOwnTurretEffectH(id, menu, item)
 {
@@ -967,6 +970,7 @@ public ShowEditAlarmValueMenu(id)
 public ShowEditAlarmValueMenuCb(id, menu, item) 
 {
 	new iAlarmValue = g_PlayerAmmoAlarmValue[id];
+
 	if(item == 0 && iAlarmValue == 10)
 		return ITEM_DISABLED;
 	if(item == 1 && iAlarmValue == 25)
@@ -1492,7 +1496,7 @@ public TurretThink(iTurretEntity)
 		ColorChat(iPlayer, GREEN, "%s^x01 Your '%s' turret is empty!", CHAT_PREFIX, szTurretName)
 		client_cmd(iPlayer, "spk sound/%s", g_SoundFile[SOUND_TURRET_NOAMMO]);
 		
-		/* Set -1 ammo becouse this message can be showed only one time */
+		/* Set -1 ammo because this message can be showed only one time */
 		entity_set_int(iTurretEntity, EV_INT_turret_ammo, -1);
 		
 		/* Do not set next think. Turret will unfreezed when player buy ammo */
@@ -2329,12 +2333,12 @@ public ShowTurretMenu(id, iTurretIndex)
 		menu_setprop(iMenu, MPROP_EXITNAME, "Back")
 	
 	menu_display(id, iMenu);
-	set_task(0.1, "reset", id + 213213123);
+	set_task(0.1, "reset", id + 7192);
 	return PLUGIN_CONTINUE
 }
 
 public reset(id)
-	g_PlayerTouchingTurret[id - 213213123] = 0;
+	g_PlayerTouchingTurret[id - 7192] = 0;
 	
 public ShowTurretMenuCb(id, menu, item)
 {
@@ -2401,7 +2405,6 @@ public ShowTurretMenuCb(id, menu, item)
 
 public ShowTurretMenuH(id, menu, item) 
 {
-	
 	new cb, acces, szName[3], szTurretIndex[4]
 	menu_item_getinfo(menu, 0, acces, szTurretIndex, 3, szName, 2, cb)
 	
@@ -2524,7 +2527,6 @@ public ShowTurretMenuH(id, menu, item)
 		ShowMenuUpgradeTurret(id, iTurretIndex);
 
 	return PLUGIN_CONTINUE;
-	
 }
 
 public ShowMenuUpgradeTurret(id, iTurretIndex)
