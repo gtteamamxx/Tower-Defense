@@ -120,6 +120,7 @@ public td_take_damage_post(iPlayer, iEnt, iWeapon, Float:fOutDamage, szInDamage[
 	{
 		new arrayId = getDatabaseIdFromMonster(ent), arraypos;
 		new playerId = getPlayerArrayIndexInDatabase(Array:arrayId, iPlayer, arraypos);
+
 		if(playerId)
 			updatePlayerData(Array:arrayId, arraypos, floatround(fOutDamage));
 		else
@@ -156,7 +157,6 @@ public addPlayerBenefitsForAssist(id, iEnt)
 	cs_set_user_money(id, ( userMoney + iMoney ) > 16000 ? 16000 : ( userMoney + iMoney), 1)
 	
 	ColorChat(id, GREEN, "[TD]^x01 You got %d gold and $%d for assist with killing a moster!",  iGold, iMoney)
-
 }
 
 public removeMonsterFromMemory(iEnt)
