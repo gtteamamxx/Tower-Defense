@@ -35,7 +35,7 @@
 #define SPAWN_SPRITE			"sprites/TD/spawn.spr"
 
 #define MAX_WAVES 				200
-#define MAX_MONSTERS_PER_WAVE 	40
+#define MAX_MONSTERS_PER_WAVE 	30
 #define MAX_SHOP_ITEMS 			50
 
 //#define DEBUG
