@@ -285,7 +285,6 @@ public menuBuyTurretH(id, menu, item)
 		return PLUGIN_CONTINUE
 	}
 	
-	td_set_user_info(id, PLAYER_GOLD, _:td_get_user_info(id, PLAYER_GOLD)-gTurretsPriceData[e_TurretsType:(item+1)][0])
 	CreateTurret(id, gimenuSentryId[id], item+1)
 	
 	return PLUGIN_CONTINUE
@@ -728,6 +727,7 @@ public CreateTurret(id, sentryid, type) {
 	
 	menuTurret(id, sentryid)
 	entity_set_float(iEnt, EV_FL_nextthink, get_gametime()+1.0);
+	td_set_user_info(id, PLAYER_GOLD, _:td_get_user_info(id, PLAYER_GOLD)-gTurretsPriceData[e_TurretsType:(item+1)][0])
 	return PLUGIN_CONTINUE
 }
 	
@@ -1275,3 +1275,6 @@ public td_is_ranger_exists(iEnt) {
 	return 0;
 }
 	
+/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
+*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang1045\\ f0\\ fs16 \n\\ par }
+*/
