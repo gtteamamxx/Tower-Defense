@@ -13,7 +13,7 @@
 
 #define MAX_TRACKS 35
 
-#define TRAP_DAMAGE 800
+#define TRAP_DAMAGE 1500
 #define TRAP_SLOWMO 0.50
 #define TRAP_SLOWMO_DURATION 6.0
 
@@ -40,11 +40,13 @@ public plugin_init() {
 	register_clcmd("say /trap", "trapMenu")
 	register_clcmd("say /traps", "trapMenu")
 	
-	register_touch("trap", "monster", "asd")
+	register_touch("trap", "monster", "asd");
+
 	loadTracks(MAX_TRACKS)
 }
 
-public asd(trap, monster) {
+
+public asd(trap, monster) {	
 	switch(entity_get_edict(trap, EV_ENT_euser2)) {
 		case HURTING: {
 			if(!td_is_special_monster(monster)) {
@@ -79,7 +81,7 @@ public asd(trap, monster) {
 }
 public endRendering(monster) {
 	monster-=1552
-	fm_set_rendering(monster, kRenderFxGlowShell, 0, 0, 0, _, 0)
+	fm_set_rendering(monster, kRenderFxGlowShell, 0, 0, 0, _ , 0)
 }
 public endSlowmotion(szData[5], monster) { 
 	monster-=1992
@@ -99,10 +101,14 @@ public trapMenu(id) {
 		return
 	}
 	
+	if(td_get_user_info(id, PLAYER_GOLD) < 25)
+	{
+		client_print_color(id, 0, "^4You dont have 25 gold!");
+		return
+	}
 	new menu = menu_create("Select type of trap:", "trapMenuH")
 	
-	menu_additem(menu, "Hurting")
-	menu_additem(menu, "Slowing")
+	menu_additem(menu, "Hurting [1500 DMG] [25 GOLD]")
 	
 	menu_display(id, menu)
 	
@@ -130,12 +136,12 @@ public trapMenuType(id, type) {
 	}
 	if(num == g_iTrackNum) {
 		client_print(id, print_center, "Map reached limit [%d]!", num)
-		client_print_color(id, 0, "^4Limit mapy zostal osiagniety [%d]!", num)
+		client_print_color(id, 0, "Map reached limit [%d]!", num)
 		return
 	}
 	if(g_iPlayerTrapEnt[id]) {
-		client_print(id, print_center, "You have trap !")
-		client_print_color(id, 0, "^4Juz masz przeciez pulapke!")
+		client_print(id, print_center, "You alerady have a trap !")
+		client_print_color(id, 0, "^4You alerady have a trap !")
 		return
 	}
 	g_bPlayerIsChoosing[id] = true
@@ -168,42 +174,44 @@ public trapMenuTypeH(id, menu, item) {
 	}
 	if(!g_iPlayerTrapEnt[id]) {
 		client_print(id, print_center, "You have to select proper corner of track!")
-		client_print_color(id, 0, "^4Wybierz wlasciwy rog!")
+		client_print_color(id, 0, "^4You have to select proper corner of track!")
 		trapMenuType(id, type)
 		return
 		
 	}
 	g_bPlayerIsChoosing[id] = false
-	switch(type) {
-		case HURTING: { 
-			entity_set_edict(g_iPlayerTrapEnt[id], EV_ENT_euser2, HURTING ) 
-		}
-		case SLOWING: { 
-			entity_set_edict(g_iPlayerTrapEnt[id], EV_ENT_euser2, SLOWING ) 	
-		}
+	
+	if(type == HURTING)
+	{
+		td_set_user_info(id, PLAYER_GOLD, td_get_user_info(id, PLAYER_GOLD)-25)
 	}
+	entity_set_edict(g_iPlayerTrapEnt[id], EV_ENT_euser2, type);
 	entity_set_int(g_iPlayerTrapEnt[id], EV_INT_solid, SOLID_TRIGGER)
 	fm_set_rendering(g_iPlayerTrapEnt[id], kRenderFxGlowShell, (type==HURTING?255:0), 50, (type==SLOWING?200:0), _, 16)
 	g_iTracksTraps[entity_get_edict(g_iPlayerTrapEnt[id], EV_ENT_euser1)] = g_iPlayerTrapEnt[id]
 }
 
-public client_disconnect(id) {
+public client_disconnected(id) 
+{
+	ResetUserInfo(id)
+}
+public ResetUserInfo(id)
+{
 	g_bPlayerIsChoosing[id] = false
-	if(is_valid_ent(g_iPlayerTrapEnt[id])) {
+	if(is_valid_ent(g_iPlayerTrapEnt[id]))
 		remove_entity(g_iPlayerTrapEnt[id])
-	}
+
 	g_iPlayerTrapEnt[id] = 0
 }
-
 public td_reset_game(imode, Float:fTime) {
 	for(new i = 1 ;i < 33; i++ ) {
 		if(is_user_connected(i)) {
-			client_disconnect(i)
+			ResetUserInfo(i);
 		}
 	}
 }
 public td_reset_player_info(id) {
-	client_disconnect(id)
+	ResetUserInfo(id)
 }
 public plugin_precache() {
 	precache_model(g_szTrapModel)
@@ -213,9 +221,10 @@ public client_PostThink(id) {
 	if(!is_user_alive(id) || !g_bStatus || !g_bPlayerIsChoosing[id]) {
 		return
 	}
-	
+
 	new bool:bCreated = false
-	if(!bCreated && !g_iPlayerTrapEnt[id]) {
+	if(!bCreated && !g_iPlayerTrapEnt[id]) 
+	{
 		new iTrackIndex = getClosestTrack(id, 0), iEnt
 		if(iTrackIndex != -1) {
 			if(entity_get_edict(g_iPlayerTrapEnt[id], EV_ENT_euser1) != iTrackIndex && !g_iTracksTraps[iTrackIndex]) {
@@ -227,12 +236,12 @@ public client_PostThink(id) {
 				bCreated = true
 				entity_set_string(iEnt, EV_SZ_classname, "trap")
 				entity_set_model(iEnt, g_szTrapModel)
-				
 				entity_set_edict(iEnt, EV_ENT_owner, id)
+				entity_set_int(iEnt, EV_INT_solid,SOLID_TRIGGER)
 				entity_set_edict(iEnt, EV_ENT_euser1, iTrackIndex)
-				entity_set_size(iEnt, Float:{-20.0, -20.0, -20.0}, Float:{20.0, 20.0, 20.0})
+				entity_set_size(iEnt, Float:{-40.0, -40.0, -40.0}, Float:{40.0, 40.0, 100.0})
 				entity_set_origin(iEnt, g_fTracksOrigin[iTrackIndex])
-				entity_set_float(iEnt, EV_FL_takedamage, DAMAGE_NO);
+
 				
 			}
 		}
@@ -264,17 +273,18 @@ public client_PostThink(id) {
 		if(g_iPlayerTrapEnt[id]) {
 			entity_set_origin(g_iPlayerTrapEnt[id], g_fTracksOrigin[iTrackIndex])
 			entity_set_edict(g_iPlayerTrapEnt[id], EV_ENT_euser1, iTrackIndex)
+			entity_set_int(g_iPlayerTrapEnt[id], EV_INT_solid,SOLID_TRIGGER)
 		} else {
 			new iEnt
 			g_iPlayerTrapEnt[id] = iEnt = create_entity("info_target")
 			entity_set_string(iEnt, EV_SZ_classname, "trap")
 			entity_set_model(iEnt, g_szTrapModel)
-			
+			entity_set_int(iEnt, EV_INT_solid,SOLID_TRIGGER)
 			entity_set_edict(iEnt, EV_ENT_owner, id)
 			entity_set_edict(iEnt, EV_ENT_euser1, iTrackIndex)
-			entity_set_size(iEnt, Float:{-20.0, -20.0, -20.0}, Float:{20.0, 20.0, 20.0})
+			entity_set_size(iEnt, Float:{-40.0, -40.0, -40.0}, Float:{40.0, 40.0, 100.0})
 			entity_set_origin(iEnt, g_fTracksOrigin[iTrackIndex])
-			entity_set_float(iEnt, EV_FL_takedamage, DAMAGE_NO);
+
 		}
 	}
 }
@@ -356,6 +366,3 @@ public bool:isTrap(iEnt) {
 	}
 	return false
 }
-/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
-*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang1045\\ f0\\ fs16 \n\\ par }
-*/

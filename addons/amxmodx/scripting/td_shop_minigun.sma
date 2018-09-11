@@ -14,10 +14,6 @@
 
 new const GUNSHOT_DECALS[] = {41, 42, 43, 44, 45}
 
-new const PLUGIN[] = "WPN Minigun : TD Shop Item"
-new const VERSION[] = "1.65"
-new const AUTHOR[] = "CLLlAgOB edited by GT Team"
-
 new bool:has_minigun[33], Float:m249, bool:atk2[33], bool:atk1[33],
 bool:delay[33], clipp[33],clipstart[33],g_fwid,bool:delayhud[33],bool:beackup[33],bool:frstCLIP[33],g_MaxPlayers,g_guns_eventids_bitsum,bool:haswhpnnmg[33],
 Float:g_lastShot[33], Float:g_nextSound[33], g_plAction[33],bool:g_fix_punchangle[33],
@@ -62,11 +58,6 @@ enum {
 	act_run
 }
 
-new const szName[] = "Minigun"
-new const szDesc[]  = "Dostajesz Miniguna"
-new iPrice = 200;
-new iOnePerMap = 1;
-
 new iItem;
 
 public plugin_precache() {
@@ -86,11 +77,10 @@ public plugin_precache() {
 
 new bought[33] = 0
 public plugin_init() {
-	new id = register_plugin(PLUGIN, VERSION, AUTHOR)
-	register_plugin("Ammo minigun", "two", "gtteam")
+	new id = register_plugin("TD Shop: Minigun", "1.65", "CLLlAgOB edited by GT Team")
 	
 	m249 = 		0.2
-	DMGMG =		1.4
+	DMGMG =		1.5
 	
 	register_event("CurWeapon","event_curweapon","be", "1=1")
 	register_event("DeathMsg","unminigun","a")
@@ -116,9 +106,11 @@ public plugin_init() {
 	register_event("HLTV", "event_start_freezetime", "a", "1=0", "2=0")
 	unregister_forward(FM_PrecacheEvent, g_fwid, 1)
 	
-	iItem = td_shop_register_item(szName, szDesc, iPrice, iOnePerMap, id)
+	iItem = td_shop_register_item("Minigun", "You get minigun!", 650, 1, id)
 }
 public plugin_natives() {
+	
+	/* Set ammunition for minigun */
 	register_native("set_cp", "_set_cp", 1)
 }
 public _set_cp(id) {
@@ -363,6 +355,7 @@ public native_playanim(player,anim)
 		{
 			atk1[id] = true
 			atk2[id] = false
+
 			
 		}
 		else if(buttons & IN_ATTACK2)
@@ -649,11 +642,8 @@ public fwTraceLine(const Float:start[3], const Float:dest[3], ignore_monsters, i
 public ammo_hud(id) {
 	if(!delayhud[id]) {
 		delayhud[id] = true
-		new AmmoHud[65]
-		new clip = clipp[id]
-		format(AmmoHud, 64, "Amunicja: %i", clip)
 		set_hudmessage(200, 100, 0, 1.0 , 1.0, 0, 0.1, 0.1,0.1)
-		show_hudmessage(id,"%s",AmmoHud)
+		show_hudmessage(id,"Amunicja: %i",clipp[id])
 		set_task(0.2,"delayhutmsg",id)
 	}
 }

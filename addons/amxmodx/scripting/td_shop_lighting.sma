@@ -4,38 +4,44 @@
 #include <td>
 #include <hamsandwich>
 #include <engine>
+#include <colorchat>
 
-#define PLUGIN "TD SHOP: Piorun"
+#define PLUGIN "TD SHOP: Lighting"
 #define VERSION "1.0"
 #define AUTHOR "GT Team"
 
-
-new szName[] = "Piorun"
-new szDesc[] = "Masz jedno uderzenie piorunem (klawisz X) zadajace 1000 obrazen!"
-new iPrice = 20
 new item;
 
-new giCanUse[33]
+new g_LightingNum[33]
 new giSpriteLighting
 
 public plugin_init() {
 	new id = register_plugin(PLUGIN, VERSION, AUTHOR)
 	
-	item = td_shop_register_item(szName, szDesc, iPrice, 0, id)
+	item = td_shop_register_item("Lighting", "You got one lighting power! (Button'X') It takes 1000 damage", 70, 0, id)
 	register_clcmd("radio2",     "cmdUseLighting")
 }
 
 public plugin_precache()
 	giSpriteLighting = precache_model("sprites/lgtning.spr")
 	
-public td_shop_item_selected(id, itemid) {
-	if(item == itemid) {
-		giCanUse[id]++
+public td_shop_item_selected(id, itemid)
+ {
+	if(item == itemid) 
+	{
+
+		if(td_get_user_info(id, PLAYER_LEVEL) >= 10) 
+		{
+			ColorChat(id, GREEN, "[TD]^x01 You cannot buy lighting becouse you earned 10 level.");
+			return PLUGIN_HANDLED;
+		}
+		g_LightingNum[id]++
 	}
+	return PLUGIN_CONTINUE
 }
 public cmdUseLighting(id)
 {
-	if(!is_user_alive(id) || !giCanUse[id])
+	if(!is_user_alive(id) || !g_LightingNum[id])
 		return PLUGIN_CONTINUE
 		
 	new Float:AimedOrigin[3]
@@ -48,20 +54,20 @@ public cmdUseLighting(id)
 	find_sphere_class(0, "monster", 80.0, entlist, 1, AimedOrigin)
 	
 	if(!is_valid_ent(entlist[0])  ||  entity_get_int(entlist[0], EV_INT_iuser1) == _:ROUND_NONE) {
-		client_print(id, print_center, "Musisz wybrac cel!")
-		return PLUGIN_CONTINUE
+		client_print(id, print_center, "You must aim at the monster!")
+		return PLUGIN_HANDLED
 	}
-	giCanUse[id]--
-	if(giCanUse[id] < 0)
-		giCanUse[id] = 0
+	g_LightingNum[id]--
+	if(g_LightingNum[id] < 0)
+		g_LightingNum[id] = 0
 	else
-		client_print(id, print_center, "Mozesz jeszcze uderzyc piorunem %d raz/y!", giCanUse[id])
+		client_print(id, print_center, "You can use lighting %d time/s!", g_LightingNum[id])
 		
 	emit_sound(id, CHAN_AUTO, "TD/player_use_lighting.wav", 1.0, ATTN_NORM, 0, PITCH_NORM); 
 	ExecuteHamB(Ham_TakeDamage, entlist[0], id, id, 1000.0, DMG_BLAST)
 	Create_Lighting(id, entlist[0], 0, 1, 10, 20, 20, 255, 255, 255, 255, 3)
 	
-	return PLUGIN_CONTINUE
+	return PLUGIN_HANDLED
 }
 stock Create_Lighting(startEntity, endEntity, startFrame, frameRate, life, width, noise, red, green, blue, alpha, speed)
 {
@@ -82,6 +88,3 @@ stock Create_Lighting(startEntity, endEntity, startFrame, frameRate, life, width
 	write_byte( speed )                             // scroll speed
 	message_end()
 }
-/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
-*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang1045\\ f0\\ fs16 \n\\ par }
-*/

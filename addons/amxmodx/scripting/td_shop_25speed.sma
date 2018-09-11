@@ -9,17 +9,12 @@
 #define VERSION "1.0"
 #define AUTHOR "tomcionek15 & grs4"
 
-new const szName[] = "25% speeda"
-new const szDesc[]  = "Bedziesz szybszy o 25%"
-new iPrice = 40;
-new iOnePerMap = 1;
-
 new iItem;
 public plugin_init() 
 {
 	new id = register_plugin(PLUGIN, VERSION, AUTHOR)
+	iItem = td_shop_register_item("25% speed", "You will be 25% faster", 250, 1, id)
 	
-	iItem = td_shop_register_item(szName, szDesc, iPrice, iOnePerMap, id)
 }
 public td_shop_item_selected(id, itemid)
 {

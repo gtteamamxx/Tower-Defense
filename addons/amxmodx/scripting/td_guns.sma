@@ -1,10 +1,9 @@
-/* Jest to plugin w g³ównej mierze stworozny po to by móc dodaæ do menu w³asne bronie oraz
-	zmieniæ ich ceny nie u¿yhwaj¹c modu³u Orpheu.
+/* Jest to plugin w gï¿½ï¿½wnej mierze stworozny po to by mï¿½c dodaï¿½ do menu wï¿½asne bronie oraz
+	zmieniï¿½ ich ceny nie uï¿½yhwajï¿½c moduï¿½u Orpheu.
 	
-   Podziêkowania dla nie-RGB u¿ytkowników amxx.pl [z wyj¹tkiem Gwyna]
+   Podziï¿½kowania dla nie-RGB uï¿½ytkownikï¿½w amxx.pl [z wyjï¿½tkiem Gwyna]
 */
 #include <amxmodx>
-#include <td>
 #include <cstrike>
 #include <fakemeta_util>
 #include <fun>
@@ -13,15 +12,14 @@
 #include <hamsandwich>
 
 #define PLUGIN "Tower Defense: Guns"
-#define VERSION "1.0"
+#define VERSION "1.1"
 #define AUTHOR "GT Team"
 
 #define TASK_BUY_GUN	6242
 
-
 /* ======================================== */
 
-new gszPrefix[33];
+new gszPrefix[] = "[TD: Guns]"
 
 new const giMaxAmmo[31] = {0,52,0,90,1,32,1,100,90,1,120,100,100,90,90,90,100,120,30,120,200,32,90,120,90,2,35,90,90,0,100};
 
@@ -38,7 +36,7 @@ new const giMaxAmmo[31] = {0,52,0,90,1,32,1,100,90,1,120,100,100,90,90,90,100,12
 
 /* ======================================== */
 
-// Nazwy scriptingowe broni g³ównych
+// Nazwy scriptingowe broni gï¿½ï¿½wnych
 new const gszPrimaryWeapons[][] = {
 	"weapon_scout",
 	"weapon_xm1014",
@@ -50,7 +48,6 @@ new const gszPrimaryWeapons[][] = {
 	"weapon_famas",
 	"weapon_awp",
 	"weapon_mp5navy",
-	"weapon_m249",
 	"weapon_m3",
 	"weapon_m4a1",
 	"weapon_tmp",
@@ -59,7 +56,7 @@ new const gszPrimaryWeapons[][] = {
 	"weapon_ak47",
 	"weapon_p90"
 }
-// -||- broni podrzêdnych
+// -||- broni podrzï¿½dnych
 
 new const gszSecondaryWeapons[][] = {
 	"weapon_p228",
@@ -70,7 +67,7 @@ new const gszSecondaryWeapons[][] = {
 	"weapon_deagle"
 }
 
-/* Jeœli nie chceszm mieæ danej broni w mneu to usuñ wszystkie jej pozycje przed plugin_init. */
+/* Jeï¿½li nie chceszm mieï¿½ danej broni w mneu to usuï¿½ wszystkie jej pozycje przed plugin_init. */
 
 /* ======================================== */
 
@@ -116,11 +113,11 @@ enum e_SniperType {
 /* ======================================== */
 
 new gszGunsType[e_GunsType][] = {
-	"Pistolety",
-	"Shotguny",
-	"SMG",
-	"Karabiny",
-	"Snajperki"
+	"Pistols",
+	"Shotguns",
+	"SMGs",
+	"Rifles",
+	"Snipers"
 }
 /* Pistols */
 new gszPistolsNames[e_PistolsType][] = {
@@ -259,18 +256,21 @@ public plugin_init() {
 	register_clcmd("say /gun", "cmdmenuGuns")
 	register_clcmd("say /buy", "cmdmenuGuns")
 	register_clcmd("say /bron", "cmdmenuGuns")
+	register_clcmd("say /weapons", "cmdmenuGuns")
+	register_clcmd("say /weapon", "cmdmenuGuns")
+	register_clcmd("say /rifles", "cmdmenuGuns")
+	register_clcmd("say /rifle", "cmdmenuGuns")
+	register_clcmd("say /w", "cmdmenuGuns")
 	
 	register_clcmd("buy", "cmdmenuGuns")
 	register_clcmd("buyequip", "cmdmenuGuns")
 	
-	register_clcmd("buyammo1", "cmdBuyAmmo2")
-	register_clcmd("buyammo2", "cmdBuyAmmo1")
+	//register_clcmd("buyammo1", "cmdBuyAmmo2")
+	//register_clcmd("buyammo2", "cmdBuyAmmo1")
 	
 	BlockBuy()
 	
 	register_clcmd("client_buy_open","cmdOpenBuyMenu")
-	
-	td_get_prefix(gszPrefix, 32)
 	
 	register_forward(FM_ClientUserInfoChanged, "fwClientUserInfoChanged", 1)
 }
@@ -281,7 +281,6 @@ public block(id){
 	client_print(id, print_center, "#Cstrike_TitlesTXT_Cannot_Buy_This",0);
 
 	return PLUGIN_HANDLED;
-
 }
 /* zablolkuj komendy kupywania broni */
 public BlockBuy(){
@@ -365,7 +364,7 @@ public cmdOpenBuyMenu(id) {
 }
 
 /* ======================================== */
-/* Amunicja do broni podrzêdnej */
+/* Amunicja do broni podrzï¿½dnej */
 public cmdBuyAmmo1(id) {
 	if(!userHasSecondary(id))
 		return PLUGIN_HANDLED_MAIN
@@ -377,72 +376,116 @@ public cmdBuyAmmo1(id) {
 	if(!find_sphere_class(id, "func_buyzone", 4.0, entlist, 1)) 
 		return PLUGIN_HANDLED_MAIN
 	
+	new weapon = get_user_weapon(id);
 	
-	set_user_ammo(id,get_pdata_cbase(id,369,5),50)
+	if(isSecondary(weapon))
+		GiveUserAmmo(id,  weapon, 50);
+	
+	return PLUGIN_HANDLED_MAIN;
+}
+
+isSecondary(weapon)
+	return (weapon == CSW_GLOCK18
+	|| weapon == CSW_USP
+	|| weapon == CSW_P228
+	|| weapon == CSW_DEAGLE
+	|| weapon == CSW_ELITE
+	|| weapon == CSW_FIVESEVEN);
+
+GiveUserAmmo(id, weapon, iPrice = 0)
+{
+	new iAmmo, clip; GetUserAmmo(id, clip, iAmmo, weapon);
+	new iMoney = get_pdata_int(id,115,5)
+	
+	if(iMoney < iPrice || iMoney == 0) {
+		fm_set_user_money(id, iMoney, 1)
+		return PLUGIN_HANDLED_MAIN
+	}
+	
+	if(iAmmo >= giMaxAmmo[weapon])
+		return PLUGIN_HANDLED_MAIN
+	
+	client_cmd(id, "spk weapons/reload1")
+	
+	iAmmo = iAmmo + 12 > giMaxAmmo[weapon] ? giMaxAmmo[weapon] : iAmmo+12
+
+	fm_set_user_money(id,iMoney - iPrice)
+	
+	if(clip == 0)
+		set_task(0.1, "ReloadUserWeapon", id + 22222);
+		
+	cs_set_user_bpammo(id, weapon, iAmmo)
 	
 	return PLUGIN_HANDLED_MAIN
 }
 
+GetUserAmmo(id,&ammo=0,&bpammo=0,weapon=0)
+{
+	const m_iPrimaryAmmoType = 49
+	const m_rgAmmo = 376
+	const m_iClip = 51
+	const m_pActiveItem = 373
+	const m_pPlayer = 41
+	if(!is_user_alive(id) || (!weapon && pev_valid((weapon = get_pdata_cbase(id,m_pActiveItem,5))) != 2))	return 0
+	
+	new classname[32]
+	if(weapon <= 30 && get_weaponname(weapon,classname,31))
+	{
+		while((weapon = engfunc(EngFunc_FindEntityByString,weapon,"classname",classname)))
+		{
+			if(pev_valid(weapon) == 2 && get_pdata_cbase(weapon,m_pPlayer,4) == id)	goto GetAmmo
+		}
+		return 0
+	}
+	
+	GetAmmo:
+	ammo = get_pdata_int(weapon,m_iClip,4)
+	bpammo = get_pdata_int(id,m_rgAmmo+get_pdata_int(weapon,m_iPrimaryAmmoType,4),5)
+	return weapon
+}
+
 /* ======================================== */
-/* Amunicja do broni pierwszorzêdnej */
+/* Amunicja do broni pierwszorzï¿½dnej */
 public cmdBuyAmmo2(id) {
 	if(!userHasPrimary(id))
 		return PLUGIN_HANDLED_MAIN
 	
 	if(!is_user_alive(id))
 		return PLUGIN_HANDLED_MAIN
-	
+
 	new entlist[1]
 	if(!find_sphere_class(id, "func_buyzone", 4.0, entlist, 1)) 
 		return PLUGIN_HANDLED_MAIN
-
-	set_user_ammo(id,get_pdata_cbase(id,368,5), 120)
 	
+	new weapon = get_user_weapon(id);
+	if(!isSecondary(weapon))
+	{
+		GiveUserAmmo(id, weapon, 120);
+	}
 	return PLUGIN_HANDLED_MAIN
 }
 
 
-// PODZIEKOWANIA DLA BLACK_PERFUM Z AMXX>pl
-public set_user_ammo(id, iWeaponIndex,iPrice) {
-	
-	if(!is_valid_ent(iWeaponIndex))	
-		return
-	
-	new iAmmoType = get_pdata_int(iWeaponIndex,49,4)
-	new iWeaponID = get_pdata_int(iWeaponIndex,43,4)
-	new iAmmo = get_pdata_int(id,376 + iAmmoType,5)
-	new iMoney = get_pdata_int(id,115,5)
-	
-	if(iWeaponID == CSW_KNIFE)
-		return 
-	if(iMoney < iPrice || iMoney == 0) {
-		fm_set_user_money(id, iMoney, 1)
-		return
-	}
-	if(iAmmo >= giMaxAmmo[iWeaponID])
-		return
-
-	iAmmo = iAmmo + 12 > giMaxAmmo[iWeaponID] ? giMaxAmmo[iWeaponID] : iAmmo+12
-	
-	set_pdata_int(id,376 + iAmmoType, iAmmo,5)
-	
-	fm_set_user_money(id,iMoney - iPrice)
-	
-	set_pdata_int(id,351,0,5)
-	
-	client_cmd(id, "spk weapons/reload1")
-}
+public ReloadUserWeapon(id)
+	client_cmd(id - 22222, "+attack; wait; -attack")
 
 /* ======================================== */
 
 public cmdmenuGuns(id) {
 	if(!is_user_alive(id)) {
-		ColorChat(id, GREEN, "%s^x01 Nie mozesz kupic broni, gdy nie zyjesz!", gszPrefix)
+		ColorChat(id, GREEN, "%s^x01 You cannot buy weapons when you are not alive!", gszPrefix)
 		return PLUGIN_CONTINUE
 	}
+	new entlist[1]
+	if(!find_sphere_class(id, "func_buyzone", 4.0, entlist, 1)) 
+	{
+		ColorChat(id, GREEN, "%s^x01 You must be in buyzone!", gszPrefix);
+		return PLUGIN_CONTINUE
+	}
+	
 	new szTitle[64], szItem[33]
 	
-	formatex(szTitle, charsmax(szTitle), "\wMasz \r$%d\w^nWybierz typ broni:", cs_get_user_money(id))
+	formatex(szTitle, charsmax(szTitle), "\wYou have \r$%d\w^nSelect weapon type:", cs_get_user_money(id))
 	
 	new menu = menu_create(szTitle, "cmdmenuGunsH")
 	
@@ -450,14 +493,21 @@ public cmdmenuGuns(id) {
 		formatex(szItem, charsmax(szItem), gszGunsType[e_GunsType:i])
 		menu_additem(menu, szItem)
 	}
-	menu_additem(menu, "Amunicja")
+	menu_additem(menu, "Ammunition")
+
 	menu_display(id, menu)
 	return PLUGIN_HANDLED_MAIN
 }
 public cmdmenuGunsH(id, menu, item)
-{
+{	
 	if(item == MENU_EXIT || !is_user_alive(id)) {
 		menu_destroy(menu)
+		return PLUGIN_CONTINUE
+	}
+	new entlist[1]
+	if(!find_sphere_class(id, "func_buyzone", 4.0, entlist, 1)) 
+	{
+		ColorChat(id, GREEN, "%s^x01 You must be in buyzone!", gszPrefix);
 		return PLUGIN_CONTINUE
 	}
 	
@@ -465,15 +515,20 @@ public cmdmenuGunsH(id, menu, item)
 	
 	if(iOption == GUNS_PISTOLS) {
 		menuPistols(id)
-		} else  if(iOption == GUNS_SHOTGUNS) {
+	} 
+	else  if(iOption == GUNS_SHOTGUNS) {
 		menuShotguns(id)
-		} else if(iOption == GUNS_SMG) {
+	}
+	else if(iOption == GUNS_SMG) {
 		menuSmg(id)
-		} else if(iOption == GUNS_RIFLES) {
+	}
+	else if(iOption == GUNS_RIFLES) {
 		menuRifles(id)
-		} else if(iOption == GUNS_SNIPERS) {
+	}
+	else if(iOption == GUNS_SNIPERS) {
 		menuSnipers(id)
-		} else if(iOption == GUNS_SNIPERS+e_GunsType:1) {
+	}
+	else if(iOption == GUNS_SNIPERS+e_GunsType:1) {
 		menuAmmo(id)
 	}
 	return PLUGIN_CONTINUE
@@ -483,12 +538,14 @@ public cmdmenuGunsH(id, menu, item)
 
 public menuAmmo(id)
 {	
-	new menu = menu_create("Jaka amunicje chcesz kupic?", "menuAmmoH")
+	new menu = menu_create("Select ammo type:", "menuAmmoH")
 	new cb = menu_makecallback("menuAmmoCb");
 	
-	menu_additem(menu, "$300         \yDo pistoletow", _, _, cb)
-	menu_additem(menu, "$500         \yDo karabinow", _, _, cb)
-	menu_additem(menu, "$800         \yDo wszystkiego", _, _, cb)
+	menu_additem(menu, "$300         \yPistols", _, _, cb)
+	menu_additem(menu, "$500         \yRifles", _, _, cb)
+	menu_additem(menu, "$800         \yPistols & Rifles", _, _, cb)
+	
+	menu_setprop(menu, MPROP_EXITNAME, "Back");
 	menu_display(id, menu)
 }
 public menuAmmoCb(id,menu,item)
@@ -506,6 +563,12 @@ public menuAmmoH(id, menu, item)
 		menu_destroy(menu)
 		if(is_user_alive(id))
 			cmdmenuGuns(id)
+		return 
+	}
+	new entlist[1]
+	if(!find_sphere_class(id, "func_buyzone", 4.0, entlist, 1)) 
+	{
+		ColorChat(id, GREEN, "%s^x01 You must be in buyzone!", gszPrefix);
 		return
 	}
 	
@@ -517,9 +580,9 @@ public menuAmmoH(id, menu, item)
 			
 			if(user_has_weapon(id, weapon)) {
 				cs_set_user_bpammo(id, weapon, giMaxAmmo[weapon])
-				break;
 			}
 		}
+
 	}
 	if(item == 1) {
 		fm_set_user_money(id, cs_get_user_money(id) - 500)
@@ -529,7 +592,6 @@ public menuAmmoH(id, menu, item)
 			
 			if(user_has_weapon(id, weapon)) {
 				cs_set_user_bpammo(id, weapon, giMaxAmmo[weapon])
-				break;
 			}
 		}
 	}
@@ -541,7 +603,6 @@ public menuAmmoH(id, menu, item)
 			
 			if(user_has_weapon(id, weapon)) {
 				cs_set_user_bpammo(id, weapon, giMaxAmmo[weapon])
-				break;
 			}
 		}
 		for(new i = 0; i < sizeof gszPrimaryWeapons; i++) {	
@@ -549,7 +610,6 @@ public menuAmmoH(id, menu, item)
 			
 			if(user_has_weapon(id, weapon)) {
 				cs_set_user_bpammo(id, weapon, giMaxAmmo[weapon])
-				break;
 			}
 		}
 	}
@@ -562,7 +622,7 @@ public menuAmmoH(id, menu, item)
 public menuPistols(id) {
 	new szTitle[64], szItem[33]
 	
-	formatex(szTitle, charsmax(szTitle), "\wMasz \r$%d\w^nWybierz pistolet:", cs_get_user_money(id))
+	formatex(szTitle, charsmax(szTitle), "\wYou have \r$%d\w^nSelect pistol:", cs_get_user_money(id))
 	
 	new menu = menu_create(szTitle, "menuPistolsH")
 	new cb = menu_makecallback("menuPistolsCb");
@@ -571,6 +631,7 @@ public menuPistols(id) {
 		formatex(szItem, charsmax(szItem),"$%-10.3d %-2s",  giPistolsPrice[ e_PistolsType:i], gszPistolsNames[e_PistolsType:i])
 		menu_additem(menu, szItem, _, _, cb)
 	}
+	menu_setprop(menu, MPROP_EXITNAME, "Back");
 	menu_display(id, menu)
 }
 
@@ -589,6 +650,13 @@ public menuPistolsH(id, menu, item) {
 			cmdmenuGuns(id)
 		
 		return  PLUGIN_CONTINUE;	
+	}
+	
+	new entlist[1]
+	if(!find_sphere_class(id, "func_buyzone", 4.0, entlist, 1)) 
+	{
+		ColorChat(id, GREEN, "%s^x01 You must be in buyzone!", gszPrefix);
+		return PLUGIN_CONTINUE
 	}
 	
 	if(userHasSecondary(id)) {
@@ -614,7 +682,7 @@ public menuPistolsH(id, menu, item) {
 public menuShotguns(id) {
 	new szTitle[64], szItem[33]
 	
-	formatex(szTitle, charsmax(szTitle), "\wMasz \r$%d\w^nWybierz shotgun:", cs_get_user_money(id))
+	formatex(szTitle, charsmax(szTitle), "\wYou have \r$%d\w^nSelect shotgun:", cs_get_user_money(id))
 	
 	new menu = menu_create(szTitle, "menuShotgunsH")
 	new cb = menu_makecallback("menuShotgunsCb");
@@ -623,6 +691,7 @@ public menuShotguns(id) {
 		formatex(szItem, charsmax(szItem),"$%-10.3d %-2s",  giShotgunPrice[ e_ShotgunType:i], gszShotgunNames[e_ShotgunType:i])
 		menu_additem(menu, szItem, _, _, cb)
 	}
+	menu_setprop(menu, MPROP_EXITNAME, "Back");
 	menu_display(id, menu)
 }
 
@@ -641,6 +710,12 @@ public menuShotgunsH(id, menu, item) {
 		if(is_user_alive(id))
 			cmdmenuGuns(id)
 		return  PLUGIN_CONTINUE;	
+	}
+	new entlist[1]
+	if(!find_sphere_class(id, "func_buyzone", 4.0, entlist, 1)) 
+	{
+		ColorChat(id, GREEN, "%s^x01 You must be in buyzone!", gszPrefix);
+		return PLUGIN_CONTINUE
 	}
 	
 	if(userHasPrimary(id)) {
@@ -664,7 +739,7 @@ public menuShotgunsH(id, menu, item) {
 public menuSmg(id) {
 	new szTitle[64], szItem[33]
 	
-	formatex(szTitle, charsmax(szTitle), "\wMasz \r$%d\w^nWybierz SMG:", cs_get_user_money(id))
+	formatex(szTitle, charsmax(szTitle), "\wYou have \r$%d\w^nSelect SMG:", cs_get_user_money(id))
 	
 	new menu = menu_create(szTitle, "menuSmgH")
 	new cb = menu_makecallback("menuSmgCb");
@@ -673,6 +748,7 @@ public menuSmg(id) {
 		formatex(szItem, charsmax(szItem),"$%-10.3d %-2s",  giSmgPrice[ e_SmgType:i], gszSmgNames[e_SmgType:i])
 		menu_additem(menu, szItem, _, _, cb)
 	}
+	menu_setprop(menu, MPROP_EXITNAME, "Back");
 	menu_display(id, menu)
 }
 
@@ -691,6 +767,12 @@ public menuSmgH(id, menu, item) {
 			cmdmenuGuns(id)
 		
 		return  PLUGIN_CONTINUE;	
+	}
+	new entlist[1]
+	if(!find_sphere_class(id, "func_buyzone", 4.0, entlist, 1)) 
+	{
+		ColorChat(id, GREEN, "%s^x01 You must be in buyzone!", gszPrefix);
+		return PLUGIN_CONTINUE
 	}
 	
 	if(userHasPrimary(id)) {
@@ -715,7 +797,7 @@ public menuSmgH(id, menu, item) {
 public menuRifles(id) {
 	new szTitle[64], szItem[33]
 	
-	formatex(szTitle, charsmax(szTitle), "\wMasz \r$%d\w^nWybierz karabin:", cs_get_user_money(id))
+	formatex(szTitle, charsmax(szTitle), "\wYou have \r$%d\w^nSelect Rifle:", cs_get_user_money(id))
 	
 	new menu = menu_create(szTitle, "menuRiflesH")
 	new cb = menu_makecallback("menuRiflesCb");
@@ -724,6 +806,7 @@ public menuRifles(id) {
 		formatex(szItem, charsmax(szItem),"$%-10.3d %-2s",  giRiflePrice[ e_RifleType:i], gszRifleNames[e_RifleType:i])
 		menu_additem(menu, szItem, _, _, cb)
 	}
+	menu_setprop(menu, MPROP_EXITNAME, "Back");
 	menu_display(id, menu)
 }
 
@@ -742,6 +825,13 @@ public menuRiflesH(id, menu, item) {
 			cmdmenuGuns(id)
 		
 		return  PLUGIN_CONTINUE;	
+	}
+	
+	new entlist[1]
+	if(!find_sphere_class(id, "func_buyzone", 4.0, entlist, 1)) 
+	{
+		ColorChat(id, GREEN, "%s^x01 You must be in buyzone!", gszPrefix);
+		return PLUGIN_CONTINUE
 	}
 	
 	if(userHasPrimary(id)) {
@@ -766,7 +856,7 @@ public menuRiflesH(id, menu, item) {
 public menuSnipers(id) {
 	new szTitle[64], szItem[33]
 	
-	formatex(szTitle, charsmax(szTitle), "\wMasz \r$%d\w^nWybierz snajperke:", cs_get_user_money(id))
+	formatex(szTitle, charsmax(szTitle), "\wYou have \r$%d\w^nSelect Sniper:", cs_get_user_money(id))
 	
 	new menu = menu_create(szTitle, "menuSnipersH")
 	new cb = menu_makecallback("menuSnipersCb");
@@ -775,6 +865,7 @@ public menuSnipers(id) {
 		formatex(szItem, charsmax(szItem),"$%-10.3d %-2s",  giSniperPrice[ e_SniperType:i], gszSniperNames[e_SniperType:i])
 		menu_additem(menu, szItem, _, _, cb)
 	}
+	menu_setprop(menu, MPROP_EXITNAME, "Back");
 	menu_display(id, menu)
 }
 
@@ -793,6 +884,12 @@ public menuSnipersH(id, menu, item) {
 			cmdmenuGuns(id)
 		
 		return  PLUGIN_CONTINUE;	
+	}
+	new entlist[1]
+	if(!find_sphere_class(id, "func_buyzone", 4.0, entlist, 1)) 
+	{
+		ColorChat(id, GREEN, "%s^x01 You must be in buyzone!", gszPrefix);
+		return PLUGIN_CONTINUE
 	}
 	
 	if(userHasPrimary(id)) {	
@@ -815,9 +912,16 @@ public cmdBuyWeaponPost(szData[], id) {
 	id  -= TASK_BUY_GUN
 	remove_task(id+TASK_BUY_GUN)
 	
+	new entlist[1]
+	if(!find_sphere_class(id, "func_buyzone", 4.0, entlist, 1)) 
+	{
+		ColorChat(id, GREEN, "%s^x01 You must be in buyzone!", gszPrefix);
+		return
+	}
+	
 	cmdBuyWeapon(id, e_GunsType:szData[0], szData[1])
 	
-	new e_GunsType: iOption = e_GunsType:szData[0]
+	/*new e_GunsType: iOption = e_GunsType:szData[0]
 	
 	if(iOption == GUNS_PISTOLS)
 		menuPistols(id)
@@ -829,7 +933,7 @@ public cmdBuyWeaponPost(szData[], id) {
 		menuRifles(id)
 	else if(iOption == GUNS_SNIPERS)
 		menuSnipers(id)
-
+	*/
 }
 
 /* ======================================== */
@@ -855,7 +959,7 @@ cmdBuyWeapon(id, e_GunsType:iWeaponType, iWeaponIndex)
 	if(iWeaponType == GUNS_PISTOLS) {
 		new e_PistolsType:iWeapon = e_PistolsType:iWeaponIndex
 		
-		ColorChat(id, GREEN, "%s^x01 Kupiles^x04 '%s'^x01 za ^x03$%d^x01 !", gszPrefix, gszPistolsNames[iWeapon], giPistolsPrice[iWeapon])
+		ColorChat(id, GREEN, "%s^x01 You bought^x04 '%s'^x01 for ^x03$%d^x01 !", gszPrefix, gszPistolsNames[iWeapon], giPistolsPrice[iWeapon])
 		
 		fm_give_item(id, gszPistolsIndex[iWeapon])
 		
@@ -865,7 +969,7 @@ cmdBuyWeapon(id, e_GunsType:iWeaponType, iWeaponIndex)
 	else if(iWeaponType == GUNS_SHOTGUNS) {
 		new e_ShotgunType:iWeapon = e_ShotgunType:iWeaponIndex
 		
-		ColorChat(id, GREEN, "%s^x01 Kupiles^x04 '%s'^x01 za ^x03$%d^x01 !", gszPrefix, gszShotgunNames[iWeapon], giShotgunPrice[iWeapon])
+		ColorChat(id, GREEN, "%s^x01 You bought^x04 '%s'^x01 for ^x03$%d^x01 !", gszPrefix, gszShotgunNames[iWeapon], giShotgunPrice[iWeapon])
 		
 		fm_give_item(id, gszShotgunIndex[iWeapon])
 		
@@ -874,7 +978,7 @@ cmdBuyWeapon(id, e_GunsType:iWeaponType, iWeaponIndex)
 	else if(iWeaponType == GUNS_SMG){
 		new e_SmgType:iWeapon = e_SmgType:iWeaponIndex
 		
-		ColorChat(id, GREEN, "%s^x01 Kupiles^x04 '%s'^x01 za ^x03$%d^x01 !", gszPrefix, gszSmgNames[iWeapon], giSmgPrice[iWeapon])
+		ColorChat(id, GREEN, "%s^x01 You bought^x04 '%s'^x01 for ^x03$%d^x01 !", gszPrefix, gszSmgNames[iWeapon], giSmgPrice[iWeapon])
 		
 		fm_give_item(id, gszSmgIndex[iWeapon])
 		
@@ -883,7 +987,7 @@ cmdBuyWeapon(id, e_GunsType:iWeaponType, iWeaponIndex)
 	else if(iWeaponType == GUNS_RIFLES){
 		new e_RifleType:iWeapon = e_RifleType:iWeaponIndex
 		
-		ColorChat(id, GREEN, "%s^x01 Kupiles^x04 '%s'^x01 za ^x03$%d^x01 !", gszPrefix, gszRifleNames[iWeapon], giRiflePrice[iWeapon])
+		ColorChat(id, GREEN, "%s^x01 You bought^x04 '%s'^x01 for ^x03$%d^x01 !", gszPrefix, gszRifleNames[iWeapon], giRiflePrice[iWeapon])
 		
 		fm_give_item(id, gszRifleIndex[iWeapon])
 		
@@ -892,7 +996,7 @@ cmdBuyWeapon(id, e_GunsType:iWeaponType, iWeaponIndex)
 	else if(iWeaponType == GUNS_SNIPERS) {
 		new e_SniperType:iWeapon = e_SniperType:iWeaponIndex
 		
-		ColorChat(id, GREEN, "%s^x01 Kupiles^x04 '%s'^x01 za ^x03$%d^x01 !", gszPrefix, gszSniperNames[iWeapon], giSniperPrice[iWeapon])
+		ColorChat(id, GREEN, "%s^x01 You bought^x04 '%s'^x01 for ^x03$%d^x01 !", gszPrefix, gszSniperNames[iWeapon], giSniperPrice[iWeapon])
 		
 		fm_give_item(id, gszSniperIndex[iWeapon])
 		
@@ -923,9 +1027,10 @@ cmdDropWeapons(id, iPrimary = 1)
 public cmdGiveAmmo(id) {
 	id-=TASK_BUY_GUN
 	new iWeapon = get_user_weapon(id)
-	
 	if(iWeapon != 29)
+	{
 		cs_set_user_bpammo(id,iWeapon, giMaxAmmo[iWeapon])
+	}
 }
 
 /* ======================================== */
@@ -951,6 +1056,3 @@ fm_set_user_money( id, Money, effect = 1)
 	ewrite_byte(effect )
 	emessage_end()
 }
-/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
-*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang1045\\ f0\\ fs16 \n\\ par }
-*/

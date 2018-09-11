@@ -4,37 +4,34 @@
 #include <fakemeta>
 #include <hamsandwich>
 
-#define PLUGIN "TD: Shop | Zlote naboje [SMG]"
+#define PLUGIN "TD: Shop | Golden ammo for SMGs"
 #define VERSION "1.0"
 #define AUTHOR "tomcionek15 & grs4"
-
-new const szName[] = "Zlote naboje [SMG]"
-new const szDesc[] = "Masz 150 zlotych naboi, ktore zadaja 2x wiecej obrazen."
-new iPrice = 60;
-new iOnePerMap = 0;
 
 new iItem;
 
 new g_PlayerAmmo[33];
 new m_spriteTexture
-new was[33]
+
 public plugin_init() 
 {
 	new id = register_plugin(PLUGIN, VERSION, AUTHOR)
 	
-	iItem = td_shop_register_item(szName, szDesc, iPrice, iOnePerMap, id)
+	iItem = td_shop_register_item("Golden ammo for SMGs", "You have 150 golden ammo for SMGs. You take with it 1.5x more damage", 150, 0, id)
 
 	RegisterHam(Ham_TraceAttack, "info_target", "TraceAttack")
-	RegisterHam(Ham_TraceAttack, "worldspawn", "TraceAttack", 1)
+	RegisterHam(Ham_TraceAttack, "worldspawn", "TraceAttackW", 1)
 }
-public client_disconnect(id)
+public client_disconnected(id)
 	g_PlayerAmmo[id] = 0
+	
 public td_shop_item_selected(id, itemid) {
 	if(iItem == itemid) {
 		set_task(0.3, "info", id)
 		g_PlayerAmmo[id] += 150
 	}
 }
+
 public info(id) {
 	if(is_user_connected(id)) {
 		if(!g_PlayerAmmo[id])
@@ -49,6 +46,22 @@ public info(id) {
 public plugin_precache() 
 	m_spriteTexture = precache_model( "sprites/lgtning.spr" )
 
+public TraceAttackW(iEnt, iAttacker, Float:flDamage, Float:fDir[3], ptr, iDamageTaype)
+{
+	if( !is_user_alive(iAttacker) || !g_PlayerAmmo[iAttacker])
+		return HAM_IGNORED;
+	
+	static weapon 
+	weapon = get_user_weapon(iAttacker);
+	
+	if(weapon != CSW_MAC10 && weapon != CSW_UMP45  && weapon != CSW_MP5NAVY && weapon != CSW_TMP && weapon != CSW_P90)
+		return HAM_IGNORED;
+		
+	client_print(iAttacker, print_center, "Golden Ammo for SMGs: %d", g_PlayerAmmo[iAttacker])
+	
+	return HAM_IGNORED
+}
+
 public TraceAttack(iEnt, iAttacker, Float:flDamage, Float:fDir[3], ptr, iDamageTaype)
 {
 	if( !is_user_alive(iAttacker) || !g_PlayerAmmo[iAttacker])
@@ -59,10 +72,9 @@ public TraceAttack(iEnt, iAttacker, Float:flDamage, Float:fDir[3], ptr, iDamageT
 	
 	if(weapon != CSW_MAC10 && weapon != CSW_UMP45  && weapon != CSW_MP5NAVY && weapon != CSW_TMP && weapon != CSW_P90)
 		return HAM_IGNORED;
-	if(iEnt == 0 && was[iAttacker] == 1) {
-		was[iAttacker] = 0
+	if(iEnt == 0) 
 		return HAM_IGNORED
-	}
+		
 	g_PlayerAmmo[iAttacker] --;
 
 	new Float:flEnd[3]
@@ -88,9 +100,7 @@ public TraceAttack(iEnt, iAttacker, Float:flDamage, Float:fDir[3], ptr, iDamageT
 	message_end()
 	
 	client_print(iAttacker, print_center, "Golden Ammo for SMGs: %d", g_PlayerAmmo[iAttacker])
-	if(td_is_monster(iEnt)) {
-		was[iAttacker]=1
-		SetHamParamFloat(3, flDamage*2.0);
-	}
+	if(td_is_monster(iEnt)) 
+		SetHamParamFloat(3, flDamage*1.5);
 	return HAM_HANDLED;
 }

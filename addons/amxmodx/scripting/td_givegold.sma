@@ -8,22 +8,20 @@
 #define VERSION "1.0 Beta"
 #define AUTHOR "GT Team"
 
-new szPrefix[25]
+#define CHAT_PREFIX	"[TD]"
 new iPlayerTarget[33];
 
 public plugin_init() {
-	register_dictionary("TowerDefense.txt")
 	register_plugin(PLUGIN, VERSION, AUTHOR)
 	
-	register_clcmd("say /daj", "Menu")
-	register_clcmd("say /przekaz", "Menu")
-	register_clcmd("say /give", "Menu")
-	register_clcmd("say /send", "Menu")
+	register_clcmd("say /daj", 	"Menu")
+	register_clcmd("say /przekaz", 	"Menu")
+	register_clcmd("say /give", 	"Menu")
+	register_clcmd("say /send", 	"Menu")
+	register_clcmd("givegold", 	"Menu")
 	
 	register_clcmd("gold_ammount", "GiveGold")
 	register_clcmd("gold_ammount_admin", "GiveGoldAdmin", ADMIN_CVAR)
-	
-	td_get_prefix(szPrefix, charsmax(szPrefix))
 }
 
 public Menu(id)
@@ -36,11 +34,11 @@ public Menu(id)
 		return
 	
 	if(td_get_user_info(id, PLAYER_GOLD) <= 0) {
-		ColorChat(id, GREEN, "%s %L", szPrefix, id, "GIVE_HAS_NOT")
+		ColorChat(id, GREEN, "%s^x01 You cant send gold, because you have nothing!", CHAT_PREFIX)
 		return
 	}
 	if(get_playersnum() == 0) {
-		ColorChat(id, GREEN, "%s %L", szPrefix, id, "GIVE_NO_PLAYERS")
+		ColorChat(id, GREEN, "%s You are alone!", CHAT_PREFIX)
 		return
 	}
 	toMenu:
@@ -76,7 +74,7 @@ public MenuH(id, menu, item)
 	new acces,cb, szData[3], szTarget[33], szTitle[70]
 	menu_item_getinfo(menu, item, acces, szData, 2, szTarget, 32, cb)
 	
-	formatex(szTitle, charsmax(szTitle), "%L", id, "GIVE_MENU_HOW_MANY", szTarget)
+	formatex(szTitle, charsmax(szTitle), "Selected player: \r%s^n\wHow much you want to send him?",  szTarget)
 	
 	new iMenu = menu_create(szTitle, "Menu2H")
 	new callback = menu_makecallback("Menu2Cb")
@@ -134,7 +132,7 @@ public Menu2H(id, menu, item)
 		ChangeGold(id, id2, 100, 0) 
 	}
 	else if(item == 5) { 
-		client_print(id, print_center, "%L", id, "GIVE_HOW_MANY");
+		client_print(id, print_center, "Type gold ammount which you want to send");
 		
 		console_cmd( id, "messagemode gold_ammount")
 	} else if(item == 6) {
@@ -149,12 +147,12 @@ public menuAdmin(id, id2) {
 	get_user_name(id2, szTargetNick, 32)
 	
 	if(!is_user_alive(id2)) {
-		ColorChat(id, GREEN, "%s %L", szPrefix, id, "GIVE_PLAYER_NOT_ALIVE", szTargetNick)
+		ColorChat(id, GREEN, "%s^x01 Player '%s' is dead!", CHAT_PREFIX, szTargetNick)
 		Menu(id)
 		return
 	}
 		
-	formatex(szTitle, charsmax(szTitle), "%L", id, "GIVE_MENU_HOW_MANY", szTargetNick)
+	formatex(szTitle, charsmax(szTitle), "Selected player: \r%s^n\wHow much you want to send him?",  szTargetNick)
 	
 	new iMenu = menu_create(szTitle, "menuAdminH")
 	
@@ -201,7 +199,7 @@ public menuAdminH(id, menu, item)
 		ChangeGold(id,id2, 100, 1) 
 	}
 	else if(item == 5) { 
-		client_print(id, print_center, "%L", id, "GIVE_HOW_MANY");
+		client_print(id, print_center, "Type gold ammount which you want to sent");
 		
 		console_cmd( id, "messagemode gold_ammount_admin")
 	}
@@ -215,7 +213,7 @@ public GiveGoldAdmin(id)
 	remove_quotes(szAmmount)
 	
 	if(str_to_num(szAmmount) <= 0) {
-		ColorChat(id, GREEN, "%s %L", szPrefix, id, "GIVE_VALUE_TOO_LOW", str_to_num(szAmmount))
+		ColorChat(id, GREEN, "%s^x01 Value '%d' is too low, type proper value!", CHAT_PREFIX, str_to_num(szAmmount))
 		menuAdmin(id, iPlayerTarget[id]) 
 		return;
 	}
@@ -231,11 +229,11 @@ public GiveGold(id)
 	remove_quotes(szAmmount)
 	
 	if(str_to_num(szAmmount) > td_get_user_info(id, PLAYER_GOLD)) {
-		ColorChat(id, GREEN, "%s %L", szPrefix, id, "GIVE_VALUE_TOO_HIGH", str_to_num(szAmmount))
+		ColorChat(id, GREEN, "%s^x01 Value '%d' is too high, type proper value!", CHAT_PREFIX, str_to_num(szAmmount))
 		Menu(id) 
 		return;
 	} else if(str_to_num(szAmmount) <= 0) {
-		ColorChat(id, GREEN, "%s %L", szPrefix,id, "GIVE_VALUE_TOO_LOW",  str_to_num(szAmmount))
+		ColorChat(id, GREEN, "%s^x01 Value '%d' is too low, type proper value!", CHAT_PREFIX, str_to_num(szAmmount))
 		Menu(id) 
 		return;
 	}
@@ -252,30 +250,24 @@ ChangeGold(this, target, ammount, admin = 0)
 	get_user_name(target, szName, charsmax(szName))
 	
 	if(!is_user_connected(target)) {
-		ColorChat(this, GREEN, "%s %L", szPrefix, this, "GIVE_PLAYER_OUT", szName)
+		ColorChat(this, GREEN, "%s^x01 Unfurtunly player '%s' is not connected now!", CHAT_PREFIX,  szName)
 		return;
 	}
 	
 	if(!admin)
 		td_set_user_info(this, PLAYER_GOLD, td_get_user_info(this, PLAYER_GOLD) - ammount)
-		
 	td_set_user_info(target, PLAYER_GOLD, td_get_user_info(target, PLAYER_GOLD) + ammount)
 	
 	if(!admin)
-		ColorChat(this, GREEN, "%s %L", szPrefix, this, "GIVE_ADMIN_MSG1", ammount, szName)
-	if(admin)
-		ColorChat(0, GREEN, "%s %L", szPrefix, LANG_PLAYER, "GIVE_MSG1", szAdminName,  ammount, szName)
+		ColorChat(this, GREEN, "%s^x01 You sent %d gold to '%s'!", CHAT_PREFIX,  ammount, szName)
+	else
+		ColorChat(0, GREEN, "%s^x01 Admin '%s' sent %d gold to '%s'!", CHAT_PREFIX,  szAdminName,  ammount, szName)
 	
-	get_user_name(this, szName, charsmax(szName))
-	
-	if(!admin)
-		ColorChat(target,  GREEN, "%s %L", szPrefix, target, "GIVE_MSG2", szName, ammount)
 	if(admin)
-		ColorChat(target,  GREEN, "%s %L", szPrefix, target, "GIVE_ADMIN_MSG2", szAdminName, ammount)
+		ColorChat(target,  GREEN, "%s^x01 You received from admin '%s' %d gold", CHAT_PREFIX, szAdminName, ammount)
+	else
+		ColorChat(0,  GREEN, "%s^x01 Player '%s' sent '%s' %d gold!", CHAT_PREFIX, szAdminName, szName, ammount)
 
 	iPlayerTarget[this] = 0;
 }
 	
-/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
-*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang1045\\ f0\\ fs16 \n\\ par }
-*/

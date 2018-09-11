@@ -1,3 +1,9 @@
+// ze_parkour_fabi.res - created with RESGen v1.12
+// RESGen is made by Jeroen "ShadowLord" Bogers
+// URL: http://www.unitedadmins.com/mapRESGEN.asp
+// E-MAIL: resgen@hltools.com
+// Res creation date, GMT timezone (dd-mm-yyyy): 01-07-2013
+
 // .res entries:
 td_castlepark_bypd311.wad
 models/td_castlepark_bypd311/car01.mdl
