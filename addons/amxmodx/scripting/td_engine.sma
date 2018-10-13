@@ -1346,8 +1346,17 @@ public handleSayText(msgId, msgDest, msgEnt)
 	}
 	else 
 	{
+		new szPlayerName[33];
+		get_user_name(id, szPlayerName, charsmax(szPlayerName));
+		
+		get_msg_arg_string(4, szTmp, charsmax(szTmp));
+		set_msg_arg_string(4, ""); 
+	    
 		add(szTmp2, charsmax(szTmp2), szPrefix);
-		add(szTmp2, charsmax(szTmp2), "^x03 %s1^x01 :  %s2");
+		add(szTmp2, charsmax(szTmp2), "^x03 ");
+		add(szTmp2, charsmax(szTmp2), szPlayerName);
+		add(szTmp2, charsmax(szTmp2), "^x01 :  ");
+		add(szTmp2, charsmax(szTmp2), szTmp);
 	}
 	
 	set_msg_arg_string(2, szTmp2);
