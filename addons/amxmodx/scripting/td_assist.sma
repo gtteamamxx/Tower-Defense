@@ -15,13 +15,13 @@
 
 enum ENUM_CVARS
 {
-	CVAR_ENABLED,
-	CVAR_ASSIST_GOLD,
-	CVAR_ASSIST_MONEY,
-	CVAR_ASSIST_GOLD_SPECIAL,
-	CVAR_ASSIST_MONEY_SPECIAL,
-	CVAR_DAMAGE_PERCENT,
-	CVAR_ASSIST_GUNMOD_EXP
+CVAR_ENABLED,
+CVAR_ASSIST_GOLD,
+CVAR_ASSIST_MONEY,
+CVAR_ASSIST_GOLD_SPECIAL,
+CVAR_ASSIST_MONEY_SPECIAL,
+CVAR_DAMAGE_PERCENT,
+CVAR_ASSIST_GUNMOD_EXP
 }
 new g_CvarPointers[ENUM_CVARS];
 new g_CvarValues[ENUM_CVARS];
@@ -34,40 +34,40 @@ new Array:g_aMonsters;
 
 public plugin_init() 
 {
-	register_plugin(PLUGIN, VERSION, AUTHOR)
-	
-	g_CvarPointers[CVAR_ENABLED] 			= 	register_cvar("td_assists_on", "1")
-	
-	g_CvarPointers[CVAR_ASSIST_GOLD]		= 	register_cvar("td_assists_gold", "1") // Normal, fast, strenght
-	g_CvarPointers[CVAR_ASSIST_MONEY] 		= 	register_cvar("td_assists_money", "75")
-	g_CvarPointers[CVAR_ASSIST_GOLD_SPECIAL] 	= 	register_cvar("td_assists_gold_special", "5") // Boss/bonus
-	g_CvarPointers[CVAR_ASSIST_MONEY_SPECIAL] 	= 	register_cvar("td_assists_money_special", "200") // Boss/bonus
-	
-	g_CvarPointers[CVAR_DAMAGE_PERCENT] 		= 	register_cvar("td_assists_min_damage_percent", "0.4")
-	g_CvarPointers[CVAR_ASSIST_GUNMOD_EXP]    	= 	register_cvar("td_assists_gunmod_exp", "1");
+register_plugin(PLUGIN, VERSION, AUTHOR)
 
-	td_settings_refreshed();
-	set_task(3.0, "CheckIfGunModExist");
-	
-	g_tMonsters = TrieCreate();
-	g_aMonsters = ArrayCreate(1, MAX_MONSTERS);
-	
+g_CvarPointers[CVAR_ENABLED] 			= 	register_cvar("td_assists_on", "1")
+
+g_CvarPointers[CVAR_ASSIST_GOLD]		= 	register_cvar("td_assists_gold", "1") // Normal, fast, strenght
+g_CvarPointers[CVAR_ASSIST_MONEY] 		= 	register_cvar("td_assists_money", "75")
+g_CvarPointers[CVAR_ASSIST_GOLD_SPECIAL] 	= 	register_cvar("td_assists_gold_special", "5") // Boss/bonus
+g_CvarPointers[CVAR_ASSIST_MONEY_SPECIAL] 	= 	register_cvar("td_assists_money_special", "200") // Boss/bonus
+
+g_CvarPointers[CVAR_DAMAGE_PERCENT] 		= 	register_cvar("td_assists_min_damage_percent", "0.4")
+g_CvarPointers[CVAR_ASSIST_GUNMOD_EXP]    	= 	register_cvar("td_assists_gunmod_exp", "1");
+
+td_settings_refreshed();
+set_task(3.0, "CheckIfGunModExist");
+
+g_tMonsters = TrieCreate();
+g_aMonsters = ArrayCreate(1, MAX_MONSTERS);
+
 }
 
 public td_settings_refreshed()
 {
-	g_CvarValues[CVAR_ENABLED]			=	get_pcvar_num(g_CvarPointers[CVAR_ENABLED]);
-	g_CvarValues[CVAR_ASSIST_GOLD]			=	get_pcvar_num(g_CvarPointers[CVAR_ASSIST_GOLD]);
-	g_CvarValues[CVAR_ASSIST_MONEY]			=	get_pcvar_num(g_CvarPointers[CVAR_ASSIST_MONEY]);
-	g_CvarValues[CVAR_ASSIST_GOLD_SPECIAL]		=	get_pcvar_num(g_CvarPointers[CVAR_ASSIST_GOLD_SPECIAL]);
-	g_CvarValues[CVAR_ASSIST_MONEY_SPECIAL]		=	get_pcvar_num(g_CvarPointers[CVAR_ASSIST_MONEY_SPECIAL]);
-	g_CvarDamagePercentValue			=	get_pcvar_float(g_CvarPointers[CVAR_DAMAGE_PERCENT]);
-	g_CvarValues[CVAR_ASSIST_GUNMOD_EXP] 		= 	get_pcvar_num(g_CvarPointers[CVAR_ASSIST_GUNMOD_EXP]);
+g_CvarValues[CVAR_ENABLED]			=	get_pcvar_num(g_CvarPointers[CVAR_ENABLED]);
+g_CvarValues[CVAR_ASSIST_GOLD]			=	get_pcvar_num(g_CvarPointers[CVAR_ASSIST_GOLD]);
+g_CvarValues[CVAR_ASSIST_MONEY]			=	get_pcvar_num(g_CvarPointers[CVAR_ASSIST_MONEY]);
+g_CvarValues[CVAR_ASSIST_GOLD_SPECIAL]		=	get_pcvar_num(g_CvarPointers[CVAR_ASSIST_GOLD_SPECIAL]);
+g_CvarValues[CVAR_ASSIST_MONEY_SPECIAL]		=	get_pcvar_num(g_CvarPointers[CVAR_ASSIST_MONEY_SPECIAL]);
+g_CvarDamagePercentValue			=	get_pcvar_float(g_CvarPointers[CVAR_DAMAGE_PERCENT]);
+g_CvarValues[CVAR_ASSIST_GUNMOD_EXP] 		= 	get_pcvar_num(g_CvarPointers[CVAR_ASSIST_GUNMOD_EXP]);
 }
 public CheckIfGunModExist()
 {
-	if(is_plugin_loaded("td_gunmod.amxx", true) != -1)
-		isGunmodEnabled = true;
+if(is_plugin_loaded("td_gunmod.amxx", true) != -1)
+	isGunmodEnabled = true;
 }	
 
 public plugin_end()
@@ -94,10 +94,10 @@ public td_monster_killed(iEnt, iPlayer, iMonsterType, IsKilledByWeapon)
 {
 	if(!checkMonsterIsInDatabase(iEnt))
 		return;
-		
+	
 	new players[33], len;
 	getPlayersWhichGotAssist(iEnt, players, len);
-
+	
 	for(new i = 0; i < len; i++)
 	{
 		static player;
@@ -120,7 +120,7 @@ public td_take_damage_post(iPlayer, iEnt, iWeapon, Float:fOutDamage, szInDamage[
 	{
 		new arrayId = getDatabaseIdFromMonster(ent), arraypos;
 		new playerId = getPlayerArrayIndexInDatabase(Array:arrayId, iPlayer, arraypos);
-
+		
 		if(playerId)
 			updatePlayerData(Array:arrayId, arraypos, floatround(fOutDamage));
 		else
@@ -141,7 +141,7 @@ public addPlayerBenefitsForAssist(id, iEnt)
 		static value;
 		if(!value)
 			value = g_CvarValues[CVAR_ASSIST_GUNMOD_EXP];
-
+		
 		if(value)
 		{
 			callfunc_begin("_addUserExp", "td_gunmod.amxx");
@@ -150,7 +150,7 @@ public addPlayerBenefitsForAssist(id, iEnt)
 			callfunc_end();
 		}
 	}
-		
+	
 	td_set_user_info(id, PLAYER_GOLD, td_get_user_info(id, PLAYER_GOLD) + iGold)
 	
 	static userMoney; userMoney = cs_get_user_money(id)
@@ -177,7 +177,7 @@ public removeMonsterFromMemory(iEnt)
 			break;
 		}
 	}
-		
+	
 }
 stock getPlayersWhichGotAssist(iEnt, players[33], &len)
 {
@@ -190,13 +190,14 @@ stock getPlayersWhichGotAssist(iEnt, players[33], &len)
 	for(new i = 0; i < size; i++)
 	{
 		ArrayGetArray(array, i, tab);
-		id = checkArrayAndGetPlayerIdIfGotAssist(tab, monsterHealth);
-		if(id)
+		id = checkIfPlayerShouldGetAssist(tab, monsterHealth);
+		if(id) {
 			players[len++] = id;
+		}
 	}
 }
 
-stock checkArrayAndGetPlayerIdIfGotAssist(tab[2], health)
+stock checkIfPlayerShouldGetAssist(tab[2], health)
 {
 	new damage = tab[1];
 	
@@ -204,12 +205,14 @@ stock checkArrayAndGetPlayerIdIfGotAssist(tab[2], health)
 		return tab[0]
 	return 0;
 }
+
 stock bool:checkMonsterIsInDatabase(iEnt)
 {
 	new ent[4]
 	num_to_str(iEnt, ent, charsmax(ent));
 	return TrieKeyExists(g_tMonsters, ent)
 }
+
 stock updatePlayerData(Array:array, arraypos, damage)
 {
 	new tab[2]
@@ -264,5 +267,5 @@ stock addMonserToDatabaseIfNotExist(Ent[], iPlayer, damage)
 	}
 	return 0;
 }
-	
-	
+
+
