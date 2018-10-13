@@ -4069,14 +4069,14 @@ public DisplayHud(iTask)
 				set_dhudmessage(g_PlayerHudColor[id][0], g_PlayerHudColor[id][1], g_PlayerHudColor[id][2], g_PlayerHudPosition[id][0], g_PlayerHudPosition[id][1], 0, 6.0, 2.02, 0.0, 0.1)
 				show_dhudmessage(id, "[WAVE: %d / %d | %s] [GOLD: %d]^n[MONSTERS: %d (%d) / %d] [TOWER: %d / %d]^n[LEVEL: %d] [FRAGS: %d / %d]",
 				g_ActualWave, g_WavesNum, str,  g_PlayerInfo[id][PLAYER_GOLD],  g_AliveMonstersNum, g_SentMonstersNum, (IsSpecialWave(g_ActualWave) ? g_InfoAboutWave[g_ActualWave][WAVE_MONSTER_NUM] +1:g_InfoAboutWave[g_ActualWave][WAVE_MONSTER_NUM]),
-				g_TowerHealth, maxTowerHealth, g_PlayerInfo[id][PLAYER_LEVEL], g_PlayerInfo[id][PLAYER_FRAGS], (g_PlayerInfo[id][PLAYER_LEVEL]==MAX_LEVEL?  g_PlayerInfo[id][PLAYER_FRAGS] :  g_LevelFrags[g_PlayerInfo[id][PLAYER_LEVEL]]))
+				g_TowerHealth, maxTowerHealth, g_PlayerInfo[id][PLAYER_LEVEL], g_PlayerInfo[id][PLAYER_FRAGS], (g_PlayerInfo[id][PLAYER_LEVEL]==MAX_LEVEL?  g_PlayerInfo[id][PLAYER_FRAGS] :  g_LevelFrags[g_PlayerInfo[id][PLAYER_LEVEL]+1]))
 			} 
 			else if(g_PlayerHudSize[id] == HUD_NORMAL) 
 			{
 				set_hudmessage(g_PlayerHudColor[id][0], g_PlayerHudColor[id][1], g_PlayerHudColor[id][2], g_PlayerHudPosition[id][0], g_PlayerHudPosition[id][1], 0, 6.0, 2.02, 0.0, 0.1)
 				ShowSyncHudMsg(id, g_SyncHudInfo, "[WAVE: %d / %d | %s] [GOLD: %d]^n[MONSTERS: %d (%d) / %d] [TOWER: %d / %d]^n[LEVEL: %d] [FRAGS: %d / %d]",
 				g_ActualWave, g_WavesNum, str,  g_PlayerInfo[id][PLAYER_GOLD],  g_AliveMonstersNum, g_SentMonstersNum, (IsSpecialWave(g_ActualWave) ? g_InfoAboutWave[g_ActualWave][WAVE_MONSTER_NUM] +1:g_InfoAboutWave[g_ActualWave][WAVE_MONSTER_NUM]),
-				g_TowerHealth, maxTowerHealth, g_PlayerInfo[id][PLAYER_LEVEL], g_PlayerInfo[id][PLAYER_FRAGS],( g_PlayerInfo[id][PLAYER_LEVEL]==MAX_LEVEL ?  g_PlayerInfo[id][PLAYER_FRAGS]: g_LevelFrags[g_PlayerInfo[id][PLAYER_LEVEL]]))
+				g_TowerHealth, maxTowerHealth, g_PlayerInfo[id][PLAYER_LEVEL], g_PlayerInfo[id][PLAYER_FRAGS],( g_PlayerInfo[id][PLAYER_LEVEL]==MAX_LEVEL ?  g_PlayerInfo[id][PLAYER_FRAGS]: g_LevelFrags[g_PlayerInfo[id][PLAYER_LEVEL]+1]))
 			} 
 			else if(g_PlayerHudSize[id] == HUD_SMALL) 
 			{
