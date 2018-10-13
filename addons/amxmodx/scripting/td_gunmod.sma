@@ -533,7 +533,7 @@ public showWeaponMenu(id)
 		else
 			formatex(szTitle, 63, "M249\w [\r %d\y level\w ]", iWeapLvl);
 		
-		if(strcmp("weapon_m249", g_PlayerSelectedWeapons[id][1]) == 0)
+		if(strcmp("weapon_m249", g_PlayerSelectedWeapons[id][1], true) == 0)
 			add(szTitle, 63, " \w[\y SELECTED\w ]");
 			
 		menu_additem(menu, szTitle, "5", .callback = cb);
@@ -627,7 +627,7 @@ public showWeaponTypeMenu(id, weaponType)
 		
 		for(new j = 0; j < 2; j++)
 		{
-			if(strcmp(szWeapons[i], g_PlayerSelectedWeapons[id][j], 1) == 0)
+			if(strcmp(szWeapons[i], g_PlayerSelectedWeapons[id][j], true) == 0)
 			{
 				add(szTitle, 63, " [\y SELECTED\w ]");
 				break;
@@ -655,7 +655,7 @@ public showWeaponTypeMenuCb(id, menu, item)
 		return ITEM_DISABLED;
 	
 	for(new i = 0; i < 2; i++)
-		if(strcmp(weapon, g_PlayerSelectedWeapons[id][i], 1) == 0)
+		if(strcmp(weapon, g_PlayerSelectedWeapons[id][i], true) == 0)
 			return ITEM_DISABLED;
 
 	return ITEM_ENABLED;
@@ -993,7 +993,7 @@ stock bool:checkIfWeaponIsBad(weapon[])
 	new weaponName[33];
 	getWeaponName(weapon, weaponName, 32);
 	
-	return strcmp(weaponName, "bad", 1) == 0;
+	return strcmp(weaponName, "bad", true) == 0;
 }
 stock bool:checkIfWeaponIsRegistered(const weapon[])
 {

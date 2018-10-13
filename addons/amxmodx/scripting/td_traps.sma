@@ -42,12 +42,12 @@ public plugin_init() {
 	register_clcmd("say /trap", "trapMenu")
 	register_clcmd("say /traps", "trapMenu")
 	
-	register_touch("trap", "monster", "asd");
+	register_touch("trap", "monster", "monsterTouched");
 
 	loadTracks(MAX_TRACKS)
 }
 
-public asd(trap, monster) {	
+public monsterTouched(trap, monster) {	
 	switch(entity_get_edict(trap, EV_INT_TRAP_TYPE)) {
 		case HURTING: {
 			if(!td_is_special_monster(monster)) {
@@ -56,17 +56,17 @@ public asd(trap, monster) {
 
 			if(entity_get_float(monster, EV_FL_health) - TRAP_DAMAGE <= 0.0) {
 				td_kill_monster(monster, entity_get_edict(trap, EV_ENT_owner))
-				break;
 			}
-			
-			ExecuteHam(Ham_TakeDamage, monster, entity_get_edict(trap, EV_ENT_owner), entity_get_edict(trap, EV_ENT_owner), TRAP_DAMAGE, DMG_CLUB)
-			
-			if(! td_is_special_monster(monster)) {
-				set_task(0.3, "endRendering", 1552+monster)
+			else {	
+				ExecuteHam(Ham_TakeDamage, monster, entity_get_edict(trap, EV_ENT_owner), entity_get_edict(trap, EV_ENT_owner), TRAP_DAMAGE, DMG_CLUB)
+				
+				if(! td_is_special_monster(monster)) {
+					set_task(0.3, "endRendering", 1552+monster)
+				}
 			}
 		} 
-		case SLOWING: { 
 
+		case SLOWING: { 
 			new szSpeed[5]
 			num_to_str(td_get_monster_speed(monster), szSpeed, 4)
 			td_set_monster_speed(monster, floatround((td_get_monster_speed(monster)*TRAP_SLOWMO)))
@@ -379,3 +379,6 @@ public bool:isTrap(iEnt) {
 	}
 	return false
 }
+/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
+*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang1045\\ f0\\ fs16 \n\\ par }
+*/
