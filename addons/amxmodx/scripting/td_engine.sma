@@ -289,7 +289,8 @@ enum ENUM_CONFIG_FLOAT
 	Float:CFG_FLOAT_WAVE_MLTP_HP_BONUS,
 	Float:CFG_FLOAT_PRM_MONSTER_MLTP_HP,
 	Float:CFG_FLOAT_PRM_MONSTER_MLTP_SPEED,
-	Float:CFG_FLOAT_PRM_MONSTER_MLTP_GOLD
+	Float:CFG_FLOAT_PRM_MONSTER_MLTP_GOLD,
+	Float:CFG_FLOAT_CRITIC_SLOW_TIME
 }
 
 enum _:ENUM_HUD_SIZE
@@ -321,12 +322,6 @@ enum _:ENUM_HUD_SIZE
 #define TASK_CHECK_USER_DATA		12213
 #define TASK_SHOW_SPECIAL_INFO		654321
 #define TASK_CHECK_GAME		124541
-
-/* enum  {
-	TASK_PLAYER_SPAWN = 437,
-	TASK_GAME_FALSE = 790,
-}
-*/
 
 #define MAX_LEVEL 10
 
@@ -1110,8 +1105,6 @@ public LoadDefaultValues()
 
 	g_ConfigValues[CFG_CHAT_SHOW_LEVEL]			=	1
 	
-		//CFG_MAP_LIGHT,
-	//CFG_NVAULT_EXPIRE_DAYS,
 	g_ConfigValues[CFG_AFK_TIME]		=	80;
 	
 	g_ConfigValues[CFG_WAVE_EXTRA_GOLD] 	= 	7
@@ -1137,7 +1130,7 @@ public LoadDefaultValues()
 	g_ConfigValuesFloat[CFG_FLOAT_PRM_MONSTER_MLTP_SPEED] = 1.0;
 	g_ConfigValuesFloat[CFG_FLOAT_PRM_MONSTER_MLTP_GOLD] = 3.5;
 	
-
+	g_ConfigValuesFloat[CFG_FLOAT_CRITIC_SLOW_TIME] = 0.5;
 	g_ConfigValues[CFG_KILL_MONSTER_FX]	=	1
 	g_ConfigValues[CFG_KILL_MONSTER_SOUND]	=	1
 	g_ConfigValues[CFG_HIT_MONSTER_BLOOD_FX]=	1
@@ -3785,7 +3778,7 @@ public TakeDamage(ent, idinflictor, attacker, Float:damage, damagetype)
 	
 	if(IsMonster(ent)) 
 	{ 
-		/* Dodatkowe obrazenia dla broni */
+		/* Additional damage for weapons*/
 		static bool:isCritical; isCritical = false;
 		static bool:isHs; isHs = false;
 		
@@ -3816,8 +3809,11 @@ public TakeDamage(ent, idinflictor, attacker, Float:damage, damagetype)
 			isCritical = szData[1] == 1;
 			isHs = szData[2] == 1;
 			
-			if(isCritical)
+			if(isCritical) {
 				damage *= 2.5;
+				slowMonsterByCriticalShot(ent);
+			}
+
 			if(isHs)
 			{
 			 	entity_set_edict(ent, EV_ENT_monster_headshot, 1)
@@ -5991,6 +5987,9 @@ public LoadConfig()
 			g_ConfigValues[CFG_WIN_GAME_GOLD_PRIZE]	= str_to_num(szData[2]);
 		else if(equali(szData[0], "LOSE_GAME_GOLD_PRIZE"))
 			g_ConfigValues[CFG_LOSE_GAME_GOLD_PRIZE]	= str_to_num(szData[2]);
+		else if(equali(szData[0], "CRITICAL_SHOT_SLOW_DOWN_DURATION")) {
+			g_ConfigValuesFloat[CFG_FLOAT_CRITIC_SLOW_TIME] = str_to_float(szData[2]);
+		}
 	}
 
 	if(g_ConfigValues[CFG_REPAIR_ZONE] == 0)
@@ -7663,10 +7662,53 @@ public GiveUserStopGrenade(iPlayer)
 		entity_set_int(stop_weaponent, EV_INT_grenade_ammo,  1)
 	}
 	
-	entity_set_int(stop_weaponent, EV_INT_grenade_type, GRENADE_STOP)
-	set_pev(stop_weaponent, pev_flTimeStepSound, 681856)
+	entity_set_int(stop_weaponent, EV_INT_grenade_type, GRENADE_STOP);
+	set_pev(stop_weaponent, pev_flTimeStepSound, 681856);
 
 	return 1;
+}
+
+public slowMonsterByCriticalShot(ent) {
+
+	if(!is_valid_ent(ent)) {
+		return;
+	}
+
+	static Float:slowDownDuration; slowDownDuration = g_ConfigValuesFloat[CFG_FLOAT_CRITIC_SLOW_TIME];
+	if(slowDownDuration == 0.0) {
+		return;
+	}
+
+	new actualMonsterSpeed = entity_get_int(ent, EV_INT_monster_speed);
+	new slowedSpeed = floatround(actualMonsterSpeed * 0.5);
+
+	_set_monster_speed(ent, slowedSpeed, 0, 1);
+	
+	new removeSlowMonsterEffectParameter[2];
+	removeSlowMonsterEffectParameter[0] = ent;
+	removeSlowMonsterEffectParameter[1] = actualMonsterSpeed;
+
+	set_task_ex(slowDownDuration, "removeSlowMonsterEffect", .parameter = removeSlowMonsterEffectParameter, .len = 2)
+}
+
+public removeSlowMonsterEffect(parameter[2]) {
+	new ent = parameter[0];
+	if(!is_valid_ent(ent)) {
+		return;
+	}
+
+	new speedToSet = parameter[1];
+	new actualMonsterSpeed =  entity_get_int(ent, EV_INT_monster_speed);
+
+	/* If after some delay monster speed changed
+		it means someone changed it speed
+		so we can't set back monster speed
+	*/
+	if (speedToSet != actualMonsterSpeed) {
+		return;
+	}
+
+	_set_monster_speed(ent, speedToSet, 0, 1);
 }
 
 public IsMonster(ent) 
@@ -8252,8 +8294,9 @@ public _td_get_max_map_turrets()
 public _td_are_turrets_enabled()
 	return g_AreTurretsEnabled;
 	
-public _td_get_monster_speed(iEnt) 
+public _td_get_monster_speed(iEnt) {
 	return entity_get_int(iEnt, EV_INT_monster_speed)
+}
 
 public _set_monster_speed(ent, speed, defaultspeed, now) 
 {
