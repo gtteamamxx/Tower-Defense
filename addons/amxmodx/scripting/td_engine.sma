@@ -1092,7 +1092,7 @@ new checkPlayerTime;
 public LoadDefaultValues()
 {
 
-	g_ConfigValues[CFG_TIME_TO_WAVE]			=	60
+	g_ConfigValues[CFG_TIME_TO_WAVE]			=	25
 	g_ConfigValues[CFG_BOSS_DAMAGE]				=	25
 	g_ConfigValues[CFG_MONSTER_DAMAGE]			=	4
 	g_ConfigValues[CFG_TOWER_HEALTH]			=	100
