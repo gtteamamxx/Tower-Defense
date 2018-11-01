@@ -322,6 +322,7 @@ enum _:ENUM_HUD_SIZE
 #define TASK_CHECK_USER_DATA		12213
 #define TASK_SHOW_SPECIAL_INFO		654321
 #define TASK_CHECK_GAME		124541
+#define TASK_CRITICAL_SLOW 	29185
 
 #define MAX_LEVEL 10
 
@@ -7669,8 +7670,8 @@ public GiveUserStopGrenade(iPlayer)
 }
 
 public slowMonsterByCriticalShot(ent) {
-
-	if(!is_valid_ent(ent)) {
+	if(!is_valid_ent(ent)
+	|| task_exists(ent + TASK_CRITICAL_SLOW)) {
 		return;
 	}
 
@@ -7684,30 +7685,33 @@ public slowMonsterByCriticalShot(ent) {
 
 	_set_monster_speed(ent, slowedSpeed, 0, 1);
 	
-	new removeSlowMonsterEffectParameter[2];
+	new removeSlowMonsterEffectParameter[3];
 	removeSlowMonsterEffectParameter[0] = ent;
 	removeSlowMonsterEffectParameter[1] = actualMonsterSpeed;
+	removeSlowMonsterEffectParameter[2] = slowedSpeed;
 
-	set_task_ex(slowDownDuration, "removeSlowMonsterEffect", .parameter = removeSlowMonsterEffectParameter, .len = 2)
+	set_task_ex(slowDownDuration, "removeSlowMonsterEffect", .id = ent + TASK_CRITICAL_SLOW, .parameter = removeSlowMonsterEffectParameter, .len = 3)
 }
 
-public removeSlowMonsterEffect(parameter[2]) {
+public removeSlowMonsterEffect(parameter[3]) {
 	new ent = parameter[0];
 	if(!is_valid_ent(ent)) {
 		return;
 	}
 
-	new speedToSet = parameter[1];
 	new actualMonsterSpeed =  entity_get_int(ent, EV_INT_monster_speed);
+	new setSpeed = parameter[2];
 
 	/* If after some delay monster speed changed
 		it means someone changed it speed
 		so we can't set back monster speed
 	*/
-	if (speedToSet != actualMonsterSpeed) {
+
+	if (setSpeed != actualMonsterSpeed) {
 		return;
 	}
 
+	new speedToSet = parameter[1];
 	_set_monster_speed(ent, speedToSet, 0, 1);
 }
 
