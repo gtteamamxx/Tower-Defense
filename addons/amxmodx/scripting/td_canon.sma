@@ -80,7 +80,7 @@ public CreateIon()
 	set_pev(ent,pev_movetype, MOVETYPE_TOSS);
 	set_pev(ent,pev_solid, SOLID_TRIGGER);
 	
-	StartPosition(0, 0, 50);
+	StartPosition(0, 0, -30);
 	set_pev(ent,pev_origin,g_fBeamMidOrigin);
 	
 	StartUp();
