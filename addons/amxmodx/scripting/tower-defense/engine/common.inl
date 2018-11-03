@@ -6,11 +6,17 @@
 #define foreach(%1,%2) for( new iCurrentElement = 0 , %2 = %1[ 0 ];  iCurrentElement < sizeof %1 ; iCurrentElement++ , %2 = iCurrentElement < sizeof %1 ? %1[ iCurrentElement ] : 0  )
 #define foreach_i(%1,%2,%3) for( new iCurrentElement = 0 , %2 = %1[ 0 ];  iCurrentElement < sizeof %1 ;  %3 = ++iCurrentElement , %2 = iCurrentElement < sizeof %1 ? %1[ iCurrentElement ] : 0 )
 
-new Array:g_MapEntitiesArray;
+new g_MapEntityData[MAP_ENTITIES_ENUM];
 
 new bool:g_IsGamePossible = true;
 
-public setGameStatus(bool:status) 
+public getConfigDirectory()
+{
+    new const configDirectory[] = CONFIG_DIRECTORY;
+    return configDirectory;
+}
+
+public setGameStatus(const bool:status) 
 {
     g_IsGamePossible = status;
 }
@@ -20,22 +26,17 @@ public bool:getGameStatus()
     return g_IsGamePossible;
 }
 
-public getMapEntitiesDataInt(MAP_ENTITIES_ENUM:item)
+public setMapEntityData(MAP_ENTITIES_ENUM:item, any:value)
 {
-    return ArrayGetCell(g_MapEntitiesArray, _:item);
+    g_MapEntityData[item] = value;
 }
 
-public getMapEntitiesDataVector(MAP_ENTITIES_ENUM:item, output[])
+stock any:getMapEntityData(MAP_ENTITIES_ENUM:item, Float:vector[] = {}, len = 0)
 {
-    return ArrayGetArray(g_MapEntitiesArray, _:item, output);
-}
+    if(len > 0)
+    {
+        xs_vec_copy(any:g_MapEntityData[item], vector);
+    }
 
-public updateMapEntitiesArrayInt(MAP_ENTITIES_ENUM:item, value)
-{
-    ArrayInsertCellAfter(g_MapEntitiesArray, _:item, value);
-}
-
-public updateMapEntitiesArrayVector(MAP_ENTITIES_ENUM:item, Float:value[])
-{
-    ArrayInsertArrayAfter(g_MapEntitiesArray, _:item, value);
+    return g_MapEntityData[item];
 }

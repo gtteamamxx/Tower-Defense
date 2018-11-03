@@ -5,17 +5,19 @@
 
 public loadMapConfiguration()
 {
+    @loadMapConfigurationFromConfigurationFile();
+
     new const startEntity = @getStartEntity();
     new const endEntity = @getEndEntity();
 
-    updateMapEntitiesArrayInt(START_ENTITY, startEntity);
-    updateMapEntitiesArrayInt(END_ENTITY, endEntity)
+    setMapEntityData(START_ENTITY, startEntity);
+    setMapEntityData(END_ENTITY, endEntity)
 }
 
 public checkMapConfiguration()
 {
-    new const startEntity = getMapEntitiesDataInt(START_ENTITY);
-    new const endEntity = getMapEntitiesDataInt(END_ENTITY);
+    new const startEntity = getMapEntityData(START_ENTITY);
+    new const endEntity = getMapEntityData(END_ENTITY);
 
     if(!is_valid_ent(startEntity) || !is_valid_ent(endEntity))
     {
@@ -26,8 +28,28 @@ public checkMapConfiguration()
 
 public initializeGame()
 {
-    new const startEntity = getMapEntitiesDataInt(START_ENTITY);
-    new const endEntity = getMapEntitiesDataInt(END_ENTITY);
+    new const startEntity = getMapEntityData(START_ENTITY);
+    new const endEntity = getMapEntityData(END_ENTITY);
+}
+
+@loadMapConfigurationFromConfigurationFile()
+{
+    new configurationFilePath[128];
+    getMapConfigurationFilePath(configurationFilePath);
+
+    if(!file_exists(configurationFilePath))
+    {
+        log_amx("Plik konfiguracyjny %s dla tej mapy nie istnieje.", configurationFilePath);
+        getMapConfigurationFilePath(configurationFilePath, .useDefaultConfig = true);
+
+        if(!file_exists(configurationFilePath))
+        {
+            log_amx("Nie istnieje domyślny plik konfiguracyjny. Gra niemożliwa");
+            return;
+        }
+    }
+
+    loadMapConfigFromJsonFile(configurationFilePath);
 }
 
 @getStartEntity()
@@ -38,6 +60,20 @@ public initializeGame()
 @getEndEntity()
 {
     return @getGlobalEnt(MAP_END_ENTITY_NAME);
+}
+
+stock getMapConfigurationFilePath(output[128], bool:useDefaultConfig = false)
+{
+    if(!useDefaultConfig) 
+    {
+        get_mapname(output, charsmax(output));
+    }
+    else 
+    {
+        output = DEFAULT_CONFIG_FILE;
+    }
+
+    format(output, charsmax(output), "%s/%s.json", getConfigDirectory(), output);
 }
 
 @getGlobalEnt(const entityName[])

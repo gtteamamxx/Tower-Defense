@@ -6,6 +6,9 @@
 #define MAP_START_ENTITY_NAME "start"
 #define MAP_END_ENTITY_NAME "end"
 
+#define CONFIG_DIRECTORY "addons/amxmodx/configs/Tower Defense"
+#define DEFAULT_CONFIG_FILE "default_config_file.json";
+
 enum MAP_ENTITIES_ENUM
 {
   START_ENTITY,
