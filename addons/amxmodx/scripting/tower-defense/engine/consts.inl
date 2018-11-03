@@ -7,7 +7,9 @@
 #define MAP_END_ENTITY_NAME "end"
 
 #define CONFIG_DIRECTORY "addons/amxmodx/configs/Tower Defense"
-#define DEFAULT_CONFIG_FILE "default_config_file.json";
+#define DEFAULT_CONFIG_FILE "default_config_file.json"
+
+#define MAP_CONFIG_KEY_LENGTH 64
 
 enum MAP_ENTITIES_ENUM
 {
@@ -21,9 +23,22 @@ enum MAP_ENTITIES_ENUM
   Float:TOWER_ENTITY_ORIGIN[3]
 }
 
-enum MAP_CONFIGURATION
+enum MAP_CONFIGURATION_ENUM
 {
   bool:SHOW_START_SPRITE,
   bool:SHOW_TOWER,
   TOWER_HEALTH
+}
+
+enum MAP_CONFIGURATION_DATA_ENUM
+{
+  CONFIG_NAME[MAP_CONFIG_KEY_LENGTH],
+  DataPack:DATAPACK
+}
+
+new const g_MapConfigurationKeys[MAP_CONFIGURATION_ENUM][MAP_CONFIG_KEY_LENGTH] = 
+{
+  "SHOW_START_SPRITE",
+  "SHOW_TOWER",
+  "TOWER_HEALTH"
 }

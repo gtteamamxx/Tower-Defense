@@ -11,7 +11,7 @@ public loadMapConfiguration()
     new const endEntity = @getEndEntity();
 
     setMapEntityData(START_ENTITY, startEntity);
-    setMapEntityData(END_ENTITY, endEntity)
+    setMapEntityData(END_ENTITY, endEntity);
 }
 
 public checkMapConfiguration()
@@ -62,6 +62,11 @@ public initializeGame()
     return @getGlobalEnt(MAP_END_ENTITY_NAME);
 }
 
+@getGlobalEnt(const entityName[])
+{
+    return find_ent_by_tname(-1, entityName);
+}
+
 stock getMapConfigurationFilePath(output[128], bool:useDefaultConfig = false)
 {
     if(!useDefaultConfig) 
@@ -70,13 +75,8 @@ stock getMapConfigurationFilePath(output[128], bool:useDefaultConfig = false)
     }
     else 
     {
-        output = DEFAULT_CONFIG_FILE;
+       output = DEFAULT_CONFIG_FILE;
     }
 
     format(output, charsmax(output), "%s/%s.json", getConfigDirectory(), output);
-}
-
-@getGlobalEnt(const entityName[])
-{
-    return find_ent_by_tname(-1, entityName);
 }
