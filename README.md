@@ -5,4 +5,8 @@ Tower Defense mod to Counter-Strike 1.6
 " target="_blank"><img src="http://img.youtube.com/vi/O-lF6o7ajxc/0.jpg" 
 alt="Tower defense live" width="240" height="180" border="10" /></a>
 
-README soon
+## Requires:
+
+### Counter Strike 1.6 STEAM
+### AMX Mod X 1.9+
+### Custom Entity Data Module: https://forums.alliedmods.net/showthread.php?t=294188
