@@ -11,10 +11,12 @@ public loadModelsConfiguration()
     if(!file_exists(modelsConfigurationFilePath))
     {
         log_amx("Plik konfiguracyjny modeli %s nie istnieje.", modelsConfigurationFilePath);
-        return;
+    }
+    else 
+    {
+        loadModelsConfigurationFromFile(modelsConfigurationFilePath);
     }
 
-    loadModelsConfigurationFromFile(modelsConfigurationFilePath);
     @releaseModelsConfigurationDictionary();
 }
 
@@ -27,9 +29,14 @@ public loadMapConfiguration()
     @setEndEntities();
 }
 
-public checkMapConfiguration()
+public checkGamePossibility()
 {
     @checkEntities();
+}
+
+public initializeGame()
+{
+    @hideAllTrackWallEntities();
 }
 
 @checkEntities()
@@ -57,11 +64,6 @@ public checkMapConfiguration()
     }
 }
 
-public initializeGame()
-{
-    @hideAllTrackWallEntities();
-}
-
 @hideAllTrackWallEntities()
 {
     new trackIndex = 1, trackWallEntity;
@@ -80,21 +82,6 @@ public initializeGame()
     }
 }
 
-@hideEntity(entity)
-{
-    fm_set_rendering(entity, .r = 0, .g = 0, .b = 0, .render = kRenderTransAdd, .amount = 0)
-}
-
-@releaseMapConfigurationDictionary()
-{
-    TrieDestroy(g_MapConfigurationKeysTrie);
-}
-
-@releaseModelsConfigurationDictionary()
-{
-    TrieDestroy(g_ModelsConfigurationKeysTrie);
-}
-
 @loadMapConfigurationFromConfigurationFile()
 {
     new configurationFilePath[128];
@@ -108,6 +95,7 @@ public initializeGame()
         if(!file_exists(configurationFilePath))
         {
             log_amx("Nie istnieje domyślny plik konfiguracyjny.");
+            setGameStatus(.status = false);
             return;
         }
     }
@@ -245,6 +233,21 @@ public initializeGame()
 @getModelsConfigurationFilePath(path[128])
 {
     formatex(path, charsmax(path), "%s/%s.json", getConfigDirectory(), MODELS_CONFIG_FILE);
+}
+
+@hideEntity(entity)
+{
+    fm_set_rendering(entity, .r = 0, .g = 0, .b = 0, .render = kRenderTransAdd, .amount = 0)
+}
+
+@releaseMapConfigurationDictionary()
+{
+    TrieDestroy(g_MapConfigurationKeysTrie);
+}
+
+@releaseModelsConfigurationDictionary()
+{
+    TrieDestroy(g_ModelsConfigurationKeysTrie);
 }
 
 stock getMapConfigurationFilePath(output[128], bool:useDefaultConfig = false)

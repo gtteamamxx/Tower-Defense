@@ -32,7 +32,7 @@ public plugin_end()
 @initTowerDefenseMod()
 {
     loadMapConfiguration();
-    checkMapConfiguration();
+    checkGamePossibility();
     
     if(@isGamePossible())
     {
