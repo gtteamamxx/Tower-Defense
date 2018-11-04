@@ -14,6 +14,8 @@
 #define TOWER_ENTITY_NAME "tower"
 
 #define MODEL_MAIN_SCHEMA "MAIN"
+#define WAVES_SCHEMA "WAVES"
+#define WAVES_DEFAULT_SCHEMA "DEFAULT"
 
 #define CONFIG_DIRECTORY "addons/amxmodx/configs/Tower Defense"
 #define DEFAULT_CONFIG_FILE "default_config_file"

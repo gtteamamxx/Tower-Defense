@@ -19,6 +19,7 @@ public plugin_precache()
 {
     @initMapConfigurationTrie();
     @initModelsConfigurationTrie();
+    @initWavesConfigurationTrie();
 }
 
 @initModelsConfigurationTrie()
@@ -39,4 +40,16 @@ public plugin_precache()
     TrieSetCell(g_MapConfigurationKeysTrie, "SHOW_TOWER", _:SHOW_TOWER);
     TrieSetCell(g_MapConfigurationKeysTrie, "TOWER_HEALTH", _:TOWER_HEALTH);
     TrieSetCell(g_MapConfigurationKeysTrie, "SHOW_BLAST_ON_MONSTER_TOUCH", _:SHOW_BLAST_ON_MONSTER_TOUCH);
+}
+
+@initWavesConfigurationTrie()
+{
+    g_WavesConfigurationKeysTrie = TrieCreate();
+
+    TrieSetCell(g_MapConfigurationKeysTrie, "Type", _:SHOW_START_SPRITE);
+    TrieSetCell(g_MapConfigurationKeysTrie, "Health", _:SHOW_START_SPRITE);
+    TrieSetCell(g_MapConfigurationKeysTrie, "Speed", _:SHOW_START_SPRITE);
+    TrieSetCell(g_MapConfigurationKeysTrie, "Interval", _:SHOW_START_SPRITE);
+    TrieSetCell(g_MapConfigurationKeysTrie, "Num", _:SHOW_START_SPRITE);
+    TrieSetCell(g_MapConfigurationKeysTrie, "Delay", _:SHOW_START_SPRITE);
 }

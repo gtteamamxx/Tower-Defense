@@ -8,6 +8,7 @@
 #include "tower-defense/engine/common.inl"
 #include "tower-defense/engine/precaches.inl"
 #include "tower-defense/engine/json-loader.inl"
+#include "tower-defense/engine/json-wave-loader.inl"
 #include "tower-defense/engine/startup.inl"
 
 #pragma semicolon 1

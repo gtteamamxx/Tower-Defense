@@ -3,5 +3,21 @@
     "SHOW_TOWER": true,
     "SHOW_BLAST_ON_MONSTER_TOUCH": true,
     "SHOW_START_SPRITE": true,
-    "SHOW_END_SPRITE": false
+    "SHOW_END_SPRITE": false,
+    "WAVES": {
+        "DEFAULT": {
+            "Interval": 1.5,
+            "Delay": 2.0
+        },
+        "1": [
+            {
+                "Type": "NORMAL",
+                "Health": "3100 3500",
+                "Speed": "250 280",
+                "Interval": "1.8 2.0",
+                "Num": "13 15",
+                "Delay": "10.0"
+            }
+        ]
+    }
 }

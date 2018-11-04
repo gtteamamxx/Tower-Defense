@@ -101,6 +101,7 @@ public initializeGame()
     }
 
     loadMapConfigFromJsonFile(configurationFilePath);
+    loadWavesFromFile(configurationFilePath);
 }
 
 @setStartEntities()

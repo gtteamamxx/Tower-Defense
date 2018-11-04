@@ -97,6 +97,11 @@ public loadMapConfigFromJsonFile(jsonFilePath[128])
     new key[MAP_CONFIG_KEY_LENGTH], type;
     json_object_get_name(json, line, key, charsmax(key));
 
+    if(equal(WAVES_SCHEMA, key))
+    {
+        return;
+    }
+
     if(!@isTrieValid(g_MapConfigurationKeysTrie, key, type))
     {
         log_amx("[Map] Nie rozpoznano klucza: %s", key);
