@@ -37,6 +37,50 @@ public checkGamePossibility()
 public initializeGame()
 {
     @hideAllTrackWallEntities();
+    @test();
+}
+
+@test()
+{
+    new wavesNum = ArraySize(g_WaveDataArray);
+    for(new i = 0; i < wavesNum; ++i)
+    {
+        new Array:waveArray = Array:ArrayGetCell(g_WaveDataArray, i);
+        new monstersTypeCount = ArraySize(waveArray);
+
+        log_amx("WAVE: %d, items Count: %d", i+1, monstersTypeCount);
+
+        for(new j = 0; j < monstersTypeCount; ++j)
+        {
+            new Trie:monsterTypeTrie = Trie:ArrayGetCell(waveArray, j);
+
+            log_amx("..%d..", j);   
+            for(new k = 0; k < _:WAVE_MONSTER_DATA_ENUM; ++k)
+            {
+                new key[64];
+                num_to_str(k, key, charsmax(key));
+
+                if(WAVE_MONSTER_DATA_ENUM:k == TYPE)
+                {
+                    new type[64];
+                    TrieGetString(monsterTypeTrie, key, type, charsmax(type));
+                    log_amx("TYPE: %s", type);
+                }
+                else if(WAVE_MONSTER_DATA_ENUM:k == COUNT)
+                {
+                    new count[2];
+                    TrieGetArray(monsterTypeTrie, key, count, 2);
+                    log_amx("COUNT: %d - %d", count[0], count[1]);
+                }
+                else 
+                {
+                    new Float:value[2];
+                    TrieGetArray(monsterTypeTrie, key, value, 2);
+                    log_amx("%d: %.2f - %.2f", k, value[0], value[1]);
+                }
+            }
+        }
+    }
 }
 
 @checkEntities()
@@ -102,6 +146,7 @@ public initializeGame()
 
     loadMapConfigFromJsonFile(configurationFilePath);
     loadWavesFromFile(configurationFilePath);
+    @releaseWavesConfigurationDictionary();
 }
 
 @setStartEntities()
@@ -249,6 +294,11 @@ public initializeGame()
 @releaseModelsConfigurationDictionary()
 {
     TrieDestroy(g_ModelsConfigurationKeysTrie);
+}
+
+@releaseWavesConfigurationDictionary()
+{
+    TrieDestroy(g_WavesConfigurationKeysTrie);
 }
 
 stock getMapConfigurationFilePath(output[128], bool:useDefaultConfig = false)

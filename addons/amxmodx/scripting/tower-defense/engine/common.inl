@@ -14,6 +14,7 @@ new Trie:g_MapConfigurationKeysTrie;
 new g_Models[MODELS_ENUM][MODELS_CONFIG_PATH_LENGTH];
 new Trie:g_ModelsConfigurationKeysTrie;
 
+new Array:g_WaveDataArray;
 new Trie:g_WavesConfigurationKeysTrie;
 
 new bool:g_IsGamePossible = true;

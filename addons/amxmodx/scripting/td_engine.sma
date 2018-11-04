@@ -47,6 +47,7 @@ public plugin_end()
 
 @clearTowerDefenseMod()
 {
+    releaseArrays();
 }
 
 @isGamePossible()

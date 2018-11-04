@@ -6,17 +6,17 @@
     "SHOW_END_SPRITE": false,
     "WAVES": {
         "DEFAULT": {
-            "Interval": 1.5,
-            "Delay": 2.0
+            "DeployInterval": [1.5],
+            "DeployExtraDelay": [2.0]
         },
         "1": [
             {
                 "Type": "NORMAL",
-                "Health": "3100 3500",
-                "Speed": "250 280",
-                "Interval": "1.8 2.0",
-                "Num": "13 15",
-                "Delay": "10.0"
+                "Health": [3100, 3500],
+                "Speed": [350.0, 400.0],
+                "DeployInterval": [2.0],
+                "Count": [13, 15],
+                "DeployExtraDelay": [10.0]
             }
         ]
     }

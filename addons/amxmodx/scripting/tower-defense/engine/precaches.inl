@@ -6,6 +6,7 @@
 public plugin_precache()
 {
     @initTries();
+    @initArrays();
 
     loadModelsConfiguration();
 
@@ -15,11 +16,31 @@ public plugin_precache()
     }
 }
 
+public releaseArrays()
+{
+    @releaseArrays();
+}
+
+@releaseArrays()
+{
+    @releaseWaveDataArray();
+}
+
 @initTries()
 {
     @initMapConfigurationTrie();
     @initModelsConfigurationTrie();
     @initWavesConfigurationTrie();
+}
+
+@initArrays()
+{
+    @initWaveDataArray();
+}
+
+@initWaveDataArray()
+{
+    g_WaveDataArray = ArrayCreate();
 }
 
 @initModelsConfigurationTrie()
@@ -46,10 +67,33 @@ public plugin_precache()
 {
     g_WavesConfigurationKeysTrie = TrieCreate();
 
-    TrieSetCell(g_MapConfigurationKeysTrie, "Type", _:SHOW_START_SPRITE);
-    TrieSetCell(g_MapConfigurationKeysTrie, "Health", _:SHOW_START_SPRITE);
-    TrieSetCell(g_MapConfigurationKeysTrie, "Speed", _:SHOW_START_SPRITE);
-    TrieSetCell(g_MapConfigurationKeysTrie, "Interval", _:SHOW_START_SPRITE);
-    TrieSetCell(g_MapConfigurationKeysTrie, "Num", _:SHOW_START_SPRITE);
-    TrieSetCell(g_MapConfigurationKeysTrie, "Delay", _:SHOW_START_SPRITE);
+    TrieSetCell(g_WavesConfigurationKeysTrie, "Type", _:TYPE);
+    TrieSetCell(g_WavesConfigurationKeysTrie, "Health", _:HEALTH);
+    TrieSetCell(g_WavesConfigurationKeysTrie, "Speed", _:SPEED);
+    TrieSetCell(g_WavesConfigurationKeysTrie, "DeployInterval", _:DEPLOY_INTERVAL);
+    TrieSetCell(g_WavesConfigurationKeysTrie, "Count", _:COUNT);
+    TrieSetCell(g_WavesConfigurationKeysTrie, "DeployExtraDelay", _:DEPLOY_EXTRA_DELAY);
+}
+
+@releaseWaveDataArray()
+{
+    new size = ArraySize(g_WaveDataArray);
+    if(size != 0)
+    {
+        for(new i = 0; i < size; ++i)
+        {
+            new Array:waveArray = Array:ArrayGetCell(g_WaveDataArray, i);
+            new waveArraySize = ArraySize(waveArray);
+
+            for(new j = 0; j < waveArraySize; ++j)
+            {
+                new Trie:monsterTypeTrie = Trie:ArrayGetCell(waveArray, j);
+                TrieDestroy(monsterTypeTrie);
+            }
+
+            ArrayDestroy(waveArray);
+        }
+    }
+
+    ArrayDestroy(g_WaveDataArray);
 }
