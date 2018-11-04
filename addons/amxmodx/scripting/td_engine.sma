@@ -30,12 +30,12 @@ public plugin_end()
 
 @initTowerDefenseMod()
 {
-    initCommon();
+    @initTries();
 
     loadMapConfiguration();
     checkMapConfiguration();
-
-    if(@checkIfGameIsPossible())
+    
+    if(@isGamePossible())
     {
        initializeGame(); 
     }
@@ -45,12 +45,27 @@ public plugin_end()
     }
 }
 
-@clearTowerDefenseMod()
+@initTries()
 {
-    freeCommon();
+    @initMapConfigurationTrie();
 }
 
-@checkIfGameIsPossible()
+@initMapConfigurationTrie()
+{
+    g_MapConfigurationKeysTrie = TrieCreate();
+
+    TrieSetCell(g_MapConfigurationKeysTrie, "SHOW_START_SPRITE", _:SHOW_START_SPRITE);
+    TrieSetCell(g_MapConfigurationKeysTrie, "SHOW_END_SPRITE", _:SHOW_END_SPRITE);
+    TrieSetCell(g_MapConfigurationKeysTrie, "SHOW_TOWER", _:SHOW_BLAST_ON_MONSTER_TOWER_TOUCH);
+    TrieSetCell(g_MapConfigurationKeysTrie, "TOWER_HEALTH", _:TOWER_HEALTH);
+    TrieSetCell(g_MapConfigurationKeysTrie, "SHOW_BLAST_ON_MONSTER_TOWER_TOUCH", _:SHOW_BLAST_ON_MONSTER_TOWER_TOUCH);
+}
+
+@clearTowerDefenseMod()
+{
+}
+
+@isGamePossible()
 {
     return getGameStatus();
 }

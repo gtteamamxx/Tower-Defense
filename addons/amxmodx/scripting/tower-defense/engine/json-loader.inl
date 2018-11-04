@@ -14,31 +14,31 @@ public loadMapConfigFromJsonFile(jsonFilePath[128])
         return;
     }
 
-    new count = json_object_get_count(json);
+    new itemsCount = json_object_get_count(json);
 
-    for(new i = 0; i < count; ++i)
+    for(new i = 0; i < itemsCount; ++i)
     {
-        @loadConfigurationFromJsonLine(json, .line = i);
+        @loadMapConfigurationFromJsonLine(json, .line = i);
     }
 
     json_free(json);
 }
 
-@loadConfigurationFromJsonLine(JSON:json, line)
+@loadMapConfigurationFromJsonLine(JSON:json, line)
 {
-    new key[MAP_CONFIG_KEY_LENGTH];
+    new key[MAP_CONFIG_KEY_LENGTH], type;
     json_object_get_name(json, line, key, charsmax(key));
 
-    for(new i = 0; i < _:MAP_CONFIGURATION_ENUM; i++)
+    if(!TrieKeyExists(g_MapConfigurationKeysTrie, key)
+    || !TrieGetCell(g_MapConfigurationKeysTrie, key, type))
     {
-        static MAP_CONFIGURATION_ENUM:type; type = MAP_CONFIGURATION_ENUM:i;
-
-        if(strcmp(g_MapConfigurationKeys[type], key))
-        {
-            @setMapConfigurationValueByType(json, type, key);
-            break;
-        }
+        log_amx("Nie można wczytać konfiguracji dla klucza: %s", key);
+        return -1;
     }
+
+    @setMapConfigurationValueByType(json, MAP_CONFIGURATION_ENUM:type, key);
+
+    return type;
 }
 
 @setMapConfigurationValueByType(JSON:json, MAP_CONFIGURATION_ENUM:type, key[])
@@ -54,17 +54,11 @@ public loadMapConfigFromJsonFile(jsonFilePath[128])
     {
         case JSONNumber: 
         {
-            setMapConfigDataCell(type, json_object_get_number(json, key));
+            setMapConfigurationData(type, json_object_get_number(json, key));
         }
         case JSONBoolean:
         {
-            setMapConfigDataCell(type, json_object_get_bool(json, key));
-        }
-        case JSONString:
-        {
-            new value[64];
-            json_object_get_string(json, key, value, charsmax(value));
-            setMapConfigDataString(type, value);
+            setMapConfigurationData(type, json_object_get_bool(json, key));
         }
         default:
         {
