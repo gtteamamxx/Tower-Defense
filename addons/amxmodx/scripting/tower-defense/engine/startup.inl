@@ -3,6 +3,21 @@
 #endif
 #define td_engine_startup_includes
 
+public loadModelsConfiguration()
+{
+    new modelsConfigurationFilePath[128];
+    @getModelsConfigurationFilePath(modelsConfigurationFilePath);
+
+    if(!file_exists(modelsConfigurationFilePath))
+    {
+        log_amx("Plik konfiguracyjny modeli %s nie istnieje.", modelsConfigurationFilePath);
+        return;
+    }
+
+    loadModelsConfigurationFromFile(modelsConfigurationFilePath);
+    @releaseModelsConfigurationDictionary();
+}
+
 public loadMapConfiguration()
 {
     @loadMapConfigurationFromConfigurationFile();
@@ -14,27 +29,70 @@ public loadMapConfiguration()
 
 public checkMapConfiguration()
 {
+    @checkEntities();
+}
+
+@checkEntities()
+{
     new const startEntity = getMapEntityData(START_ENTITY);
     new const endEntity = getMapEntityData(END_ENTITY);
 
     if(!is_valid_ent(startEntity) || !is_valid_ent(endEntity))
     {
+        log_amx("[Map] Mapa nie posiada punktu startu 'start' albo punktu końcowego 'end'")
         setGameStatus(.status = false);
-        return;
+    }
+
+    new const endWallEntity = @getGlobalEnt(MAP_END_TRACK_ENTITY_NAME);
+    if(!is_valid_ent(endWallEntity))
+    {
+        log_amx("[Map] Mapa nie posiada końcowego punktu dotyku dla potwórów.")
+        setGameStatus(.status = false);
+    }
+
+    new const track1Entity = @getGlobalEnt(getTrackEntityName(.trackId = 1));
+    if(!is_valid_ent(track1Entity))
+    {
+        log_amx("[Map] Mapa nie posiada żadnego punktu odpowiedzialnego za trasę. Mogą wystąpić błędy.");
     }
 }
 
 public initializeGame()
 {
-    new const startEntity = getMapEntityData(START_ENTITY);
-    new const endEntity = getMapEntityData(END_ENTITY);
+    @hideAllTrackWallEntities();
+}
 
-    log_amx("hP: %d", getMapConfigurationData(TOWER_HEALTH));
+@hideAllTrackWallEntities()
+{
+    new trackIndex = 1, trackWallEntity;
+    while((trackWallEntity = @getGlobalEnt(getTrackWallEntityName(.trackId = trackIndex++))))
+    {
+        if(is_valid_ent(trackWallEntity))
+        {
+            @hideEntity(trackWallEntity);
+        }
+    }
+
+    new const endWallEntity = @getGlobalEnt(MAP_END_TRACK_ENTITY_NAME);
+    if(is_valid_ent(endWallEntity))
+    {
+        @hideEntity(endWallEntity);
+    }
+}
+
+@hideEntity(entity)
+{
+    fm_set_rendering(entity, .r = 0, .g = 0, .b = 0, .render = kRenderTransAdd, .amount = 0)
 }
 
 @releaseMapConfigurationDictionary()
 {
     TrieDestroy(g_MapConfigurationKeysTrie);
+}
+
+@releaseModelsConfigurationDictionary()
+{
+    TrieDestroy(g_ModelsConfigurationKeysTrie);
 }
 
 @loadMapConfigurationFromConfigurationFile()
@@ -49,7 +107,7 @@ public initializeGame()
 
         if(!file_exists(configurationFilePath))
         {
-            log_amx("Nie istnieje domyślny plik konfiguracyjny. Gra niemożliwa");
+            log_amx("Nie istnieje domyślny plik konfiguracyjny.");
             return;
         }
     }
@@ -100,7 +158,7 @@ public initializeGame()
     new towerEntity = create_entity("info_target")
 
     entity_set_string(towerEntity, EV_SZ_classname, TOWER_ENTITY_NAME)
-    // entity_set_model(towerEntity, GET_MODEL_DIR_FROM_FILE(g_ModelFile[ random(3) ][ MODEL_TOWER ]));
+    entity_set_model(towerEntity, g_Models[TOWER_MODEL]);
 
     entity_set_vector(towerEntity, EV_VEC_origin, origin);
 
@@ -125,7 +183,8 @@ public initializeGame()
 
     new endSpriteEntity = @createCircleSprite(
         .entityName = END_SPRITE_ENTITY_NAME, 
-        .origin = endSpriteEntityOrigin
+        .origin = endSpriteEntityOrigin,
+        .modelIndex = END_SPRITE_MODEL
     );
 
     setMapEntityData(END_SPRITE_ENTITY, endSpriteEntity);
@@ -144,18 +203,19 @@ public initializeGame()
 
     new startSpriteEntity = @createCircleSprite(
         .entityName = START_SPRITE_ENTITY_NAME, 
-        .origin = startSpriteEntityOrigin
+        .origin = startSpriteEntityOrigin,
+        .modelIndex = START_SPRITE_MODEL
     );
 
     setMapEntityData(START_SPRITE_ENTITY, startSpriteEntity);
 }
 
-@createCircleSprite(const entityName[], Float:origin[3])
+@createCircleSprite(const entityName[], Float:origin[3], MODELS_ENUM:modelIndex)
 {
     new spriteEntity = create_entity("env_sprite")
     
     entity_set_string(spriteEntity, EV_SZ_classname, entityName)
-    // entity_set_model(spriteEntity, SPAWN_SPRITE)
+    entity_set_model(spriteEntity, g_Models[modelIndex])
         
     entity_set_vector(spriteEntity, EV_VEC_origin, origin)
     entity_set_int(spriteEntity, EV_INT_solid, SOLID_NOT);
@@ -180,6 +240,11 @@ public initializeGame()
 @getGlobalEnt(const entityName[])
 {
     return find_ent_by_tname(-1, entityName);
+}
+
+@getModelsConfigurationFilePath(path[128])
+{
+    formatex(path, charsmax(path), "%s/%s.json", getConfigDirectory(), MODELS_CONFIG_FILE);
 }
 
 stock getMapConfigurationFilePath(output[128], bool:useDefaultConfig = false)

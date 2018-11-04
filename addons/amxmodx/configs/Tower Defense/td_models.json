@@ -1,0 +1,7 @@
+{
+    "MAIN":{
+        "TOWER_MODEL": "models/Tower Defense/tower.mdl",
+        "START_SPRITE_MODEL": "sprites/Tower Defense/spawn.spr",
+        "END_SPRITE_MODEL": "sprites/Tower Defense/spawn.spr"
+    }
+}

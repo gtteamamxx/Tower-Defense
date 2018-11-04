@@ -1,5 +1,6 @@
 #include <amxmodx>
 #include <engine>
+#include <fakemeta_util>
 #include <json>
 #include <xs>
 
@@ -30,35 +31,17 @@ public plugin_end()
 
 @initTowerDefenseMod()
 {
-    @initTries();
-
     loadMapConfiguration();
     checkMapConfiguration();
     
     if(@isGamePossible())
     {
-       initializeGame(); 
+        initializeGame(); 
     }
     else 
     {
         log_amx("Game is not possible");
     }
-}
-
-@initTries()
-{
-    @initMapConfigurationTrie();
-}
-
-@initMapConfigurationTrie()
-{
-    g_MapConfigurationKeysTrie = TrieCreate();
-
-    TrieSetCell(g_MapConfigurationKeysTrie, "SHOW_START_SPRITE", _:SHOW_START_SPRITE);
-    TrieSetCell(g_MapConfigurationKeysTrie, "SHOW_END_SPRITE", _:SHOW_END_SPRITE);
-    TrieSetCell(g_MapConfigurationKeysTrie, "SHOW_TOWER", _:SHOW_BLAST_ON_MONSTER_TOWER_TOUCH);
-    TrieSetCell(g_MapConfigurationKeysTrie, "TOWER_HEALTH", _:TOWER_HEALTH);
-    TrieSetCell(g_MapConfigurationKeysTrie, "SHOW_BLAST_ON_MONSTER_TOWER_TOUCH", _:SHOW_BLAST_ON_MONSTER_TOWER_TOUCH);
 }
 
 @clearTowerDefenseMod()

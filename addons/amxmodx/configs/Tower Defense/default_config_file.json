@@ -1,7 +1,7 @@
 {
     "TOWER_HEALTH": 200,
     "SHOW_TOWER": true,
-    "SHOW_BLAST_ON_MONSTER_TOWER_TOUCH": true,
+    "SHOW_BLAST_ON_MONSTER_TOUCH": true,
     "SHOW_START_SPRITE": true,
     "SHOW_END_SPRITE": false
 }

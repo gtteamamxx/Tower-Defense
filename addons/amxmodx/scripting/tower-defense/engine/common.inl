@@ -11,6 +11,9 @@ new g_MapEntityData[MAP_ENTITIES_ENUM];
 new any:g_MapConfiguration[MAP_CONFIGURATION_ENUM];
 new Trie:g_MapConfigurationKeysTrie;
 
+new g_Models[MODELS_ENUM][MODELS_CONFIG_PATH_LENGTH];
+new Trie:g_ModelsConfigurationKeysTrie;
+
 new bool:g_IsGamePossible = true;
 
 public getConfigDirectory()
@@ -39,18 +42,30 @@ public getMapEntityData(MAP_ENTITIES_ENUM:item)
     return g_MapEntityData[item];
 }
 
-public any:getMapConfigurationData(MAP_CONFIGURATION_ENUM:item)
-{
-    return g_MapConfiguration[item];
-}
-
 public setMapConfigurationData(MAP_CONFIGURATION_ENUM:item, any:value)
 {
     g_MapConfiguration[item] = value;
+}
+
+public any:getMapConfigurationData(MAP_CONFIGURATION_ENUM:item)
+{
+    return g_MapConfiguration[item];
 }
 
 public getMapEntityOrigin(MAP_ENTITIES_ENUM:item, Float:outputOrigin[3])
 {
     new const entity = g_MapEntityData[item];
     entity_get_vector(entity, EV_VEC_origin, outputOrigin);
+}
+
+stock getTrackEntityName(trackId, trackName[9] = {})
+{
+    formatex(trackName, charsmax(trackName), "track%d", trackId);
+    return trackName
+}
+
+stock getTrackWallEntityName(trackId, trackName[14] = {})
+{
+    formatex(trackName, charsmax(trackName), "track%d_wall", trackId);
+    return trackName
 }
