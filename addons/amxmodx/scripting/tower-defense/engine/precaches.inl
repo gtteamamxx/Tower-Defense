@@ -72,7 +72,7 @@ public releaseArrays()
     TrieSetCell(g_MonsterTypesConfigurationKeysTrie, "Speed", _:SPEED);
     TrieSetCell(g_MonsterTypesConfigurationKeysTrie, "DeployInterval", _:DEPLOY_INTERVAL);
     TrieSetCell(g_MonsterTypesConfigurationKeysTrie, "Count", _:COUNT);
-    TrieSetCell(g_MonsterTypesConfigurationKeysTrie "DeployExtraDelay", _:DEPLOY_EXTRA_DELAY);
+    TrieSetCell(g_MonsterTypesConfigurationKeysTrie, "DeployExtraDelay", _:DEPLOY_EXTRA_DELAY);
 
     g_WavesConfigurationKeysTrie = TrieCreate();
 

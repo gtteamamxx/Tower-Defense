@@ -303,7 +303,7 @@ bool:@checkWaveJsonFileIsValid(JSON:json, filePath[128])
 
 bool:@checkIfMonsterTypeJsonIsValid(key[], &WAVE_MONSTER_DATA_ENUM:dataType, waveNumber, filePath[128])
 {
-    if(!TrieKeyExists(g_MonsterTypesConfigurationKeysTrie key))
+    if(!TrieKeyExists(g_MonsterTypesConfigurationKeysTrie, key))
     {
         @showFailMessage("[Wave] Wave: %d, nie rozpoznano klucza %s w pliku konfiguracyjnym %s.", waveNumber, key, filePath);
         return false;
