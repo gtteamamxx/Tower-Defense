@@ -59,7 +59,7 @@ public initializeGame()
             TrieIterGetCell(configIter, iterValue);
             num_to_str(iterValue, iterValueString, charsmax(iterValueString));
 
-            log_amx("....Config: %s....value: %d / %s", iteRKey, iterValue, iterValueString);
+            log_amx("....Config: %s....value: %d / %s", iterKey, iterValue, iterValueString);
             TrieIterNext(configIter);
         }
 
