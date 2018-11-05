@@ -5,10 +5,6 @@
     "SHOW_START_SPRITE": true,
     "SHOW_END_SPRITE": false,
     "WAVES": {
-        "DEFAULT": {
-            "DeployInterval": [1.5],
-            "DeployExtraDelay": [2.0]
-        },
         "1": [
             {
                 "Type": "NORMAL",

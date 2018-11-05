@@ -14,13 +14,8 @@ public loadWavesFromFile(jsonFilePath[128])
     }
 
     new JSON:wavesJsonObject = json_object_get_value(json, WAVES_SCHEMA);
-    new bool:wavesHaveDefaultConfig = @checkIfWavesHaveDefaultConfig(wavesJsonObject);
 
     new wavesCount = json_object_get_count(wavesJsonObject);
-    if(wavesHaveDefaultConfig)
-    {
-        wavesCount -= 1;
-    }
 
     if(wavesCount == 0) 
     {
@@ -28,12 +23,6 @@ public loadWavesFromFile(jsonFilePath[128])
     }
     else
     {
-        if(wavesHaveDefaultConfig)
-        {
-            //zrobić domyślne wczytywanie
-            //@loadDefaultValuesForWave(wavesJsonObject);
-        }
-
         @loadWaves(wavesJsonObject, 
             .count = wavesCount, 
             .filePath = jsonFilePath,
@@ -212,11 +201,6 @@ stock bool:getMinMaxValueFromArray(JSON:arrayJson, &any:minValue, &any:maxValue,
     }
 
     return true;
-}
-
-bool:@checkIfWavesHaveDefaultConfig(JSON:json)
-{
-    return json_object_has_value(json, WAVES_DEFAULT_SCHEMA);
 }
 
 bool:@checkWaveJsonFileIsValid(JSON:json, filePath[128])
