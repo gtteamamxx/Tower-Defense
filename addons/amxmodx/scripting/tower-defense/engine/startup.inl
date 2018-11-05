@@ -47,7 +47,7 @@ public initializeGame()
     {
         new Array:waveArray = Array:ArrayGetCell(g_WaveDataArray, i);
 
-        log_amx("WAVE: %d, items Count: %d", i+1, monstersTypeCount);
+        log_amx("WAVE: %d", i + 1);
 
         new Trie:waveConfigurationTrie = Trie:ArrayGetCell(waveArray, _:CONFIG);
         
@@ -59,7 +59,7 @@ public initializeGame()
             TrieIterGetCell(configIter, iterValue);
             num_to_str(iterValue, iterValueString, charsmax(iterValueString));
 
-            log_amx("....Config: %s....value: %d / %s", iterKey, iterValue, iterValueString);
+            log_amx("....Config: %s....value: num: %d string: %s", iterKey, iterValue, iterValueString);
             TrieIterNext(configIter);
         }
 

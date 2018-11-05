@@ -57,8 +57,8 @@ public loadWavesFromFile(jsonFilePath[128])
             @initConfigurationTrieForWaveArray(waveArray);
             @initWaveMonsterTypesArrayForWaveArray(waveArray);
 
-            @loadWaveConfiguration(waveJsonObject, .waveNumber = i, .filePath = filePath);
-            @loadWaveMonsterTypes(waveJsonObject, .waveNumber = i, .filePath = filePath;
+            @loadWaveConfiguration(waveJsonObject, .waveNumber = i, .filePath = filePath, .waveArray = waveArray);
+            @loadWaveMonsterTypes(waveJsonObject, .waveNumber = i, .filePath = filePath);
         }
 
         json_free(waveJsonObject);
@@ -83,7 +83,7 @@ public loadWavesFromFile(jsonFilePath[128])
     ArrayPushCell(waveMonsterTypeArray, monsterTypeTrie);
 }
 
-@loadWaveConfiguration(JSON:waveJsonObject, waveNumber, filePath[128])
+@loadWaveConfiguration(JSON:waveJsonObject, waveNumber, filePath[128], Array:waveArray)
 {
     if(!json_object_has_value(waveJsonObject, WAVE_CONFIG_SCHEMA))
     {
@@ -102,9 +102,11 @@ public loadWavesFromFile(jsonFilePath[128])
     new key[WAVE_CONFIGURATION_KEY_LENGTH], type, typeNumberString[4];
     new configurationItemsCount = json_object_get_count(waveConfigurationJson);
 
+    new Trie:waveConfigurationTrie = Trie:ArrayGetCell(waveArray, _:CONFIG);
+
     for(new i = 0; i < configurationItemsCount; ++i)
     {
-        json_object_get_name(waveConfigurationJson, key, charsmax(key));
+        json_object_get_name(waveConfigurationJson, i, key, charsmax(key));
 
         if(!TrieKeyExists(g_WavesConfigurationKeysTrie, key)
         || !TrieGetCell(g_WavesConfigurationKeysTrie, key, type))
@@ -116,14 +118,15 @@ public loadWavesFromFile(jsonFilePath[128])
         new JSON:configurationValueJson = json_object_get_value(waveConfigurationJson, key);
         if(!json_is_number(configurationValueJson))
         {
-            @showfailMessage(
+            @showFailMessage(
                 "[Wave] Konfiguracja Wave %d, klucz %s posiada nieprawidłoa wartość, dozwolone tylko liczby całkowite w pliku konfiguracyjnym", waveNumber, 
                 key, filePath);
             continue;
         }
 
         num_to_str(type, typeNumberString, charsmax(typeNumberString));
-        TrieSetCell(g_WavesConfigurationKeysTrie, typeNumberString, json_get_number(configurationValueJson));
+        TrieSetCell(waveConfigurationTrie, typeNumberString, json_get_number(configurationValueJson));
+
         json_free(configurationValueJson);
     }
 
@@ -145,7 +148,7 @@ public loadWavesFromFile(jsonFilePath[128])
         return;
     }
 
-    new monsterTypesCount = json_array_get_count(waveJsonObject);
+    new monsterTypesCount = json_array_get_count(monsterTypesJson);
     if(monsterTypesCount == 0)
     {
         @showFailMessage("[Wave] Wave %d nie posiada żadnego typu potworów w pliku konfiguracyjnym %s", waveNumber, filePath);
@@ -154,21 +157,22 @@ public loadWavesFromFile(jsonFilePath[128])
     
     for(new i = 0; i < monsterTypesCount; ++i)
     {
-        new JSON:monsterTypeJson = json_array_get_value(waveJsonObject, i);
+        new JSON:monsterTypeJson = json_array_get_value(monsterTypesJson, i);
         if(!@isJsonValid(monsterTypeJson))
         {
             @showFailMessage("[Wave] Konfiguracja dla Wave %d, typu nr %d jest nieprawidłowa w pliku konfiguracyjnym %s", waveNumber, i, filePath);
         }
         else 
         {
-            new Array:waveArray = ArrayGetCell(g_WaveDataArray, .waveNumber - 1);
+            new Array:waveArray = ArrayGetCell(g_WaveDataArray, waveNumber - 1);
             new Array:waveMonsterTypesArray = ArrayGetCell(waveArray, _:MONSTER_TYPES);
 
             @initMonsterTypeTrieForWaveMonsterTypeArray(waveMonsterTypesArray);
 
             @loadMonsterTypeDataForWave(monsterTypeJson, waveNumber,
                 .monsterTypeIndex = i,
-                .filePath = filePath);
+                .filePath = filePath,
+                .waveArray = waveArray);
         }
 
         json_free(monsterTypeJson);
@@ -177,7 +181,7 @@ public loadWavesFromFile(jsonFilePath[128])
     json_free(monsterTypesJson);
 }
 
-@loadMonsterTypeDataForWave(JSON:monsterTypeJson, waveNumber, monsterTypeIndex, filePath[128])
+@loadMonsterTypeDataForWave(JSON:monsterTypeJson, waveNumber, monsterTypeIndex, filePath[128], Array:waveArray)
 {
     new numberOfPropertiesForMonsterTypeData = json_object_get_count(monsterTypeJson);
 
@@ -188,6 +192,9 @@ public loadWavesFromFile(jsonFilePath[128])
     }
 
     new key[WAVE_MONSTER_TYPE_KEY_LENGTH], dataType;
+    new Array:monsterTypesArray = Array:ArrayGetCell(waveArray, _:MONSTER_TYPES);
+    new Trie:monsterTypeTrie = Trie:ArrayGetCell(monsterTypesArray, monsterTypeIndex);
+
     for(new i = 0; i < numberOfPropertiesForMonsterTypeData; ++i)
     {
         json_object_get_name(monsterTypeJson, i, key, charsmax(key));
