@@ -82,26 +82,24 @@ public releaseArrays()
 @releaseWaveDataArray()
 {
     new size = ArraySize(g_WaveDataArray);
-    if(size != 0)
+
+    for(new i = 0; i < size; ++i)
     {
-        for(new i = 0; i < size; ++i)
+        new Array:waveArray = Array:ArrayGetCell(g_WaveDataArray, i);
+
+        new Trie:waveConfigurationTrie = Trie:ArrayGetCell(waveArray, _:CONFIG);
+        new Array:monsterTypesArray = Array:ArrayGetCell(waveArray, _:MONSTER_TYPES);
+
+        new monsterTypesCount = ArraySize(monsterTypesArray);
+        for(new j = 0; j < monsterTypesCount; ++j)
         {
-            new Array:waveArray = Array:ArrayGetCell(g_WaveDataArray, i);
-
-            new Trie:waveConfigurationTrie = Trie:ArrayGetCell(waveArray, _:CONFIG);
-            new Array:monsterTypesArray = Array:ArrayGetCell(waveArray, _:MONSTER_TYPES);
-
-            new monsterTypesCount = ArraySize(monsterTypesArray);
-            for(new j = 0; j < monsterTypesCount; ++j)
-            {
-                new Trie:monsterTypeTrie = Trie:ArrayGetCell(waveArray, j);
-                TrieDestroy(monsterTypeTrie);
-            }
-
-            ArrayDestroy(monsterTypesArray);
-            TrieDestroy(waveConfigurationTrie);
-            ArrayDestroy(waveArray);
+            new Trie:monsterTypeTrie = Trie:ArrayGetCell(waveArray, j);
+            TrieDestroy(monsterTypeTrie);
         }
+
+        ArrayDestroy(monsterTypesArray);
+        TrieDestroy(waveConfigurationTrie);
+        ArrayDestroy(waveArray);
     }
 
     ArrayDestroy(g_WaveDataArray);
