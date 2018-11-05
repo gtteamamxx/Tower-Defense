@@ -65,14 +65,18 @@ public releaseArrays()
 
 @initWavesConfigurationTrie()
 {
+    g_MonsterTypesConfigurationKeysTrie = TrieCreate();
+
+    TrieSetCell(g_MonsterTypesConfigurationKeysTrie, "Type", _:TYPE);
+    TrieSetCell(g_MonsterTypesConfigurationKeysTrie, "Health", _:HEALTH);
+    TrieSetCell(g_MonsterTypesConfigurationKeysTrie, "Speed", _:SPEED);
+    TrieSetCell(g_MonsterTypesConfigurationKeysTrie, "DeployInterval", _:DEPLOY_INTERVAL);
+    TrieSetCell(g_MonsterTypesConfigurationKeysTrie, "Count", _:COUNT);
+    TrieSetCell(g_MonsterTypesConfigurationKeysTrie "DeployExtraDelay", _:DEPLOY_EXTRA_DELAY);
+
     g_WavesConfigurationKeysTrie = TrieCreate();
 
-    TrieSetCell(g_WavesConfigurationKeysTrie, "Type", _:TYPE);
-    TrieSetCell(g_WavesConfigurationKeysTrie, "Health", _:HEALTH);
-    TrieSetCell(g_WavesConfigurationKeysTrie, "Speed", _:SPEED);
-    TrieSetCell(g_WavesConfigurationKeysTrie, "DeployInterval", _:DEPLOY_INTERVAL);
-    TrieSetCell(g_WavesConfigurationKeysTrie, "Count", _:COUNT);
-    TrieSetCell(g_WavesConfigurationKeysTrie, "DeployExtraDelay", _:DEPLOY_EXTRA_DELAY);
+    TrieSetCell(g_WavesConfigurationKeysTrie, "TimeToWave", _:TIME_TO_WAVE);
 }
 
 @releaseWaveDataArray()
@@ -83,14 +87,19 @@ public releaseArrays()
         for(new i = 0; i < size; ++i)
         {
             new Array:waveArray = Array:ArrayGetCell(g_WaveDataArray, i);
-            new waveArraySize = ArraySize(waveArray);
 
-            for(new j = 0; j < waveArraySize; ++j)
+            new Trie:waveConfigurationTrie = Trie:ArrayGetCell(waveArray, _:CONFIG);
+            new Array:monsterTypesArray = Array:ArrayGetCell(waveArray, _:MONSTER_TYPES);
+
+            new monsterTypesCount = ArraySize(monsterTypesArray);
+            for(new j = 0; j < monsterTypesCount; ++j)
             {
                 new Trie:monsterTypeTrie = Trie:ArrayGetCell(waveArray, j);
                 TrieDestroy(monsterTypeTrie);
             }
 
+            ArrayDestroy(monsterTypesArray);
+            TrieDestroy(waveConfigurationTrie);
             ArrayDestroy(waveArray);
         }
     }

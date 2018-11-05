@@ -46,13 +46,31 @@ public initializeGame()
     for(new i = 0; i < wavesNum; ++i)
     {
         new Array:waveArray = Array:ArrayGetCell(g_WaveDataArray, i);
-        new monstersTypeCount = ArraySize(waveArray);
 
         log_amx("WAVE: %d, items Count: %d", i+1, monstersTypeCount);
 
+        new Trie:waveConfigurationTrie = Trie:ArrayGetCell(waveArray, _:CONFIG);
+        
+        new TrieIter:configIter = TrieIterCreate(waveConfigurationTrie);
+        while(!TrieIterEnded(configIter))
+        {
+            new iterKey[64], any:iterValue, iterValueString[64];
+            TrieIterGetKey(configIter, iterKey, charsmax(iterKey));
+            TrieIterGetCell(configIter, iterValue);
+            num_to_str(iterValue, iterValueString, charsmax(iterValueString));
+
+            log_amx("....Config: %s....value: %d / %s", iteRKey, iterValue, iterValueString);
+            TrieIterNext(configIter);
+        }
+
+        TrieIterDestroy(configIter);
+
+        new Array:monsterTypesArray = Array:ArrayGetCell(waveArray, _:MONSTER_TYPES);
+        new monstersTypeCount = ArraySize(monsterTypesArray);
+
         for(new j = 0; j < monstersTypeCount; ++j)
         {
-            new Trie:monsterTypeTrie = Trie:ArrayGetCell(waveArray, j);
+            new Trie:monsterTypeTrie = Trie:ArrayGetCell(monsterTypesArray, j);
 
             log_amx("..%d..", j);   
             for(new k = 0; k < _:WAVE_MONSTER_DATA_ENUM; ++k)
