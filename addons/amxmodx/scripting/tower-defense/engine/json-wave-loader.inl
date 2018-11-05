@@ -121,11 +121,12 @@ public loadWavesFromFile(jsonFilePath[128])
             @showFailMessage(
                 "[Wave] Konfiguracja Wave %d, klucz %s posiada nieprawidłoa wartość, dozwolone tylko liczby całkowite w pliku konfiguracyjnym", waveNumber, 
                 key, filePath);
-            continue;
         }
-
-        num_to_str(type, typeNumberString, charsmax(typeNumberString));
-        TrieSetCell(waveConfigurationTrie, typeNumberString, json_get_number(configurationValueJson));
+        else
+        {
+            num_to_str(type, typeNumberString, charsmax(typeNumberString));
+            TrieSetCell(waveConfigurationTrie, typeNumberString, json_get_number(configurationValueJson));
+        }
 
         json_free(configurationValueJson);
     }
@@ -145,6 +146,7 @@ public loadWavesFromFile(jsonFilePath[128])
     if(!json_is_array(monsterTypesJson))
     {
         @showFailMessage("[Wave] Wave %d posiada nieprawidłową konfigurację typów potworów w pliku konfiguracyjnym %s.", waveNumber, filePath);
+        json_free(monsterTypesJson);
         return;
     }
 
@@ -152,6 +154,7 @@ public loadWavesFromFile(jsonFilePath[128])
     if(monsterTypesCount == 0)
     {
         @showFailMessage("[Wave] Wave %d nie posiada żadnego typu potworów w pliku konfiguracyjnym %s", waveNumber, filePath);
+        json_free(monsterTypesJson);
         return;
     }
     
@@ -232,6 +235,7 @@ public loadWavesFromFile(jsonFilePath[128])
                 @showFailMessage(
                     "[Wave] Wave: %d, typ nr %d, klucz: %s. Wartość nie jest ujęta w tablicy. [] w pliku konfiguracyjnym %s.", 
                     waveNumber, monsterTypeIndex, key, filePath);
+                json_free(minMaxArrayJson);
                 return;
             }
 
