@@ -57,12 +57,31 @@ public loadWavesFromFile(jsonFilePath[128])
             @initConfigurationTrieForWaveArray(waveArray);
             @initWaveMonsterTypesArrayForWaveArray(waveArray);
 
+            @setInitialConfigurationForWaveArray(waveArray);
+
             @loadWaveConfiguration(waveJsonObject, .waveNumber = i, .filePath = filePath, .waveArray = waveArray);
             @loadWaveMonsterTypes(waveJsonObject, .waveNumber = i, .filePath = filePath);
         }
 
         json_free(waveJsonObject);
     }
+}
+
+@setInitialConfigurationForWaveArray(Array:waveArray)
+{
+    new Trie:waveConfigurationTrie = Trie:ArrayGetCell(waveArray, _:CONFIG);
+    @setWaveTimeToWaveConfiguration(waveConfigurationTrie);
+}
+
+@setWaveTimeToWaveConfiguration(Trie:waveConfigurationTrie)
+{
+    new timeToWave = getMapConfigurationData(MAP_TIME_TO_WAVE);
+
+    new key[WAVE_CONFIGURATION_KEY_LENGTH];
+    num_to_str(_:WAVE_TIME_TO_WAVE, key, charsmax(key));
+
+    log_amx("%d", _:WAVE_TIME_TO_WAVE);
+    TrieSetCell(waveConfigurationTrie, key, timeToWave);
 }
 
 @initConfigurationTrieForWaveArray(Array:waveArray)
@@ -125,7 +144,8 @@ public loadWavesFromFile(jsonFilePath[128])
         else
         {
             num_to_str(type, typeNumberString, charsmax(typeNumberString));
-            TrieSetCell(waveConfigurationTrie, typeNumberString, json_get_number(configurationValueJson));
+            new value = json_get_number(configurationValueJson);
+            TrieSetCell(waveConfigurationTrie, typeNumberString, value, .replace = true);
         }
 
         json_free(configurationValueJson);

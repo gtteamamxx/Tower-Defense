@@ -4,10 +4,11 @@
     "SHOW_BLAST_ON_MONSTER_TOUCH": true,
     "SHOW_START_SPRITE": true,
     "SHOW_END_SPRITE": false,
+    "TIME_TO_WAVE": 15,
     "WAVES": {
         "1": {
             "CONFIG": {
-                "TimeToWave": 10
+                "TimeToWave": 30
             },
             "MONSTER_TYPES": [
                 {

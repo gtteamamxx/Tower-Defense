@@ -37,10 +37,10 @@ public checkGamePossibility()
 public initializeGame()
 {
     @hideAllTrackWallEntities();
-    @test();
+    @showWaveConfig();
 }
 
-@test()
+@showWaveConfig()
 {
     new wavesNum = ArraySize(g_WaveDataArray);
     for(new i = 0; i < wavesNum; ++i)

@@ -61,6 +61,7 @@ public releaseArrays()
     TrieSetCell(g_MapConfigurationKeysTrie, "SHOW_TOWER", _:SHOW_TOWER);
     TrieSetCell(g_MapConfigurationKeysTrie, "TOWER_HEALTH", _:TOWER_HEALTH);
     TrieSetCell(g_MapConfigurationKeysTrie, "SHOW_BLAST_ON_MONSTER_TOUCH", _:SHOW_BLAST_ON_MONSTER_TOUCH);
+    TrieSetCell(g_MapConfigurationKeysTrie, "TIME_TO_WAVE", _:MAP_TIME_TO_WAVE);
 }
 
 @initWavesConfigurationTrie()
@@ -76,7 +77,7 @@ public releaseArrays()
 
     g_WavesConfigurationKeysTrie = TrieCreate();
 
-    TrieSetCell(g_WavesConfigurationKeysTrie, "TimeToWave", _:TIME_TO_WAVE);
+    TrieSetCell(g_WavesConfigurationKeysTrie, "TimeToWave", _:WAVE_TIME_TO_WAVE);
 }
 
 @releaseWaveDataArray()
