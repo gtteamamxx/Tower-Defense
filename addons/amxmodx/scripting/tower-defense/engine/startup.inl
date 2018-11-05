@@ -317,6 +317,7 @@ public initializeGame()
 @releaseWavesConfigurationDictionary()
 {
     TrieDestroy(g_WavesConfigurationKeysTrie);
+    TrieDestroy(g_MonsterTypesConfigurationKeysTrie);
 }
 
 stock getMapConfigurationFilePath(output[128], bool:useDefaultConfig = false)

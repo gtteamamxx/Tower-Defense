@@ -6,10 +6,12 @@
 
 #include "tower-defense/engine/consts.inl"
 #include "tower-defense/engine/common.inl"
-#include "tower-defense/engine/precaches.inl"
 #include "tower-defense/engine/json-loader.inl"
 #include "tower-defense/engine/json-wave-loader.inl"
+#include "tower-defense/engine/precaches.inl"
 #include "tower-defense/engine/startup.inl"
+#include "tower-defense/engine/wave-manager.inl"
+#include "tower-defense/engine/events.inl"
 
 #pragma semicolon 1
 #pragma dynamic 32768
@@ -21,6 +23,8 @@
 public plugin_init()
 {
     register_plugin(PLUGIN, VERSION, AUTHOR);
+
+    registerClientCommands();
 
     @initTowerDefenseMod();
 }
