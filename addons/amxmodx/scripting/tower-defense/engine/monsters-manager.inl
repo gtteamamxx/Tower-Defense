@@ -9,10 +9,10 @@ public startSendingWaveMonsters(wave)
 
     client_print(0, 3, "Monster types num for wave %d: %d", wave, monsterTypesNum);
 
-    @startSendingsendWaveMonsters(wave, .monsterTypeIndex = 0);
+    @startSendingWaveMonsters(wave, .monsterTypeIndex = 0);
 }
 
-@startSendingsendWaveMonsters(wave, monsterTypeIndex)
+@startSendingWaveMonsters(wave, monsterTypeIndex)
 {
     new monsterTypeName[33];
     new count = getNumberOfMonstersForMonsterTypeInWave(wave, monsterTypeIndex);
@@ -43,7 +43,7 @@ public startSendingWaveMonsters(wave)
     {
         if(monsterTypeIndex + 1 < getWaveMonsterTypesNum(wave))
         {
-            @startSendingsendWaveMonsters(wave, monsterTypeIndex + 1);
+            @startSendingWaveMonsters(wave, monsterTypeIndex + 1);
         }
         return;
     }
