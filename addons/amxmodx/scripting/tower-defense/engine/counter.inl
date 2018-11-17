@@ -10,7 +10,7 @@ public initCounterTrie()
     g_CounterTrie = TrieCreate();
 }
 
-stock createCounterTrie(time, counterKey[33], counterChangedFunction[33], counterCompletedFunction[33], Float:delay = 0.1)
+stock createCounter(time, counterKey[33], counterChangedFunction[33], counterCompletedFunction[33], Float:delay = 0.1)
 {
     if(time <= 0 || TrieKeyExists(g_CounterTrie, counterKey)) 
     {

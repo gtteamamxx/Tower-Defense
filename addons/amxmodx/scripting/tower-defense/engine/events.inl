@@ -11,7 +11,14 @@ public registerClientCommands()
 
 @test(id)
 {
-    createCounterTrie(20, "testKey", "@testChanged", "@testCompleted");
+    if(g_ActualWave <= 0)
+    {
+        g_ActualWave = 1;
+    }
+
+    new waveTimeToWave = getWaveTimeToWave(g_ActualWave);
+    client_print(0,3, "wave: %d, timeToWave: %d", g_ActualWave, waveTimeToWave);
+    createCounter(2, "testKey", "@testChanged", "@testCompleted");
 }
 
 @testChanged(time)
@@ -22,6 +29,7 @@ public registerClientCommands()
 @testCompleted()
 {
     client_print(0, 3, "finished");
+    startSendingWaveMonsters(g_ActualWave);
 }
 
 @test2(id)

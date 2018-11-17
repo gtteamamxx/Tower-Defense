@@ -12,6 +12,7 @@
 #include "tower-defense/engine/startup.inl"
 #include "tower-defense/engine/wave-manager.inl"
 #include "tower-defense/engine/counter.inl"
+#include "tower-defense/engine/monsters-manager.inl"
 #include "tower-defense/engine/events.inl"
 
 #pragma semicolon 1

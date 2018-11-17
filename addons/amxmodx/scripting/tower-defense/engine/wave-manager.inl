@@ -32,10 +32,81 @@ public bool:getWaveMonstersTotalCount(wave, totalCount[2])
     return true;
 }
 
+public Float:getRandomValueForMonsterTypeInWave(wave, monsterTypeIndex, WAVE_MONSTER_DATA_ENUM:key)
+{
+    if(!@isWaveValid(wave) || monsterTypeIndex < 0)
+    {
+        return -1.0;
+    }
+
+    new Trie:monsterTypeTrie = @getMonsterTypeTrie(wave, monsterTypeIndex);
+
+    new Float:value[2];
+    TrieGetArray(monsterTypeTrie, @keyToString(_:key), value, 2);
+    return value[1] == 0.0 ? value[0] : random_float(value[0], value[1]);
+}
+
+public getMonsterTypeNameForMonsterTypeInWave(wave, monsterTypeIndex, monsterTypeName[33])
+{
+    if(!@isWaveValid(wave) || monsterTypeIndex < 0)
+    {
+        return;
+    }
+
+    new Trie:monsterTypeTrie = @getMonsterTypeTrie(wave, monsterTypeIndex);
+    TrieGetString(monsterTypeTrie, @keyToString(_:TYPE), monsterTypeName, charsmax(monsterTypeName));
+}
+
+public getNumberOfMonstersForMonsterTypeInWave(wave, monsterTypeIndex)
+{
+    if(!@isWaveValid(wave) || monsterTypeIndex < 0)
+    {
+        return -1;
+    }
+
+    new Trie:monsterTypeTrie = @getMonsterTypeTrie(wave, monsterTypeIndex);
+
+    new count[2];
+    TrieGetArray(monsterTypeTrie, @keyToString(_:COUNT), count, 2);
+
+    return count[1] == 0 ? count[0] : random_num(count[0], count[1]);
+}
+
+public getWaveTimeToWave(wave)
+{
+    if(!@isWaveValid(wave))
+    {
+        return -1;
+    }
+
+    new Trie:waveConfigurationTrie = @getWaveConfigurationTrie(wave);
+    new timeToWave = -1;
+    TrieGetCell(waveConfigurationTrie, @keyToString(_:WAVE_TIME_TO_WAVE), .value = timeToWave);
+    return timeToWave;
+}
+
+public getWaveMonsterTypesNum(wave)
+{
+    if(!@isWaveValid(wave))
+    {
+        return -1;
+    }
+
+    new Array:monsterTypesArray = @getWaveMonsterTypesArray(wave);
+
+    return ArraySize(monsterTypesArray);
+}
+
 @isWaveValid(wave)
 {
     new maxWaveNumber = ArraySize(g_WaveDataArray) + 1;
     return 1 <= wave <= maxWaveNumber;
+}
+
+Trie:@getWaveConfigurationTrie(wave)
+{
+    new Array:waveArray = @getWaveArray(wave);
+    return Trie:ArrayGetCell(waveArray, _:CONFIG);
 }
 
 Array:@getWaveArray(wave)
@@ -52,6 +123,16 @@ Array:@getWaveMonsterTypesArray(wave)
 Trie:@getMonsterTypeTrieFromMonsterTypesArray(Array:monsterTypesArray, monsterTypeIndex)
 {
     return Trie:ArrayGetCell(monsterTypesArray, monsterTypeIndex);
+}
+
+Trie:@getMonsterTypeTrie(wave, monsterTypeIndex)
+{
+    new Array:waveMonsterTypesArray = @getWaveMonsterTypesArray(wave);
+
+    return Trie:@getMonsterTypeTrieFromMonsterTypesArray(
+            .monsterTypesArray = waveMonsterTypesArray,
+            .monsterTypeIndex = monsterTypeIndex
+    );
 }
 
 @keyToString(keyIndex)
