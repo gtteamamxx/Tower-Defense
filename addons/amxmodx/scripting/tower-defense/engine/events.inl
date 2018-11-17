@@ -1,28 +1,30 @@
 #if defined td_json_events_included
-  #endinput
+    #endinput
 #endif
 #define td_json_events_included
 
 public registerClientCommands()
 {
-  register_clcmd("say /start", "@test");
-  register_clcmd("say /nextwave", "@test2");
+    register_clcmd("say /start", "@test");
+    register_clcmd("say /nextwave", "@test2");
 }
 
 @test(id)
 {
-  new totalCount[2];
-  if(!getWaveMonstersTotalCount(g_ActualWave, totalCount))
-  {
-    client_print(0, 3, "Brak wave: %d", g_ActualWave);
-  }
-  else
-  {
-    client_print(0, 3, "Wave: %d | %d - %d", g_ActualWave, totalCount[0], totalCount[1]);
-  }
+    createCounterTrie(20, "testKey", "@testChanged", "@testCompleted");
+}
+
+@testChanged(time)
+{
+    client_print(0, 3, "remaing: %d", time);
+}
+
+@testCompleted()
+{
+    client_print(0, 3, "finished");
 }
 
 @test2(id)
 {
-  g_ActualWave++;
+    g_ActualWave++;
 }

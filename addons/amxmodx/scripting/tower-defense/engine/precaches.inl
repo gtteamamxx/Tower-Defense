@@ -21,9 +21,19 @@ public releaseArrays()
     @releaseArrays();
 }
 
+public relaseTries()
+{
+    @releaseTries();
+}
+
 @releaseArrays()
 {
     @releaseWaveDataArray();
+}
+
+@releaseTries()
+{
+    destroyCounterTrie();
 }
 
 @initTries()
@@ -31,6 +41,8 @@ public releaseArrays()
     @initMapConfigurationTrie();
     @initModelsConfigurationTrie();
     @initWavesConfigurationTrie();
+
+    initCounterTrie();
 }
 
 @initArrays()
