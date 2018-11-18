@@ -24,4 +24,5 @@ public plugin_precache()
     precache_model(MODEL_1);
     precache_model(MODEL_2);
     precache_model(MODEL_3);
+    precache_model(MODEL_4);
 }
