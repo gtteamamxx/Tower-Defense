@@ -3,6 +3,9 @@
 #include <fakemeta_util>
 #include <json>
 #include <xs>
+#include <cstrike>
+#include <customentdata>
+#include <hamsandwich>
 
 #include "tower-defense/engine/consts.inl"
 #include "tower-defense/engine/common.inl"
@@ -29,6 +32,7 @@ public plugin_init()
     register_plugin(PLUGIN, VERSION, AUTHOR);
 
     registerClientCommands();
+    registerMonsterEvents();
 
     @initTowerDefenseMod();
 }

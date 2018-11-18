@@ -9,6 +9,11 @@ public registerClientCommands()
     register_clcmd("say /nextwave", "@test2");
 }
 
+public registerMonsterEvents()
+{
+    RegisterHam(Ham_Touch, "info_target", "monsterChangeTrack", 0);
+}
+
 @test(id)
 {
     if(g_ActualWave <= 0)

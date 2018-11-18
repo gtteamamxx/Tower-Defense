@@ -5,7 +5,7 @@
 #define VERSION "1.0"
 #define AUTHOR "GT Team"
 
-#define MONSTER_KEY "Fast"
+#define MONSTER_KEY "FAST"
 
 #define MODEL_1 "models/Tower Defense/fast1.mdl"
 #define MODEL_2 "models/Tower Defense/fast2.mdl"

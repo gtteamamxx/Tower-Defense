@@ -20,6 +20,10 @@ new Trie:g_MonsterTypesConfigurationKeysTrie;
 new Trie:g_WavesConfigurationKeysTrie;
 
 new bool:g_IsGamePossible = true;
+new bool:g_HasAnyTracks = false;
+
+new g_AliveMonstersNum
+new g_SentMonsters;
 
 public getConfigDirectory()
 {
@@ -70,6 +74,26 @@ public keyToString(keyIndex)
     return key;
 }
 
+public getGlobalEnt(const entityName[])
+{
+    return find_ent_by_tname(-1, entityName);
+}
+
+public bool:isMonster(entity)
+{
+    return is_valid_ent(entity) && (entity_get_int(entity, EV_INT_iuser1) & MONSTER_BIT);
+}
+
+public bool:isTrackWall(entity)
+{
+    return is_valid_ent(entity) && (entity_get_int(entity, EV_INT_iuser1) & TRACK_WALL_BIT);
+}
+
+public bool:isEndWall(entity)
+{
+    return is_valid_ent(entity) && (entity_get_int(entity, EV_INT_iuser1) & END_WALL_BIT);
+}
+
 stock getTrackEntityName(trackId, trackName[9] = {})
 {
     formatex(trackName, charsmax(trackName), "track%d", trackId);
@@ -80,4 +104,71 @@ stock getTrackWallEntityName(trackId, trackName[14] = {})
 {
     formatex(trackName, charsmax(trackName), "track%d_wall", trackId);
     return trackName
+}
+
+stock entity_set_aim(ent1, ent2) 
+{
+	if(!is_valid_ent(ent1) || !is_valid_ent(ent2) || ent1 == ent2)
+    {
+        return 0;
+    }
+    
+	static Float:offset[3]
+	static Float:ent1origin[3]
+	static Float:ent2origin[3]
+	static Float:view_angles[3]
+	
+	entity_get_vector(ent2, EV_VEC_origin, ent2origin)
+	entity_get_vector(ent1, EV_VEC_origin, ent1origin)
+	
+	static Float:ent2_angles[3]
+	entity_get_vector(ent2, EV_VEC_v_angle, ent2_angles)
+	ent2origin[0] += offset[0] * (((floatabs(ent2_angles[1]) - 90) / 90) * -1)
+	ent2origin[1] += offset[1] * (1 - (floatabs(90 - floatabs(ent2_angles[1])) / 90))
+	ent2origin[2] += offset[2]
+	
+	ent2origin[0] -= ent1origin[0]
+	ent2origin[1] -= ent1origin[1]
+	ent2origin[2] -= ent1origin[2]
+	
+	static Float:hyp
+	hyp = floatsqroot( (ent2origin[0] * ent2origin[0]) + (ent2origin[1] * ent2origin[1]))
+	
+	static x, y, z
+	x=0, y=0, z=0
+	
+	if(ent2origin[0]>=0.0)  x=1
+	if(ent2origin[1]>=0.0)  y=1
+	if(ent2origin[2]>=0.0)  z=1
+	
+	if(ent2origin[0]==0.0) ent2origin[0] = 0.000001
+	if(ent2origin[1]==0.0) ent2origin[1] = 0.000001
+	if(ent2origin[2]==0.0) ent2origin[2] = 0.000001
+	
+	ent2origin[0]=floatabs(ent2origin[0])
+	ent2origin[1]=floatabs(ent2origin[1])
+	ent2origin[2]=floatabs(ent2origin[2])
+	
+	view_angles[1] = floatatan2(ent2origin[1],ent2origin[0],degrees)
+	
+	if(x && !y) view_angles[1] = -1 * ( 180 - view_angles[1] )
+	if(!x && !y) view_angles[1] = ( 180 - view_angles[1] )
+	if(!x && y) view_angles[1] = view_angles[1] = 180 + floatabs(180 - view_angles[1])
+	if(x && !y) view_angles[1] = view_angles[1] = 0 - floatabs(-180 - view_angles[1])
+	if(!x && !y) view_angles[1] *= -1
+	
+	while(view_angles[1] > 180.0)  view_angles[1] -= 180
+	while(view_angles[1] < -180.0) view_angles[1] += 180
+
+	if(view_angles[1]==180.0 || view_angles[1]==-180.0) view_angles[1]=-179.999999
+	view_angles[0] = floatasin(ent2origin[2] / hyp, degrees)
+	
+	if(z) view_angles[0] *= -1
+
+	entity_set_int(ent1, EV_INT_fixangle, 1)
+	entity_set_vector(ent1, EV_VEC_v_angle, view_angles)
+	entity_set_vector(ent1, EV_VEC_angles, view_angles)
+	entity_set_int(ent1, EV_INT_fixangle, 1)
+	
+	return 1;
 }

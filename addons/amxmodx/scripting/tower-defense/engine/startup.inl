@@ -112,34 +112,40 @@ public initializeGame()
         setGameStatus(.status = false);
     }
 
-    new const endWallEntity = @getGlobalEnt(MAP_END_TRACK_ENTITY_NAME);
+    new const endWallEntity = getGlobalEnt(MAP_END_TRACK_ENTITY_NAME);
     if(!is_valid_ent(endWallEntity))
     {
         log_amx("[Map] Mapa nie posiada końcowego punktu dotyku dla potwórów.")
         setGameStatus(.status = false);
     }
 
-    new const track1Entity = @getGlobalEnt(getTrackEntityName(.trackId = 1));
+    new const track1Entity = getGlobalEnt(getTrackEntityName(.trackId = 1));
     if(!is_valid_ent(track1Entity))
     {
         log_amx("[Map] Mapa nie posiada żadnego punktu odpowiedzialnego za trasę. Mogą wystąpić błędy.");
+    }
+    else
+    {
+        g_HasAnyTracks = true;
     }
 }
 
 @hideAllTrackWallEntities()
 {
     new trackIndex = 1, trackWallEntity;
-    while((trackWallEntity = @getGlobalEnt(getTrackWallEntityName(.trackId = trackIndex++))))
+    while((trackWallEntity = getGlobalEnt(getTrackWallEntityName(.trackId = trackIndex++))))
     {
         if(is_valid_ent(trackWallEntity))
         {
+            entity_set_int(trackWallEntity, EV_INT_iuser1, TRACK_WALL_BIT);
             @hideEntity(trackWallEntity);
         }
     }
 
-    new const endWallEntity = @getGlobalEnt(MAP_END_TRACK_ENTITY_NAME);
+    new const endWallEntity = getGlobalEnt(MAP_END_TRACK_ENTITY_NAME);
     if(is_valid_ent(endWallEntity))
     {
+        entity_set_int(trackWallEntity, EV_INT_iuser1, END_WALL_BIT);
         @hideEntity(endWallEntity);
     }
 }
@@ -281,17 +287,12 @@ public initializeGame()
 
 @getStartEntity()
 {
-    return @getGlobalEnt(MAP_START_ENTITY_NAME);
+    return getGlobalEnt(MAP_START_ENTITY_NAME);
 }
 
 @getEndEntity()
 {
-    return @getGlobalEnt(MAP_END_ENTITY_NAME);
-}
-
-@getGlobalEnt(const entityName[])
-{
-    return find_ent_by_tname(-1, entityName);
+    return getGlobalEnt(MAP_END_ENTITY_NAME);
 }
 
 @getModelsConfigurationFilePath(path[128])
