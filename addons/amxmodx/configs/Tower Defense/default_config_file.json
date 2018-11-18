@@ -13,11 +13,26 @@
             "MONSTER_TYPES": [
                 {
                     "Type": "NORMAL",
-                    "Health": [3100, 3500],
-                    "Speed": [350.0, 400.0],
-                    "DeployInterval": [2.0],
-                    "Count": [13, 15],
+                    "Health": [100, 250],
+                    "Speed": [220.0, 260.0],
+                    "DeployInterval": [1.0],
+                    "Count": [5, 7]
+                },
+                {
+                    "Type": "FAST",
+                    "Health": [50, 150],
+                    "Speed": [265.0, 300.0],
+                    "DeployInterval": [1.0, 3.0],
+                    "Count": [5, 9],
                     "DeployExtraDelay": [10.0]
+                },
+                {
+                    "Type": "STRENGTH",
+                    "Health": [300, 450],
+                    "Speed": [150, 200],
+                    "DeployInterval": [3.0, 6.0],
+                    "Count": [4, 5],
+                    "DeployExtraDelay": [15.0]
                 }
             ]
         }
