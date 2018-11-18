@@ -52,21 +52,38 @@ public startSendingWaveMonsters(wave)
     new Float:monsterSpeed = getRandomValueForMonsterTypeInWave(wave, monsterTypeIndex, SPEED);
     new Float:deployInterval = getRandomValueForMonsterTypeInWave(wave, monsterTypeIndex, DEPLOY_INTERVAL);
 
-    new Float:sendMonsterParameter[2];
-    sendMonsterParameter[0] = monsterHealth;
-    sendMonsterParameter[1] = monsterSpeed;
+    new Array:sendMonsterParameterArray = ArrayCreate();
+    ArrayPushCell(sendMonsterParameterArray, monsterHealth);
+    ArrayPushCell(sendMonsterParameterArray, monsterSpeed);
+    ArrayPushCell(sendMonsterParameterArray, monsterTypeIndex);
+    ArrayPushCell(sendMonsterParameterArray, wave);
 
     client_print(0, 3, "Monsters left: %d Waiting: %0.1f", monstersLeft, deployInterval);
-    set_task(deployInterval, "@sendMonster", .parameter = sendMonsterParameter, .len = 2);
+    @sendMonster(sendMonsterParameterArray);
 
     sendWaveMonsterParameter[2] = monstersLeft - 1;
     set_task(deployInterval, "@sendMonsterAndAfterSendNextOne", .parameter = sendWaveMonsterParameter, .len = 3);
 }
 
-@sendMonster(Float:sendMonsterParameter[2])
+@sendMonster(Array:sendMonsterParameterArray)
 {
-    new Float:monsterHealth = sendMonsterParameter[0];
-    new Float:monsterSpeed = sendMonsterParameter[1];
+    new Float:monsterHealth = Float:ArrayGetCell(sendMonsterParameterArray, 0);
+    new Float:monsterSpeed = Float:ArrayGetCell(sendMonsterParameterArray, 1);
+    new monsterTypeIndex = ArrayGetCell(sendMonsterParameterArray, 2);
+    new wave = ArrayGetCell(sendMonsterParameterArray, 3);
 
-    client_print(0, 3, "monste sending: hp: %0.1f speed: %0.1f", monsterHealth, monsterSpeed);
+    ArrayDestroy(sendMonsterParameterArray);
+
+    new monsterTypeName[33]; getMonsterTypeNameForMonsterTypeInWave(wave, monsterTypeIndex, monsterTypeName);
+    new monsterModel[128]; gerRandomModelOfMonsterType(monsterTypeName, monsterModel);
+
+    if(equal(monsterModel[0], "")) 
+    {
+        log_amx("Brak modeli dla typu potworu: %s", monsterTypeName);
+        return;
+    }
+
+    client_print(0, 3, 
+    "sending monster of type: %s hp: %0.1f speed: %0.1f. Using model: %s", 
+    monsterTypeName, monsterHealth, monsterSpeed, monsterModel);
 }

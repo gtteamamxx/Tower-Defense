@@ -24,7 +24,7 @@ public bool:getWaveMonstersTotalCount(wave, totalCount[2])
         );
 
         new count[2];
-        TrieGetArray(monsterTypeTrie, @keyToString(_:COUNT), count, 2);
+        TrieGetArray(monsterTypeTrie, keyToString(_:COUNT), count, 2);
         totalCount[0] += count[0];
         totalCount[1] += count[1];
     }
@@ -42,7 +42,7 @@ public Float:getRandomValueForMonsterTypeInWave(wave, monsterTypeIndex, WAVE_MON
     new Trie:monsterTypeTrie = @getMonsterTypeTrie(wave, monsterTypeIndex);
 
     new Float:value[2];
-    TrieGetArray(monsterTypeTrie, @keyToString(_:key), value, 2);
+    TrieGetArray(monsterTypeTrie, keyToString(_:key), value, 2);
     return value[1] == 0.0 ? value[0] : random_float(value[0], value[1]);
 }
 
@@ -54,7 +54,7 @@ public getMonsterTypeNameForMonsterTypeInWave(wave, monsterTypeIndex, monsterTyp
     }
 
     new Trie:monsterTypeTrie = @getMonsterTypeTrie(wave, monsterTypeIndex);
-    TrieGetString(monsterTypeTrie, @keyToString(_:TYPE), monsterTypeName, charsmax(monsterTypeName));
+    TrieGetString(monsterTypeTrie, keyToString(_:TYPE), monsterTypeName, charsmax(monsterTypeName));
 }
 
 public getNumberOfMonstersForMonsterTypeInWave(wave, monsterTypeIndex)
@@ -67,7 +67,7 @@ public getNumberOfMonstersForMonsterTypeInWave(wave, monsterTypeIndex)
     new Trie:monsterTypeTrie = @getMonsterTypeTrie(wave, monsterTypeIndex);
 
     new count[2];
-    TrieGetArray(monsterTypeTrie, @keyToString(_:COUNT), count, 2);
+    TrieGetArray(monsterTypeTrie, keyToString(_:COUNT), count, 2);
 
     return count[1] == 0 ? count[0] : random_num(count[0], count[1]);
 }
@@ -81,7 +81,7 @@ public getWaveTimeToWave(wave)
 
     new Trie:waveConfigurationTrie = @getWaveConfigurationTrie(wave);
     new timeToWave = -1;
-    TrieGetCell(waveConfigurationTrie, @keyToString(_:WAVE_TIME_TO_WAVE), .value = timeToWave);
+    TrieGetCell(waveConfigurationTrie, keyToString(_:WAVE_TIME_TO_WAVE), .value = timeToWave);
     return timeToWave;
 }
 
@@ -133,11 +133,4 @@ Trie:@getMonsterTypeTrie(wave, monsterTypeIndex)
             .monsterTypesArray = waveMonsterTypesArray,
             .monsterTypeIndex = monsterTypeIndex
     );
-}
-
-@keyToString(keyIndex)
-{
-    new key[4];
-    num_to_str(keyIndex, key, charsmax(key));
-    return key;
 }

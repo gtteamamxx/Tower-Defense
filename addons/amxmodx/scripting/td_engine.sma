@@ -8,12 +8,14 @@
 #include "tower-defense/engine/common.inl"
 #include "tower-defense/engine/json-loader.inl"
 #include "tower-defense/engine/json-wave-loader.inl"
-#include "tower-defense/engine/precaches.inl"
 #include "tower-defense/engine/startup.inl"
 #include "tower-defense/engine/wave-manager.inl"
 #include "tower-defense/engine/counter.inl"
 #include "tower-defense/engine/monsters-manager.inl"
+#include "tower-defense/engine/monster-types-manager.inl"
 #include "tower-defense/engine/events.inl"
+#include "tower-defense/engine/precaches.inl"
+#include "tower-defense/engine/natives.inl"
 
 #pragma semicolon 1
 #pragma dynamic 32768

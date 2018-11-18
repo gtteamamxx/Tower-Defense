@@ -63,6 +63,13 @@ public getMapEntityOrigin(MAP_ENTITIES_ENUM:item, Float:outputOrigin[3])
     entity_get_vector(entity, EV_VEC_origin, outputOrigin);
 }
 
+public keyToString(keyIndex)
+{
+    new key[6];
+    num_to_str(keyIndex, key, charsmax(key));
+    return key;
+}
+
 stock getTrackEntityName(trackId, trackName[9] = {})
 {
     formatex(trackName, charsmax(trackName), "track%d", trackId);

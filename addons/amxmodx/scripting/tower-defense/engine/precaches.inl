@@ -34,6 +34,7 @@ public relaseTries()
 @releaseTries()
 {
     destroyCounterTrie();
+    destroyMonsterTypeModelsTrie();
 }
 
 @initTries()
@@ -43,6 +44,7 @@ public relaseTries()
     @initWavesConfigurationTrie();
 
     initCounterTrie();
+    initMonsterTypeModelsTrie();
 }
 
 @initArrays()
