@@ -145,7 +145,7 @@ public initializeGame()
     new const endWallEntity = getGlobalEnt(MAP_END_TRACK_ENTITY_NAME);
     if(is_valid_ent(endWallEntity))
     {
-        entity_set_int(trackWallEntity, EV_INT_iuser1, END_WALL_BIT);
+        entity_set_int(endWallEntity, EV_INT_iuser1, END_WALL_BIT);
         @hideEntity(endWallEntity);
     }
 }

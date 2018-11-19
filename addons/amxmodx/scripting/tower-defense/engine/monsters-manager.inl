@@ -11,10 +11,6 @@
 
 public startSendingWaveMonsters(wave)
 {
-    new monsterTypesNum = getWaveMonsterTypesNum(wave);
-
-    client_print(0, 3, "Monster types num for wave %d: %d", wave, monsterTypesNum);
-
     @startSendingWaveMonsters(wave, .monsterTypeIndex = 0);
 }
 
@@ -42,8 +38,14 @@ public monsterChangeTrack(monsterEntity, wallEntity)
     }
     else if(isEndWall(wallEntity))
     {
-        
+        @monsterTouchedEndWall(monsterEntity);
     }
+}
+
+@monsterTouchedEndWall(monsterEntity)
+{
+    g_AliveMonstersNum--;
+    remove_entity(monsterEntity);
 }
 
 @startSendingWaveMonsters(wave, monsterTypeIndex)
@@ -132,41 +134,85 @@ public monsterChangeTrack(monsterEntity, wallEntity)
         return;
     }
 
+    g_AliveMonstersNum++;
+    g_SentMonsters++;
+
+    @setMonsterClass(monsterEntity, monsterTypeName);
+    @setMonsterModel(monsterEntity, monsterModel);
+    @setMonsterPosition(monsterEntity);
+
+    @setMonsterProperties(monsterEntity, monsterHealth, monsterSpeed);
+}
+
+@setMonsterProperties(monsterEntity, Float:monsterHealth, Float:monsterSpeed)
+{
+    @setMonsterHealth(monsterEntity, monsterHealth);
+    @setMonsterSpeed(monsterEntity, monsterSpeed);
+
+    @setMonsterCollision(monsterEntity);
+    @setMonsterBitData(monsterEntity);
+    @setMonsterAnimationBySpeed(monsterEntity, monsterSpeed);
+    @setMonsterTargetTrack(monsterEntity);
+}
+
+@setMonsterClass(monsterEntity, monsterTypeName[33])
+{
     cs_set_ent_class(monsterEntity, MONSTER_ENTITY_NAME);
+    CED_SetString(monsterEntity, MONSTER_DATA_TYPE_KEY, monsterTypeName);
+}
+
+@setMonsterModel(monsterEntity, monsterModel[128])
+{
     entity_set_model(monsterEntity, monsterModel);
-    entity_set_float(monsterEntity, EV_FL_takedamage, DAMAGE_YES);
-
-    entity_set_size(monsterEntity, Float:{-15.0, -15.0, -20.0}, Float:{15.0, 15.0, 56.0});	
-
-    entity_set_vector(monsterEntity, EV_VEC_origin, @getStartEntityOrigin());
 
     entity_set_int(monsterEntity, EV_INT_solid, SOLID_BBOX);
     entity_set_int(monsterEntity, EV_INT_movetype, MOVETYPE_FLY);
+    entity_set_float(monsterEntity, EV_FL_takedamage, DAMAGE_YES);
 
+    entity_set_size(monsterEntity, Float:{-15.0, -15.0, -20.0}, Float:{15.0, 15.0, 56.0});	
+}
+
+@setMonsterPosition(monsterEntity)
+{
+    entity_set_vector(monsterEntity, EV_VEC_origin, @getStartEntityOrigin());
+}
+
+@setMonsterCollision(monsterEntity)
+{
+    set_pev(monsterEntity, pev_groupinfo, (1 << g_SentMonsters) );
+}
+
+@setMonsterBitData(monsterEntity)
+{
     entity_set_int(monsterEntity, EV_INT_iuser1, MONSTER_BIT);
+}
+
+@setMonsterAnimationBySpeed(monsterEntity, Float:monsterSpeed)
+{
     entity_set_int(monsterEntity, EV_INT_sequence, ANIMATION_RUN_SEQUENCE_ID);
     entity_set_float(monsterEntity, EV_FL_animtime, 1.0);    
     entity_set_float(monsterEntity, EV_FL_framerate, monsterSpeed / MONSTER_ANIMATION_SPEED_DIVIDER);
+}
 
-    entity_set_float(monsterEntity, EV_FL_health, monsterHealth);
-
-    CED_SetString(monsterEntity, MONSTER_DATA_TYPE_KEY, monsterTypeName);
-
+@setMonsterTargetTrack(monsterEntity)
+{
     new trackId = g_HasAnyTracks ? 1 : MONSTER_TARGET_END_ID;
     new trackEntity = @getMonsterFirstTrackEntity();
 
     CED_SetCell(monsterEntity, MONSTER_DATA_TRACK_KEY, trackId);
+    aimMonsterToTrack(monsterEntity, trackEntity);
+}
 
+@setMonsterHealth(monsterEntity, Float:monsterHealth)
+{
+    entity_set_float(monsterEntity, EV_FL_health, monsterHealth);
     CED_SetCell(monsterEntity, MONSTER_DATA_MAX_HEALTH, monsterHealth);
+}
+
+@setMonsterSpeed(monsterEntity, Float:monsterSpeed)
+{
     CED_SetCell(monsterEntity, MONSTER_DATA_MAX_SPEED, monsterSpeed);
     CED_SetCell(monsterEntity, MONSTER_DATA_SPEED, monsterSpeed);
-
-    aimMonsterToTrack(monsterEntity, trackEntity);
-
-    g_AliveMonstersNum++;
-    g_SentMonsters++;
-
-    set_pev(monsterEntity, pev_groupinfo, (1 << g_SentMonsters) );
 }
 
 any:@getStartEntityOrigin()
