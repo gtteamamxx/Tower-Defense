@@ -34,7 +34,7 @@ public monsterChangeTrack(monsterEntity, wallEntity)
         if(!is_valid_ent(trackEntity))
         {
             trackEntity = getMapEntityData(END_ENTITY);
-            actualMonsterTrack = 01;
+            actualMonsterTrack = -1;
         }
 
         CED_SetCell(monsterEntity, MONSTER_DATA_TRACK_KEY, actualMonsterTrack);

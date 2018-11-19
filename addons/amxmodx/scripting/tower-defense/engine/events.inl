@@ -22,18 +22,17 @@ public registerMonsterEvents()
     }
 
     new waveTimeToWave = getWaveTimeToWave(g_ActualWave);
-    client_print(0,3, "wave: %d, timeToWave: %d", g_ActualWave, waveTimeToWave);
-    createCounter(2, "testKey", "@testChanged", "@testCompleted");
+    createCounter(waveTimeToWave, "testKey", "@testChanged", "@testCompleted");
 }
 
 @testChanged(time)
 {
-    client_print(0, 3, "remaing: %d", time);
+    client_print(0, 3, "Wave will start in: %ds", time);
 }
 
 @testCompleted()
 {
-    client_print(0, 3, "finished");
+    client_print(0, 3, "Wave is starting...");
     startSendingWaveMonsters(g_ActualWave);
 }
 
