@@ -23,7 +23,7 @@ public loadWavesFromFile(jsonFilePath[128])
     }
     else
     {
-        log_amx('[Wave] Loading configuration file: %s', jsonFilePath);
+        log_amx("[Wave] Loading configuration file: %s", jsonFilePath);
         @loadWaves(wavesJsonObject, 
             .count = wavesCount, 
             .filePath = jsonFilePath);
