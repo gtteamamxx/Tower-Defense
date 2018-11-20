@@ -30,7 +30,7 @@ public monsterChangeTrack(monsterEntity, wallEntity)
         if(!is_valid_ent(trackEntity))
         {
             trackEntity = getMapEntityData(END_ENTITY);
-            actualMonsterTrack = -1;
+            actualMonsterTrack = MONSTER_TARGET_END_ID;
         }
 
         CED_SetCell(monsterEntity, MONSTER_DATA_TRACK_KEY, actualMonsterTrack);
@@ -107,7 +107,7 @@ public monsterChangeTrack(monsterEntity, wallEntity)
     new monsterTypeName[33]; getMonsterTypeNameForMonsterTypeInWave(wave, monsterTypeIndex, monsterTypeName);
     new monsterModel[128]; gerRandomModelOfMonsterType(monsterTypeName, monsterModel);
 
-    if(equal(monsterModel[0], "")) 
+    if(equal(monsterModel[0], EMPTY_STRING)) 
     {
         log_amx("No models for monster type: %s", monsterTypeName);
         return;
@@ -119,7 +119,7 @@ public monsterChangeTrack(monsterEntity, wallEntity)
 @createMonsterEntity(monsterTypeName[33], Float:monsterHealth, Float:monsterSpeed, monsterModel[128])
 {
     new monsterEntity = cs_create_entity("info_target");
-    if(monsterEntity == 0 )
+    if(monsterEntity == 0)
     {
         log_amx("Creating monster entity failed");
         return;
@@ -170,7 +170,7 @@ public monsterChangeTrack(monsterEntity, wallEntity)
 
 @setMonsterCollision(monsterEntity)
 {
-    set_pev(monsterEntity, pev_groupinfo, (1 << g_SentMonsters) );
+    set_pev(monsterEntity, pev_groupinfo, (1 << g_SentMonsters));
 }
 
 @setMonsterBitData(monsterEntity)
@@ -242,9 +242,9 @@ stock aimMonsterToTrack(monsterEntity, trackEntity = -1)
 
     entity_set_aim(monsterEntity, trackEntity);
 
-    static Float:velocity_vector[3];
+    static Float:velocityVector[3];
 
     new Float:monsterSpeed; CED_GetCell(monsterEntity, MONSTER_DATA_SPEED, monsterSpeed);
-    velocity_by_aim(monsterEntity, floatround(monsterSpeed), velocity_vector);
-    entity_set_vector(monsterEntity, EV_VEC_velocity, velocity_vector);
+    velocity_by_aim(monsterEntity, floatround(monsterSpeed), velocityVector);
+    entity_set_vector(monsterEntity, EV_VEC_velocity, velocityVector);
 }
