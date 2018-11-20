@@ -81,17 +81,27 @@ public getGlobalEnt(const entityName[])
 
 public bool:isMonster(entity)
 {
-    return is_valid_ent(entity) && (entity_get_int(entity, EV_INT_iuser1) & MONSTER_BIT);
+    return is_valid_ent(entity) && (getEntityBitData(entity) & MONSTER_BIT);
 }
 
 public bool:isTrackWall(entity)
 {
-    return is_valid_ent(entity) && (entity_get_int(entity, EV_INT_iuser1) & TRACK_WALL_BIT);
+    return is_valid_ent(entity) && (getEntityBitData(entity) & TRACK_WALL_BIT);
 }
 
 public bool:isEndWall(entity)
 {
-    return is_valid_ent(entity) && (entity_get_int(entity, EV_INT_iuser1) & END_WALL_BIT);
+    return is_valid_ent(entity) && (getEntityBitData(entity) & END_WALL_BIT);
+}
+
+public getEntityBitData(entity)
+{
+	return entity_get_int(entity, EV_INT_iuser1);
+}
+
+public setEntityBitData(entity, bitData)
+{
+	entity_set_int(entity, EV_INT_iuser1, bitData);
 }
 
 stock getTrackEntityName(trackId, trackName[9] = {})

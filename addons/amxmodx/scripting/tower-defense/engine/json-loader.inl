@@ -9,7 +9,7 @@ public loadModelsConfigurationFromFile(jsonFilePath[128])
 
     if(!json_is_object(json))
     {
-        log_amx("[Models] Plik konfiguracyjny nie jest prawidłowym plikiem JSON");
+        log_amx("[Models] Configuration file is not valid JSON file");
         setGameStatus(.status = false);
         json_free(json);
         return;
@@ -39,7 +39,7 @@ public loadModelsConfigurationFromFile(jsonFilePath[128])
     }
     else
     {
-        log_amx("[Models] Nie znaleziono konfiguracji dla klucza: %s", key);
+        log_amx("[Models] No configuration for key: %s", key);
         setGameStatus(.status = false);
     }
 }
@@ -54,7 +54,7 @@ public loadModelsConfigurationFromFile(jsonFilePath[128])
 
         if(!@isTrieValid(g_ModelsConfigurationKeysTrie, key, type))
         {
-            log_amx("[Models] Nie rozpoznano klucza: %s. ", key);
+            log_amx("[Models] Undefined key: %s. ", key);
             setGameStatus(.status = false);
             continue;
         }
@@ -74,7 +74,7 @@ public loadMapConfigFromJsonFile(jsonFilePath[128])
 
     if(!json_is_object(json))
     {
-        log_amx("[Map] Plik konfiguracyjny nie jest prawidłowym plikiem JSON");
+        log_amx("[Map] Configuration file is not valid JSON file");
         setGameStatus(.status = false);
         json_free(json);
         return;
@@ -104,7 +104,7 @@ public loadMapConfigFromJsonFile(jsonFilePath[128])
 
     if(!@isTrieValid(g_MapConfigurationKeysTrie, key, type))
     {
-        log_amx("[Map] Nie rozpoznano klucza: %s", key);
+        log_amx("[Map] Undefined key: %s", key);
         return;
     }
 
@@ -124,7 +124,7 @@ bool:@setMapConfigurationValueByType(JSON:json, MAP_CONFIGURATION_ENUM:type, key
     new JSON:jsonConfigValue = json_object_get_value(json, key);
     if(jsonConfigValue == Invalid_JSON)
     {
-        log_amx("[Map] Nie można wczytać konfiguracji dla klucza: %s", key);
+        log_amx("[Map] Cannot load configuration for key: %s", key);
         return false;
     }
 
@@ -140,7 +140,7 @@ bool:@setMapConfigurationValueByType(JSON:json, MAP_CONFIGURATION_ENUM:type, key
         }
         default:
         {
-            log_amx("[Map] Nie można wczytać konfiguracji dla klucza: %s", key);
+            log_amx("[Map] Cannot load configuration for key: %s", key);
             setGameStatus(.status = false);
         }
     }
@@ -164,7 +164,7 @@ bool:@setMapConfigurationValueByType(JSON:json, MAP_CONFIGURATION_ENUM:type, key
     {
         TrieIterGetKey(trieIteration, key, charsmax(key));
 
-        log_amx("Nieprawidłowa wartośc dla konfiguracji: %s", key);
+        log_amx("Bad value for configuration of key: %s", key);
         setGameStatus(.status = false);
 
         TrieIterNext(trieIteration);

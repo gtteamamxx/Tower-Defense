@@ -52,15 +52,9 @@ public monsterChangeTrack(monsterEntity, wallEntity)
 {
     new monsterTypeName[33];
     new count = getNumberOfMonstersForMonsterTypeInWave(wave, monsterTypeIndex);
-    new Float:delay = getRandomValueForMonsterTypeInWave(wave, monsterTypeIndex, DEPLOY_EXTRA_DELAY);
-
-    if(delay == -1.0)
-    {
-        delay == 0.0;
-    }
+    new Float:delay = getRandomValueForMonsterTypeInWave(wave, monsterTypeIndex, MONSTER_DEPLOY_EXTRA_DELAY);
 
     getMonsterTypeNameForMonsterTypeInWave(wave, monsterTypeIndex, monsterTypeName);
-    client_print(0, 3, "Sending %d monster of type: %s. Waiting: %0.1fs", count, monsterTypeName, delay);
 
     new sendWaveMonsterParameter[3];
     sendWaveMonsterParameter[0] = wave;
@@ -85,9 +79,9 @@ public monsterChangeTrack(monsterEntity, wallEntity)
         return;
     }
 
-    new Float:monsterHealth = getRandomValueForMonsterTypeInWave(wave, monsterTypeIndex, HEALTH);
-    new Float:monsterSpeed = getRandomValueForMonsterTypeInWave(wave, monsterTypeIndex, SPEED);
-    new Float:deployInterval = getRandomValueForMonsterTypeInWave(wave, monsterTypeIndex, DEPLOY_INTERVAL);
+    new Float:monsterHealth = getRandomValueForMonsterTypeInWave(wave, monsterTypeIndex, MONSTER_HEALTH);
+    new Float:monsterSpeed = getRandomValueForMonsterTypeInWave(wave, monsterTypeIndex, MONSTER_SPEED);
+    new Float:deployInterval = getRandomValueForMonsterTypeInWave(wave, monsterTypeIndex, MONSTER_DEPLOY_INTERVAL);
 
     new Array:sendMonsterParameterArray = ArrayCreate();
     ArrayPushCell(sendMonsterParameterArray, monsterHealth);
@@ -95,7 +89,6 @@ public monsterChangeTrack(monsterEntity, wallEntity)
     ArrayPushCell(sendMonsterParameterArray, monsterTypeIndex);
     ArrayPushCell(sendMonsterParameterArray, wave);
 
-    client_print(0, 3, "Monsters left: %d Waiting: %0.1f", monstersLeft, deployInterval);
     @sendMonster(sendMonsterParameterArray);
 
     sendWaveMonsterParameter[2] = monstersLeft - 1;
@@ -116,11 +109,9 @@ public monsterChangeTrack(monsterEntity, wallEntity)
 
     if(equal(monsterModel[0], "")) 
     {
-        log_amx("Brak modeli dla typu potworu: %s", monsterTypeName);
+        log_amx("No models for monster type: %s", monsterTypeName);
         return;
     }
-
-    client_print(0, 3, "sending monster of type: %s hp: %0.1f speed: %0.1f. Using model: %s", monsterTypeName, monsterHealth, monsterSpeed, monsterModel);
 
     @createMonsterEntity(monsterTypeName, monsterHealth, monsterSpeed, monsterModel);
 }
@@ -184,7 +175,7 @@ public monsterChangeTrack(monsterEntity, wallEntity)
 
 @setMonsterBitData(monsterEntity)
 {
-    entity_set_int(monsterEntity, EV_INT_iuser1, MONSTER_BIT);
+    setEntityBitData(monsterEntity, MONSTER_BIT);
 }
 
 @setMonsterAnimationBySpeed(monsterEntity, Float:monsterSpeed)

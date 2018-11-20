@@ -10,7 +10,7 @@ public loadModelsConfiguration()
 
     if(!file_exists(modelsConfigurationFilePath))
     {
-        log_amx("Plik konfiguracyjny modeli %s nie istnieje.", modelsConfigurationFilePath);
+        log_amx("[Models] Configuration file %s for models doesn't exist.", modelsConfigurationFilePath);
     }
     else 
     {
@@ -49,7 +49,7 @@ public initializeGame()
 
         log_amx("WAVE: %d", i + 1);
 
-        new Trie:waveConfigurationTrie = Trie:ArrayGetCell(waveArray, _:CONFIG);
+        new Trie:waveConfigurationTrie = Trie:ArrayGetCell(waveArray, _:WAVE_CONFIG);
         
         new TrieIter:configIter = TrieIterCreate(waveConfigurationTrie);
         while(!TrieIterEnded(configIter))
@@ -65,7 +65,7 @@ public initializeGame()
 
         TrieIterDestroy(configIter);
 
-        new Array:monsterTypesArray = Array:ArrayGetCell(waveArray, _:MONSTER_TYPES);
+        new Array:monsterTypesArray = Array:ArrayGetCell(waveArray, _:WAVE_MONSTER_TYPES);
         new monstersTypeCount = ArraySize(monsterTypesArray);
 
         for(new j = 0; j < monstersTypeCount; ++j)
@@ -78,17 +78,17 @@ public initializeGame()
                 new key[64];
                 num_to_str(k, key, charsmax(key));
 
-                if(WAVE_MONSTER_DATA_ENUM:k == TYPE)
+                if(WAVE_MONSTER_DATA_ENUM:k == MONSTER_TYPE)
                 {
                     new type[64];
                     TrieGetString(monsterTypeTrie, key, type, charsmax(type));
-                    log_amx("TYPE: %s", type);
+                    log_amx("MONSTER_TYPE: %s", type);
                 }
-                else if(WAVE_MONSTER_DATA_ENUM:k == COUNT)
+                else if(WAVE_MONSTER_DATA_ENUM:k == MONSTER_COUNT)
                 {
                     new count[2];
                     TrieGetArray(monsterTypeTrie, key, count, 2);
-                    log_amx("COUNT: %d - %d", count[0], count[1]);
+                    log_amx("MONSTER_COUNT: %d - %d", count[0], count[1]);
                 }
                 else 
                 {
@@ -108,21 +108,21 @@ public initializeGame()
 
     if(!is_valid_ent(startEntity) || !is_valid_ent(endEntity))
     {
-        log_amx("[Map] Mapa nie posiada punktu startu 'start' albo punktu końcowego 'end'")
+        log_amx("[Map] Map don't have 'start' or 'end' entity.")
         setGameStatus(.status = false);
     }
 
     new const endWallEntity = getGlobalEnt(MAP_END_TRACK_ENTITY_NAME);
     if(!is_valid_ent(endWallEntity))
     {
-        log_amx("[Map] Mapa nie posiada końcowego punktu dotyku dla potwórów.")
+        log_amx("[Map] Map doesn't have 'end_wall' entitiy.")
         setGameStatus(.status = false);
     }
 
     new const track1Entity = getGlobalEnt(getTrackEntityName(.trackId = 1));
     if(!is_valid_ent(track1Entity))
     {
-        log_amx("[Map] Mapa nie posiada żadnego punktu odpowiedzialnego za trasę. Mogą wystąpić błędy.");
+        log_amx("[Map] [Warning] Map doesn't have any 'track' entity. Errors may occur");
     }
     else
     {
@@ -137,7 +137,7 @@ public initializeGame()
     {
         if(is_valid_ent(trackWallEntity))
         {
-            entity_set_int(trackWallEntity, EV_INT_iuser1, TRACK_WALL_BIT);
+            setEntityBitData(trackWallEntity, TRACK_WALL_BIT);
             @hideEntity(trackWallEntity);
         }
     }
@@ -145,7 +145,7 @@ public initializeGame()
     new const endWallEntity = getGlobalEnt(MAP_END_TRACK_ENTITY_NAME);
     if(is_valid_ent(endWallEntity))
     {
-        entity_set_int(endWallEntity, EV_INT_iuser1, END_WALL_BIT);
+        setEntityBitData(endWallEntity, END_WALL_BIT);
         @hideEntity(endWallEntity);
     }
 }
@@ -157,12 +157,12 @@ public initializeGame()
 
     if(!file_exists(configurationFilePath))
     {
-        log_amx("Plik konfiguracyjny %s dla tej mapy nie istnieje.", configurationFilePath);
+        log_amx("[CONFIGURATION] Configuration file %s doesn't exist.", configurationFilePath);
         getMapConfigurationFilePath(configurationFilePath, .useDefaultConfig = true);
 
         if(!file_exists(configurationFilePath))
         {
-            log_amx("Nie istnieje domyślny plik konfiguracyjny.");
+            log_amx("[CONFIGURATION] Even default configuration file doesn't exists.");
             setGameStatus(.status = false);
             return;
         }
@@ -213,9 +213,9 @@ public initializeGame()
 
 @createTowerEntity(Float:origin[3])
 {
-    new towerEntity = create_entity("info_target")
+    new towerEntity = cs_create_entity("info_target")
 
-    entity_set_string(towerEntity, EV_SZ_classname, TOWER_ENTITY_NAME)
+    cs_set_ent_class(towerEntity, TOWER_ENTITY_NAME)
     entity_set_model(towerEntity, g_Models[TOWER_MODEL]);
 
     entity_set_vector(towerEntity, EV_VEC_origin, origin);
@@ -270,9 +270,9 @@ public initializeGame()
 
 @createCircleSprite(const entityName[], Float:origin[3], MODELS_ENUM:modelIndex)
 {
-    new spriteEntity = create_entity("env_sprite")
+    new spriteEntity = cs_create_entity("env_sprite")
     
-    entity_set_string(spriteEntity, EV_SZ_classname, entityName)
+    cs_set_ent_class(spriteEntity, entityName)
     entity_set_model(spriteEntity, g_Models[modelIndex])
         
     entity_set_vector(spriteEntity, EV_VEC_origin, origin)

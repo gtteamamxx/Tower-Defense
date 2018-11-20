@@ -24,7 +24,7 @@ public bool:getWaveMonstersTotalCount(wave, totalCount[2])
         );
 
         new count[2];
-        TrieGetArray(monsterTypeTrie, keyToString(_:COUNT), count, 2);
+        TrieGetArray(monsterTypeTrie, keyToString(_:MONSTER_COUNT), count, 2);
         totalCount[0] += count[0];
         totalCount[1] += count[1];
     }
@@ -36,7 +36,7 @@ public Float:getRandomValueForMonsterTypeInWave(wave, monsterTypeIndex, WAVE_MON
 {
     if(!@isWaveValid(wave) || monsterTypeIndex < 0)
     {
-        return -1.0;
+        return 0.0;
     }
 
     new Trie:monsterTypeTrie = @getMonsterTypeTrie(wave, monsterTypeIndex);
@@ -54,7 +54,7 @@ public getMonsterTypeNameForMonsterTypeInWave(wave, monsterTypeIndex, monsterTyp
     }
 
     new Trie:monsterTypeTrie = @getMonsterTypeTrie(wave, monsterTypeIndex);
-    TrieGetString(monsterTypeTrie, keyToString(_:TYPE), monsterTypeName, charsmax(monsterTypeName));
+    TrieGetString(monsterTypeTrie, keyToString(_:MONSTER_TYPE), monsterTypeName, charsmax(monsterTypeName));
 }
 
 public getNumberOfMonstersForMonsterTypeInWave(wave, monsterTypeIndex)
@@ -67,7 +67,7 @@ public getNumberOfMonstersForMonsterTypeInWave(wave, monsterTypeIndex)
     new Trie:monsterTypeTrie = @getMonsterTypeTrie(wave, monsterTypeIndex);
 
     new count[2];
-    TrieGetArray(monsterTypeTrie, keyToString(_:COUNT), count, 2);
+    TrieGetArray(monsterTypeTrie, keyToString(_:MONSTER_COUNT), count, 2);
 
     return count[1] == 0 ? count[0] : random_num(count[0], count[1]);
 }
@@ -106,7 +106,7 @@ public getWaveMonsterTypesNum(wave)
 Trie:@getWaveConfigurationTrie(wave)
 {
     new Array:waveArray = @getWaveArray(wave);
-    return Trie:ArrayGetCell(waveArray, _:CONFIG);
+    return Trie:ArrayGetCell(waveArray, _:WAVE_CONFIG);
 }
 
 Array:@getWaveArray(wave)
@@ -117,7 +117,7 @@ Array:@getWaveArray(wave)
 Array:@getWaveMonsterTypesArray(wave)
 {
     new Array:waveArray = @getWaveArray(wave);
-    return Array:ArrayGetCell(waveArray, _:MONSTER_TYPES);
+    return Array:ArrayGetCell(waveArray, _:WAVE_MONSTER_TYPES);
 }
 
 Trie:@getMonsterTypeTrieFromMonsterTypesArray(Array:monsterTypesArray, monsterTypeIndex)

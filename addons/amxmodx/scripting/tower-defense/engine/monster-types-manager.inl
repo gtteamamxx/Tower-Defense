@@ -23,16 +23,18 @@ public gerRandomModelOfMonsterType(monsterTypeName[33], model[128])
     TrieGetCell(g_MonsterTypeModelsTrie, monsterTypeName, .value = monsterModelsArray);
 
     new modelsCount = ArraySize(monsterModelsArray);
-    ArrayGetString(monsterModelsArray, random(modelsCount), model, charsmax(model));
+    new randomModelIndex = random(modelsCount); // 0..modelsCount
+
+    ArrayGetString(monsterModelsArray, randomModelIndex, model, charsmax(model));
 }
 
-public initMonsterTypeModelsTrie()
+public initMonsterTypesManagerTries()
 {
     g_MonsterTypeModelsTrie = TrieCreate();
     g_MonsterTypePluginsTrie = TrieCreate();
 }
 
-public destroyMonsterTypeModelsTrie()
+public destroyMonsterTypesManagerTries()
 {
     new TrieIter:iterator = TrieIterCreate(g_MonsterTypeModelsTrie);
 

@@ -10,7 +10,7 @@ public plugin_natives()
 }
 
 /*
-    Params count: 2
+    Params count: minimum 2
     Param 1 string[33]: Monster type name
     Param 2 - X string[128]: Path to monster model
 */

@@ -5,8 +5,8 @@
 
 public registerClientCommands()
 {
-    register_clcmd("say /start", "@test");
-    register_clcmd("say /nextwave", "@test2");
+    register_clcmd("say /start", "@cmdStartWave");
+    register_clcmd("say /nextwave", "@cmdSetNextWave");
 }
 
 public registerMonsterEvents()
@@ -14,7 +14,7 @@ public registerMonsterEvents()
     RegisterHam(Ham_Touch, "info_target", "monsterChangeTrack", 0);
 }
 
-@test(id)
+@cmdStartWave(id)
 {
     if(g_ActualWave <= 0)
     {
@@ -22,21 +22,20 @@ public registerMonsterEvents()
     }
 
     new waveTimeToWave = getWaveTimeToWave(g_ActualWave);
-    createCounter(waveTimeToWave, "testKey", "@testChanged", "@testCompleted");
+    createCounter(waveTimeToWave, "startWaveCounter", "@startWaveCounterChanged", "@startWave");
 }
 
-@testChanged(time)
+@startWaveCounterChanged(time)
 {
     client_print(0, 3, "Wave will start in: %ds", time);
 }
 
-@testCompleted()
+@startWave()
 {
-    client_print(0, 3, "Wave is starting...");
     startSendingWaveMonsters(g_ActualWave);
 }
 
-@test2(id)
+@cmdSetNextWave(id)
 {
     g_ActualWave++;
 }

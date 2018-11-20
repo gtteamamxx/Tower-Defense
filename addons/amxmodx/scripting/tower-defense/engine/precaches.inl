@@ -34,7 +34,7 @@ public relaseTries()
 @releaseTries()
 {
     destroyCounterTrie();
-    destroyMonsterTypeModelsTrie();
+    destroyMonsterTypesManagerTries();
 }
 
 @initTries()
@@ -44,7 +44,7 @@ public relaseTries()
     @initWavesConfigurationTrie();
 
     initCounterTrie();
-    initMonsterTypeModelsTrie();
+    initMonsterTypesManagerTries();
 }
 
 @initArrays()
@@ -82,12 +82,12 @@ public relaseTries()
 {
     g_MonsterTypesConfigurationKeysTrie = TrieCreate();
 
-    TrieSetCell(g_MonsterTypesConfigurationKeysTrie, "Type", _:TYPE);
-    TrieSetCell(g_MonsterTypesConfigurationKeysTrie, "Health", _:HEALTH);
-    TrieSetCell(g_MonsterTypesConfigurationKeysTrie, "Speed", _:SPEED);
-    TrieSetCell(g_MonsterTypesConfigurationKeysTrie, "DeployInterval", _:DEPLOY_INTERVAL);
-    TrieSetCell(g_MonsterTypesConfigurationKeysTrie, "Count", _:COUNT);
-    TrieSetCell(g_MonsterTypesConfigurationKeysTrie, "DeployExtraDelay", _:DEPLOY_EXTRA_DELAY);
+    TrieSetCell(g_MonsterTypesConfigurationKeysTrie, "Type", _:MONSTER_TYPE);
+    TrieSetCell(g_MonsterTypesConfigurationKeysTrie, "Health", _:MONSTER_HEALTH);
+    TrieSetCell(g_MonsterTypesConfigurationKeysTrie, "Speed", _:MONSTER_SPEED);
+    TrieSetCell(g_MonsterTypesConfigurationKeysTrie, "DeployInterval", _:MONSTER_DEPLOY_INTERVAL);
+    TrieSetCell(g_MonsterTypesConfigurationKeysTrie, "Count", _:MONSTER_COUNT);
+    TrieSetCell(g_MonsterTypesConfigurationKeysTrie, "DeployExtraDelay", _:MONSTER_DEPLOY_EXTRA_DELAY);
 
     g_WavesConfigurationKeysTrie = TrieCreate();
 
@@ -102,8 +102,8 @@ public relaseTries()
     {
         new Array:waveArray = Array:ArrayGetCell(g_WaveDataArray, i);
 
-        new Trie:waveConfigurationTrie = Trie:ArrayGetCell(waveArray, _:CONFIG);
-        new Array:monsterTypesArray = Array:ArrayGetCell(waveArray, _:MONSTER_TYPES);
+        new Trie:waveConfigurationTrie = Trie:ArrayGetCell(waveArray, _:WAVE_CONFIG);
+        new Array:monsterTypesArray = Array:ArrayGetCell(waveArray, _:WAVE_MONSTER_TYPES);
 
         new monsterTypesCount = ArraySize(monsterTypesArray);
         for(new j = 0; j < monsterTypesCount; ++j)
