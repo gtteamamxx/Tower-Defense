@@ -64,6 +64,7 @@ public relaseTries()
     TrieSetCell(g_ModelsConfigurationKeysTrie, "TOWER_MODEL", _:TOWER_MODEL);
     TrieSetCell(g_ModelsConfigurationKeysTrie, "START_SPRITE_MODEL", _:START_SPRITE_MODEL);
     TrieSetCell(g_ModelsConfigurationKeysTrie, "END_SPRITE_MODEL", _:END_SPRITE_MODEL);
+    TrieSetCell(g_ModelsConfigurationKeysTrie, "HEALTHBAR_SPRITE_MODEL", _:HEALTHBAR_SPRITE_MODEL);
 }
 
 @initMapConfigurationTrie()
@@ -108,7 +109,7 @@ public relaseTries()
         new monsterTypesCount = ArraySize(monsterTypesArray);
         for(new j = 0; j < monsterTypesCount; ++j)
         {
-            new Trie:monsterTypeTrie = Trie:ArrayGetCell(waveArray, j);
+            new Trie:monsterTypeTrie = Trie:ArrayGetCell(monsterTypesArray, j);
             TrieDestroy(monsterTypeTrie);
         }
 

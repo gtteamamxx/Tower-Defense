@@ -8,6 +8,7 @@
 #define MONSTER_DATA_MAX_HEALTH "monster_max_health"
 #define MONSTER_DATA_MAX_SPEED "monster_max_speed"
 #define MONSTER_DATA_SPEED "monster_speed"
+#define MONSTER_DATA_HEALTHBAR_ENTITY "monster_healthbar"
 
 public startSendingWaveMonsters(wave)
 {
@@ -121,7 +122,7 @@ public monsterChangeTrack(monsterEntity, wallEntity)
     new monsterEntity = cs_create_entity("info_target");
     if(monsterEntity == 0)
     {
-        log_amx("Creating monster entity failed");
+        log_amx("Creating monster entity failed.");
         return;
     }
 
@@ -133,6 +134,32 @@ public monsterChangeTrack(monsterEntity, wallEntity)
     @setMonsterPosition(monsterEntity);
 
     @setMonsterProperties(monsterEntity, monsterHealth, monsterSpeed);
+    @createMonsterHealthBar(monsterEntity);
+}
+
+@createMonsterHealthBar(monsterEntity)
+{
+    new healthBarEntity = cs_create_entity("env_sprite");
+
+    if(healthBarEntity == 0)
+    {
+        log_amx("Creating health bar entity failed.");
+        return;
+    }
+
+    cs_set_ent_class(healthBarEntity, MONSTER_HEALTHBAR_ENTITY_NAME);
+    
+    entity_set_model(healthBarEntity, g_Models[HEALTHBAR_SPRITE_MODEL]);
+
+    entity_set_int(healthBarEntity, EV_INT_solid, SOLID_NOT);
+    entity_set_int(healthBarEntity, EV_INT_movetype, MOVETYPE_FLY);
+
+    entity_set_float(healthBarEntity , EV_FL_frame , 99.0 );
+    entity_set_float(healthBarEntity , EV_FL_scale , 0.4 );
+
+    setEntityBitData(healthBarEntity, MONSTER_HEALTHBAR_BIT);
+
+    CED_SetCell(monsterEntity, MONSTER_DATA_HEALTHBAR_ENTITY, healthBarEntity);
 }
 
 @setMonsterProperties(monsterEntity, Float:monsterHealth, Float:monsterSpeed)

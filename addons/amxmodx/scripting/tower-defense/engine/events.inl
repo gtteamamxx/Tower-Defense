@@ -22,7 +22,8 @@ public registerMonsterEvents()
     }
 
     new waveTimeToWave = getWaveTimeToWave(g_ActualWave);
-    createCounter(waveTimeToWave, "startWaveCounter", "@startWaveCounterChanged", "@startWave");
+
+    createCounter(3, "startWaveCounter", "@startWaveCounterChanged", "@startWave");
 }
 
 @startWaveCounterChanged(time)
@@ -32,6 +33,7 @@ public registerMonsterEvents()
 
 @startWave()
 {
+    client_print(0, 3, "Wave started.");
     startSendingWaveMonsters(g_ActualWave);
 }
 
