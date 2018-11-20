@@ -140,9 +140,11 @@ stock entity_set_aim(ent1, ent2)
 	entity_get_vector(ent2, EV_VEC_v_angle, ent2_angles)
 	ent2origin[0] += offset[0] * (((floatabs(ent2_angles[1]) - 90) / 90) * -1)
 	ent2origin[1] += offset[1] * (1 - (floatabs(90 - floatabs(ent2_angles[1])) / 90))
+	ent2origin[2] += offset[2]
 	
 	ent2origin[0] -= ent1origin[0]
 	ent2origin[1] -= ent1origin[1]
+	ent2origin[2] -= ent1origin[2]
 	
 	static Float:hyp
 	hyp = floatsqroot( (ent2origin[0] * ent2origin[0]) + (ent2origin[1] * ent2origin[1]))
@@ -152,12 +154,15 @@ stock entity_set_aim(ent1, ent2)
 	
 	if(ent2origin[0]>=0.0)  x=1
 	if(ent2origin[1]>=0.0)  y=1
+	if(ent2origin[2]>=0.0)  z=1
 	
 	if(ent2origin[0]==0.0) ent2origin[0] = 0.000001
 	if(ent2origin[1]==0.0) ent2origin[1] = 0.000001
+	if(ent2origin[2]==0.0) ent2origin[2] = 0.000001
 	
 	ent2origin[0]=floatabs(ent2origin[0])
 	ent2origin[1]=floatabs(ent2origin[1])
+	ent2origin[2]=floatabs(ent2origin[2])
 	
 	view_angles[1] = floatatan2(ent2origin[1],ent2origin[0],degrees)
 	
@@ -171,6 +176,7 @@ stock entity_set_aim(ent1, ent2)
 	while(view_angles[1] < -180.0) view_angles[1] += 180
 
 	if(view_angles[1]==180.0 || view_angles[1]==-180.0) view_angles[1]=-179.999999
+	view_angles[0] = floatasin(ent2origin[2] / hyp, degrees)
 	
 	if(z) view_angles[0] *= -1
 
