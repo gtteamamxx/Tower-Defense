@@ -13,6 +13,7 @@
 
 #define TOWER_ENTITY_NAME "tower"
 #define MONSTER_ENTITY_NAME "monster"
+#define MONSTER_DEAD_ENTITY_NAME "monster_dead"
 #define MONSTER_HEALTHBAR_ENTITY_NAME "monster_healthbar"
 
 #define MONSTER_TARGET_END_ID -1

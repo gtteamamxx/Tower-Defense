@@ -9,6 +9,144 @@
 #define MONSTER_DATA_MAX_SPEED "monster_max_speed"
 #define MONSTER_DATA_SPEED "monster_speed"
 #define MONSTER_DATA_HEALTHBAR_ENTITY "monster_healthbar"
+#define MONSTER_DATA_IS_LAST_SHOT_HEADSHOT "monster_healthbar"
+
+public monsterShotTraceAttack(monsterEntity, playerId, Float:damage, Float:direction[3], traceHandle, damageTypeBit)
+{
+    if(!isMonster(monsterEntity) || !is_user_connected(playerId))
+    {
+        return;
+    }
+
+    new bool:isPlayerShotHeadShot = get_tr2(traceHandle, TR_iHitgroup) == HIT_HEAD;
+
+    CED_SetCell(monsterEntity, MONSTER_DATA_IS_LAST_SHOT_HEADSHOT, _:isPlayerShotHeadShot);
+}
+
+public constrollDamageTakenToMonster(monsterEntity, inflictorId, playerId, Float:damage, damageTypeBit)
+{
+    if(!isMonster(monsterEntity) || !is_user_connected(playerId))
+    {
+        return;
+    }
+
+    new isDamageTakedByGun = damageTypeBit & DMG_BULLET;
+    if(isDamageTakedByGun)
+    {
+        damage = @controllDamageTakenToMonsterByGun(monsterEntity, playerId, damage);
+    }
+
+    SetHamParamFloat(4, damage);
+}
+
+public showMonsterTakedDamage(monsterEntity, inflictorId, playerId, Float:damage, damageTypeBit)
+{
+    if(!isMonster(monsterEntity) || !is_user_connected(playerId))
+    {
+        return;
+    }
+
+    set_hudmessage(0, 255, 0, 0.55, -1.0, 0, 0.0, 0.1)
+    show_hudmessage(playerId, "%d", floatround(damage));
+
+    set_dhudmessage(255, 255, 255, -1.0, -1.0, 0, 0.0, 0.1);
+    show_dhudmessage(playerId, "x");
+
+    @updateMonsterHealthbar(monsterEntity, damage);
+}
+
+public monsterKilled(monsterEntity, playerId)
+{
+    if(!isMonster(monsterEntity))
+    {
+        return;
+    }
+
+    @setMonsterKilledProperties(monsterEntity);
+    @setMonsterKilledAnimation(monsterEntity);
+    @removeMonsterHealthbar(monsterEntity);
+
+    new removeMonsterEntityParameter[1];
+    removeMonsterEntityParameter[0] = monsterEntity;
+
+    set_task(5.0, "@removeMonsterEntity", .parameter = removeMonsterEntityParameter, .len = 1);
+}
+
+@removeMonsterEntity(removeMonsterEntityParameter[1])
+{
+    new monsterEntity = removeMonsterEntityParameter[0];
+    if(is_valid_ent(monsterEntity))
+    {
+        remove_entity(monsterEntity);
+    }
+}
+
+@removeMonsterHealthbar(monsterEntity)
+{
+    new healthBarEntity; CED_GetCell(monsterEntity, MONSTER_DATA_HEALTHBAR_ENTITY, healthBarEntity);
+    if(isHealthBar(healthBarEntity))
+    {
+        remove_entity(healthBarEntity);
+    }
+    CED_SetCell(monsterEntity, MONSTER_DATA_HEALTHBAR_ENTITY, -1);
+}
+
+@setMonsterKilledProperties(monsterEntity)
+{
+    entity_set_int(monsterEntity, EV_INT_solid, SOLID_NOT);
+    entity_set_float(monsterEntity, EV_FL_framerate, 0.9);
+    cs_set_ent_class(monsterEntity, MONSTER_DEAD_ENTITY_NAME);
+    entity_set_vector(monsterEntity, EV_VEC_velocity, Float:{0.0, 0.0, -1.0});
+}
+
+@setMonsterKilledAnimation(monsterEntity)
+{
+    new bool:isMonsterKilledByHeadShot; CED_GetCell(monsterEntity, MONSTER_DATA_IS_LAST_SHOT_HEADSHOT, isMonsterKilledByHeadShot);
+    new deathSequence = lookup_sequence(monsterEntity, "head") ;
+
+    if(!isMonsterKilledByHeadShot)
+    {
+        new randomDeathSequence = random_num(1, 3), deathSequenceName[7];
+        formatex(deathSequenceName, charsmax(deathSequenceName), "death%d", randomDeathSequence);
+
+        deathSequence = lookup_sequence(monsterEntity, deathSequenceName);
+        if(!deathSequence)
+        {
+            deathSequence = lookup_sequence(monsterEntity, "death1");
+        }
+    }
+
+    entity_set_int(monsterEntity, EV_INT_sequence, deathSequence);
+}
+
+@updateMonsterHealthbar(monsterEntity, Float:damage)
+{
+    new monsterHealthbarEntity; CED_GetCell(monsterEntity, MONSTER_DATA_HEALTHBAR_ENTITY, monsterHealthbarEntity);
+    if(!isHealthBar(monsterHealthbarEntity))
+    {
+        return;
+    }
+
+    new Float:monsterMaxHealth; CED_GetCell(monsterEntity, MONSTER_DATA_MAX_HEALTH, monsterMaxHealth);
+    new Float:actualMonsterHealth = entity_get_float(monsterEntity, EV_FL_health);
+
+    if(monsterMaxHealth != 0)
+    {
+        new Float:healthbarFrame = (0.0 + ( actualMonsterHealth - damage) * 100 ) / monsterMaxHealth;
+        entity_set_float(monsterHealthbarEntity, EV_FL_frame, healthbarFrame);
+    }
+}
+
+Float:@controllDamageTakenToMonsterByGun(monsterEntity, playerId, Float:damage)
+{
+    new bool:isPlayerShotHeadShot; CED_GetCell(monsterEntity, MONSTER_DATA_IS_LAST_SHOT_HEADSHOT, isPlayerShotHeadShot);
+    if(isPlayerShotHeadShot)
+    {
+        damage *= 4.0;
+    }
+
+    return damage;
+}
 
 public startSendingWaveMonsters(wave)
 {

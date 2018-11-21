@@ -12,6 +12,12 @@ public registerClientCommands()
 public registerMonsterEvents()
 {
     RegisterHam(Ham_Touch, "info_target", "monsterChangeTrack", 0);
+
+    RegisterHam(Ham_TraceAttack, "info_target", "monsterShotTraceAttack");
+    RegisterHam(Ham_TakeDamage, "info_target", "constrollDamageTakenToMonster");
+    RegisterHam(Ham_TakeDamage, "info_target", "showMonsterTakedDamage", 1);
+
+    RegisterHam(Ham_Killed, "info_target", "monsterKilled")
 }
 
 @cmdStartWave(id)

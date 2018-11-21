@@ -34,6 +34,7 @@ public plugin_init()
 
     registerClientCommands();
     registerMonsterEvents();
+
     registerAddToFullPack();
 
     @initTowerDefenseMod();
