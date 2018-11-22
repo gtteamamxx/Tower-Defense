@@ -9,7 +9,7 @@
 #define MONSTER_DATA_MAX_SPEED "monster_max_speed"
 #define MONSTER_DATA_SPEED "monster_speed"
 #define MONSTER_DATA_HEALTHBAR_ENTITY "monster_healthbar"
-#define MONSTER_DATA_IS_LAST_SHOT_HEADSHOT "monster_healthbar"
+#define MONSTER_DATA_IS_LAST_SHOT_HEADSHOT "monster_headshot"
 
 public monsterShotTraceAttack(monsterEntity, playerId, Float:damage, Float:direction[3], traceHandle, damageTypeBit)
 {
@@ -47,6 +47,7 @@ public showMonsterTakedDamage(monsterEntity, inflictorId, playerId, Float:damage
     }
 
     new bool:isPlayerShotHeadShot; CED_GetCell(monsterEntity, MONSTER_DATA_IS_LAST_SHOT_HEADSHOT, isPlayerShotHeadShot);
+    new Float:actualMonsterHealth = entity_get_float(monsterEntity, EV_FL_health);
 
     set_hudmessage(0, 255, 0, 0.55, -1.0, 0, 0.0, 0.1)
     show_hudmessage(playerId, "%d%s", floatround(damage), isPlayerShotHeadShot ? " HS" : "");
@@ -54,16 +55,19 @@ public showMonsterTakedDamage(monsterEntity, inflictorId, playerId, Float:damage
     set_dhudmessage(255, 255, 255, -1.0, -1.0, 0, 0.0, 0.1);
     show_dhudmessage(playerId, "x");
 
-    @updateMonsterHealthbar(monsterEntity, damage);
+    client_print(playerId, print_center, "HP: %0.0f", actualMonsterHealth);
+
+    @updateMonsterHealthbar(monsterEntity, actualMonsterHealth);
 }
 
 public monsterKilled(monsterEntity, playerId)
 {
     if(!isMonster(monsterEntity))
     {
-        return;
+        return HAM_IGNORED;
     }
 
+    client_print(0, 3, "killed monster: %d", monsterEntity);
     @setMonsterKilledProperties(monsterEntity);
     @setMonsterKilledAnimation(monsterEntity);
     @removeMonsterHealthbar(monsterEntity);
@@ -71,7 +75,9 @@ public monsterKilled(monsterEntity, playerId)
     new removeMonsterEntityParameter[1];
     removeMonsterEntityParameter[0] = monsterEntity;
 
-    set_task(5.0, "@removeMonsterEntity", .parameter = removeMonsterEntityParameter, .len = 1);
+    set_task(6.0, "@removeMonsterEntity", .parameter = removeMonsterEntityParameter, .len = 1);
+
+    return HAM_SUPERCEDE;
 }
 
 @removeMonsterEntity(removeMonsterEntityParameter[1])
@@ -98,7 +104,7 @@ public monsterKilled(monsterEntity, playerId)
     entity_set_int(monsterEntity, EV_INT_solid, SOLID_NOT);
     entity_set_float(monsterEntity, EV_FL_framerate, 0.9);
     cs_set_ent_class(monsterEntity, MONSTER_DEAD_ENTITY_NAME);
-    entity_set_vector(monsterEntity, EV_VEC_velocity, Float:{0.0, 0.0, -1.0});
+    entity_set_vector(monsterEntity, EV_VEC_velocity, Float:{0.0, 0.0, -2.5});
 }
 
 @setMonsterKilledAnimation(monsterEntity)
@@ -119,9 +125,10 @@ public monsterKilled(monsterEntity, playerId)
     }
 
     entity_set_int(monsterEntity, EV_INT_sequence, deathSequence);
+    entity_set_float(monsterEntity, EV_FL_animtime, get_gametime());
 }
 
-@updateMonsterHealthbar(monsterEntity, Float:damage)
+@updateMonsterHealthbar(monsterEntity, Float:actualMonsterHealth)
 {
     new monsterHealthbarEntity; CED_GetCell(monsterEntity, MONSTER_DATA_HEALTHBAR_ENTITY, monsterHealthbarEntity);
     if(!isHealthBar(monsterHealthbarEntity))
@@ -130,11 +137,10 @@ public monsterKilled(monsterEntity, playerId)
     }
 
     new Float:monsterMaxHealth; CED_GetCell(monsterEntity, MONSTER_DATA_MAX_HEALTH, monsterMaxHealth);
-    new Float:actualMonsterHealth = entity_get_float(monsterEntity, EV_FL_health);
 
     if(monsterMaxHealth != 0)
     {
-        new Float:healthbarFrame = (0.0 + ( actualMonsterHealth - damage) * 100 ) / monsterMaxHealth;
+        new Float:healthbarFrame = (0.0 + actualMonsterHealth * 100 ) / monsterMaxHealth;
         entity_set_float(monsterHealthbarEntity, EV_FL_frame, healthbarFrame);
     }
 }
