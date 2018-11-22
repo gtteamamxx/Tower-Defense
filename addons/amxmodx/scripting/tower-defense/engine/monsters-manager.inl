@@ -46,8 +46,10 @@ public showMonsterTakedDamage(monsterEntity, inflictorId, playerId, Float:damage
         return;
     }
 
+    new bool:isPlayerShotHeadShot; CED_GetCell(monsterEntity, MONSTER_DATA_IS_LAST_SHOT_HEADSHOT, isPlayerShotHeadShot);
+
     set_hudmessage(0, 255, 0, 0.55, -1.0, 0, 0.0, 0.1)
-    show_hudmessage(playerId, "%d", floatround(damage));
+    show_hudmessage(playerId, "%d%s", floatround(damage), isPlayerShotHeadShot ? " HS" : "");
 
     set_dhudmessage(255, 255, 255, -1.0, -1.0, 0, 0.0, 0.1);
     show_dhudmessage(playerId, "x");
