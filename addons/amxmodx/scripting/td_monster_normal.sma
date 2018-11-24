@@ -1,5 +1,6 @@
 #include <amxmodx>
 #include <td>
+#include <engine>
 
 #define PLUGIN "Tower Defense Monster: Normal"
 #define VERSION "1.0"
@@ -17,6 +18,13 @@ public plugin_init()
     register_plugin(PLUGIN, VERSION, AUTHOR);
 
     td_register_monster(MONSTER_KEY, MODEL_1, MODEL_2, MODEL_3, MODEL_4);
+
+    @registerMonsterThink();
+}
+
+public monsterThink(id)
+{
+    client_print(0, 3, "test, %d", id);
 }
 
 public plugin_precache()
@@ -25,4 +33,12 @@ public plugin_precache()
     precache_model(MODEL_2);
     precache_model(MODEL_3);
     precache_model(MODEL_4);
+}
+
+@registerMonsterThink()
+{
+    new monsterEntityName[64];
+    td_get_monster_entity_name(MONSTER_KEY, monsterEntityName, charsmax(monsterEntityName));
+
+    register_think(monsterEntityName, "monsterThink");
 }

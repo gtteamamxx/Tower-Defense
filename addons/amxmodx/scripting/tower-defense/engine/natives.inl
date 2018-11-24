@@ -7,6 +7,7 @@ public plugin_natives()
 {
     register_library("td");
     register_native("td_register_monster", "@_td_register_monster");
+    register_native("td_get_monster_entity_name", "@_td_get_monster_entity_name");
 }
 
 /*
@@ -37,4 +38,19 @@ bool:@_td_register_monster(pluginId, argc)
     register_monster(pluginId, monsterTypeKey, monsterModelsArray)
 
     return true;
+}
+
+@_td_get_monster_entity_name(pluginId, argc)
+{
+    if(argc != 3)
+    {
+        log_amx("Bad use of _td_get_monster_entity_name");
+        return;
+    }
+
+    new monsterEntityName[64]
+    get_string(1, monsterEntityName, charsmax(monsterEntityName));
+    format(monsterEntityName, charsmax(monsterEntityName), "%s_%s", MONSTER_ENTITY_NAME, monsterEntityName);
+
+    set_string(2, monsterEntityName, get_param(3));
 }

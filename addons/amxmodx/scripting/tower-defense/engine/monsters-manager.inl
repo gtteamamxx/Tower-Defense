@@ -294,7 +294,7 @@ public monsterChangeTrack(monsterEntity, wallEntity)
     }
 
     cs_set_ent_class(healthBarEntity, MONSTER_HEALTHBAR_ENTITY_NAME);
-    
+
     entity_set_model(healthBarEntity, g_Models[HEALTHBAR_SPRITE_MODEL]);
 
     entity_set_int(healthBarEntity, EV_INT_solid, SOLID_NOT);
@@ -321,8 +321,13 @@ public monsterChangeTrack(monsterEntity, wallEntity)
 
 @setMonsterClass(monsterEntity, monsterTypeName[33])
 {
-    cs_set_ent_class(monsterEntity, MONSTER_ENTITY_NAME);
+    new monsterEntityName[64];
+    formatex(monsterEntityName, charsmax(monsterEntityName), "%s_%s", MONSTER_ENTITY_NAME, monsterTypeName);
+    cs_set_ent_class(monsterEntity, monsterEntityName);
+    
     CED_SetString(monsterEntity, MONSTER_DATA_TYPE_KEY, monsterTypeName);
+    
+    entity_set_float(monsterEntity, EV_FL_nextthink, get_gametime() + 1.0);
 }
 
 @setMonsterModel(monsterEntity, monsterModel[128])
