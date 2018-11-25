@@ -39,9 +39,10 @@
 #define WAVE_CONFIGURATION_KEY_LENGTH 64
 
 #define MONSTER_BIT 1 << 1
-#define MONSTER_HEALTHBAR_BIT 1 << 2
-#define TRACK_WALL_BIT 1 << 3
-#define END_WALL_BIT 1 << 4
+#define MONSTER_KILLED_BIT 1 << 2
+#define MONSTER_HEALTHBAR_BIT 1 << 3
+#define TRACK_WALL_BIT 1 << 4
+#define END_WALL_BIT 1 << 5
 
 enum MAP_ENTITIES_ENUM
 {

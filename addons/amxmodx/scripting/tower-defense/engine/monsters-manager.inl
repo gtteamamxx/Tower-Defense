@@ -41,7 +41,7 @@ public constrollDamageTakenToMonster(monsterEntity, inflictorId, playerId, Float
 
 public showMonsterTakedDamage(monsterEntity, inflictorId, playerId, Float:damage, damageTypeBit)
 {
-    if(!isMonster(monsterEntity) || !is_user_connected(playerId))
+    if((!isMonster(monsterEntity) && !isKilledMonster(monsterEntity)) || !is_user_connected(playerId))
     {
         return;
     }
@@ -67,7 +67,6 @@ public monsterKilled(monsterEntity, playerId)
         return HAM_IGNORED;
     }
 
-    client_print(0, 3, "killed monster: %d", monsterEntity);
     @setMonsterKilledProperties(monsterEntity);
     @setMonsterKilledAnimation(monsterEntity);
     @removeMonsterHealthbar(monsterEntity);
@@ -104,6 +103,7 @@ public monsterKilled(monsterEntity, playerId)
     entity_set_int(monsterEntity, EV_INT_solid, SOLID_NOT);
     entity_set_float(monsterEntity, EV_FL_framerate, 0.9);
     cs_set_ent_class(monsterEntity, MONSTER_DEAD_ENTITY_NAME);
+    setEntityBitData(monsterEntity, MONSTER_KILLED_BIT);
     entity_set_vector(monsterEntity, EV_VEC_velocity, Float:{0.0, 0.0, -2.5});
 }
 
@@ -192,6 +192,7 @@ public monsterChangeTrack(monsterEntity, wallEntity)
 @monsterTouchedEndWall(monsterEntity)
 {
     g_AliveMonstersNum--;
+    @removeMonsterHealthbar(monsterEntity);
     remove_entity(monsterEntity);
 }
 
@@ -415,7 +416,14 @@ stock aimMonsterToTrack(monsterEntity, trackEntity = -1)
     if(trackEntity == -1)
     {
         new actualMonsterTrack; CED_GetCell(monsterEntity, MONSTER_DATA_TRACK_KEY, actualMonsterTrack);
-        trackEntity = getGlobalEnt(getTrackEntityName(.trackId = actualMonsterTrack));
+        if(actualMonsterTrack != -1)
+        {
+            trackEntity = getGlobalEnt(getTrackEntityName(.trackId = actualMonsterTrack));
+        }
+        else
+        {
+            trackEntity = getMapEntityData(END_ENTITY);
+        }
     }
 
     entity_set_aim(monsterEntity, trackEntity);
