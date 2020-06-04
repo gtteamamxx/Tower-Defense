@@ -5,7 +5,8 @@ Tower Defense mod to Counter-Strike 1.6
 " target="_blank"><img src="http://img.youtube.com/vi/O-lF6o7ajxc/0.jpg" 
 alt="Tower defense live" width="240" height="180" border="10" /></a>
 
-Changelog (polish)
+# Changelog (polish)
+```
 /* Wersja 0.1 Alpha */
 
 - Pierwsze wydanie pluginu
@@ -113,3 +114,4 @@ wartości w nim można dowolnie zmieniać
 /* End of Changelog */
 
 AKTUALNA LISTA MAP DOSTĘPNA: http://cs.gamebanana.com/maps/cats/8329
+```
