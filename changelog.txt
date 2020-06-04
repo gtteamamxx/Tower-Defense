@@ -4,104 +4,104 @@
 
 /* Wersja 0.1 Alpha: Turrets Fix */
 
-- Naprawienie drobnego b³êdu w wie¿yczkach
+- Naprawienie drobnego bÅ‚Ä™du w wieÅ¼yczkach
 
 /* Wersja 0.2 Alpha [Lato 2014] */
 
-- Dodanie aktualnych map jako standardowe w tym modzie, czyli s¹ w paczce
-- Dodanie modu³u hamsandwich (linux)
-- Wgranie nowej wersji nieskoñczonej rundy dzia³aj¹cej z najnowszymi binarkami(tylko)
+- Dodanie aktualnych map jako standardowe w tym modzie, czyli sÄ… w paczce
+- Dodanie moduÅ‚u hamsandwich (linux)
+- Wgranie nowej wersji nieskoÅ„czonej rundy dziaÅ‚ajÄ…cej z najnowszymi binarkami(tylko)
 
 /* Wersja 0.3 Alpha [Lato 2014] */
 
-- Poprawienie wykonania komendy /start. Od teraz komendê mo¿e u¿yæ¦ gracz, gdy na serwerze znajduj¹ siê 2 osoby.
-- Dodanie pokazywania wymaganej liczby fragów w dziale "Umiejêtnoœci" w g³ównym menu.
-- Drobne usterki i poprawki wyœwietlanych tekstów.
-- Poprawienie niekompiluj¹cego siê pliku .sma
+- Poprawienie wykonania komendy /start. Od teraz komendÄ™ moÅ¼e uÅ¼yÄ‡Â¦ gracz, gdy na serwerze znajdujÄ… siÄ™ 2 osoby.
+- Dodanie pokazywania wymaganej liczby fragÃ³w w dziale "UmiejÄ™tnoÅ›ci" w gÅ‚Ã³wnym menu.
+- Drobne usterki i poprawki wyÅ›wietlanych tekstÃ³w.
+- Poprawienie niekompilujÄ…cego siÄ™ pliku .sma
 - Dodanie nowego include
-- "Naprawienie" dŸwiêku "Start_Wave", który siê w ogóle nie odtwarza³
+- "Naprawienie" dÅºwiÄ™ku "Start_Wave", ktÃ³ry siÄ™ w ogÃ³le nie odtwarzaÅ‚
 
-/* Wersja 0.4 Beta [Lato 2014 - *przerwa* - Styczeñ 2015] */
+/* Wersja 0.4 Beta [Lato 2014 - *przerwa* - StyczeÅ„ 2015] */
 
-- Dodanie sklepu ( mo¿liwoœæ¦ dodawania w³asnych przez natyw td_shop_register_item )
-- Dodanie itemów do sklepu (m. in. minigun, naprawa g³ównej wie¿y)
-- Dodanie nowych spritów(ranger i ammobar - wymagane usuniêcie folderu /sprites/TD w celu pobrania aktulanych z serwera)
-- Dodanie paska amunicji nad wie¿yczk¹, z ni¹ cvar (0 - wy³¹cz|1-tylko w³aœcicielowi|2-wszystkich)
-- Dodanie komendy /daj i /przekaz, w niej równie¿ Menu Admina.
-- Dodanie komendy /wymien i /swap ( zamienia $10000 na 10 zÂ³ota - cvary)
-- Dodanie w³asnego menu broni ( w³asne ustawienia cen broni )
-- Dodanie wyœwietlania informacji o wie¿yczce (jeœli blisko podejdziesz)
-- Naprawa b³êdu z healthbarem
-- Synchronizacja cvarów z plikiem konfiguracyjnym
-- Dodanie mnóstwo nowych cvarów, od teraz TY decydujesz jak ma wygl¹daæ¦ rozgrywka i sprawiæ¦, ¿e mod bêªdzie unikalny
-- Dodanie nowych natywów i forwardów [Dla Skrypterów]
-- Dodanie odliczania dŸwiêkowego [Opcjonalnie]
-- Zmiejszenie wymaganych fragów za dany poziom
-- Dodanie z³ota za okreœlon¹ liczbê zadanych obra¿eñ
-- Dodanie z³ota oraz kasy za przetrwanie wavu
-- Usuniêcie problemów przy rozpoczêciu gry
-- Naprawa set_tasków, usuniêcie problemu przy modernizacji wie¿yczek
-- Nowy styl modernizowania, ulepszania, kupowania wie¿yczek, od teraz to nie trwa tak szybko
+- Dodanie sklepu ( moÅ¼liwoÅ›Ä‡Â¦ dodawania wÅ‚asnych przez natyw td_shop_register_item )
+- Dodanie itemÃ³w do sklepu (m. in. minigun, naprawa gÅ‚Ã³wnej wieÅ¼y)
+- Dodanie nowych spritÃ³w(ranger i ammobar - wymagane usuniÄ™cie folderu /sprites/TD w celu pobrania aktulanych z serwera)
+- Dodanie paska amunicji nad wieÅ¼yczkÄ…, z niÄ… cvar (0 - wyÅ‚Ä…cz|1-tylko wÅ‚aÅ›cicielowi|2-wszystkich)
+- Dodanie komendy /daj i /przekaz, w niej rÃ³wnieÅ¼ Menu Admina.
+- Dodanie komendy /wymien i /swap ( zamienia $10000 na 10 zÃ‚Å‚ota - cvary)
+- Dodanie wÅ‚asnego menu broni ( wÅ‚asne ustawienia cen broni )
+- Dodanie wyÅ›wietlania informacji o wieÅ¼yczce (jeÅ›li blisko podejdziesz)
+- Naprawa bÅ‚Ä™du z healthbarem
+- Synchronizacja cvarÃ³w z plikiem konfiguracyjnym
+- Dodanie mnÃ³stwo nowych cvarÃ³w, od teraz TY decydujesz jak ma wyglÄ…daÄ‡Â¦ rozgrywka i sprawiÄ‡Â¦, Å¼e mod bÄ™Ådzie unikalny
+- Dodanie nowych natywÃ³w i forwardÃ³w [Dla SkrypterÃ³w]
+- Dodanie odliczania dÅºwiÄ™kowego [Opcjonalnie]
+- Zmiejszenie wymaganych fragÃ³w za dany poziom
+- Dodanie zÅ‚ota za okreÅ›lonÄ… liczbÄ™ zadanych obraÅ¼eÅ„
+- Dodanie zÅ‚ota oraz kasy za przetrwanie wavu
+- UsuniÄ™cie problemÃ³w przy rozpoczÄ™ciu gry
+- Naprawa set_taskÃ³w, usuniÄ™cie problemu przy modernizacji wieÅ¼yczek
+- Nowy styl modernizowania, ulepszania, kupowania wieÅ¼yczek, od teraz to nie trwa tak szybko
 - Dodanie zaawansowanego systemu Asyst [Opcjonalnie]
 - Dodanie multi-language do pluginu [Aktualnie PL-EN]
-- Usuniêcie pluginu nieskonczonej rundy jako dodatkowy plugin
+- UsuniÄ™cie pluginu nieskonczonej rundy jako dodatkowy plugin
 
 Optymalizacje :
-- Zamienienie fakemety na engine - szybkoœæ¦ dzia³ania modu
-- Dodanie cvar_util, od teraz maksymalne wartoœci jakie mog¹ byæ nigdy nie zostan¹ przekroczone 
+- Zamienienie fakemety na engine - szybkoÅ›Ä‡Â¦ dziaÅ‚ania modu
+- Dodanie cvar_util, od teraz maksymalne wartoÅ›ci jakie mogÄ… byÄ‡ nigdy nie zostanÄ… przekroczone 
 - Event Money
-- Ogromne poprawki i optymalizacje ró¿nych funkcji - w tym PreThinki i Thinki
-- Zmiana systemu odliczania - £atwiejszy, krótszy, szybszy
-- Estetyka kodu - £atwoœæ odczytania
+- Ogromne poprawki i optymalizacje rÃ³Å¼nych funkcji - w tym PreThinki i Thinki
+- Zmiana systemu odliczania - Åatwiejszy, krÃ³tszy, szybszy
+- Estetyka kodu - ÅatwoÅ›Ä‡ odczytania
 
 
 /* Wersja 0.5 Beta [Lipiec 2015] */
-/* WGRYWAJ¥C T¥ WERSJE KONIECZNIE PODMIEÑ MODELE NA SERWERZE */
-- Zwiêkszenie standardowych wavów do 35, oraz wzmmocnienie potworów
-- Zwiêkszenie prawdopodobnieñstwa wyst¹pienia krwi po strzale
-- Dodanie do sklepu granatów podpalaj¹cych
+/* WGRYWAJÄ„C TÄ„ WERSJE KONIECZNIE PODMIEÅƒ MODELE NA SERWERZE */ 
+- ZwiÄ™kszenie standardowych wavÃ³w do 35, oraz wzmmocnienie potworÃ³w
+- ZwiÄ™kszenie prawdopodobnieÅ„stwa wystÄ…pienia krwi po strzale
+- Dodanie do sklepu granatÃ³w podpalajÄ…cych
 - Dodanie do sklepu amunicji dla miniguna
-- Dodanie do sklepu AWP z 2x obra¿eniami
-- Dodanie do sklepu z³otych naboi
-- Dodanie do sklepu granatów spowalniaj¹cych
-- Naprawa kilku wyœwietlanych tekstów (m. in. odliczanie)
-- Dodanie mo¿liwoœæ zdobycia $$$ za okreœlon¹ liczbê zadanych obra¿eñ
-- Usuniêcie zbugowanego modelu "pielêgniarki", któr¹ ciê¿ko by³o trafiæ
-- Optymalizacja parametrów konfiguracyjnych serwer Tower Defense
+- Dodanie do sklepu AWP z 2x obraÅ¼eniami
+- Dodanie do sklepu zÅ‚otych naboi
+- Dodanie do sklepu granatÃ³w spowalniajÄ…cych
+- Naprawa kilku wyÅ›wietlanych tekstÃ³w (m. in. odliczanie)
+- Dodanie moÅ¼liwoÅ›Ä‡ zdobycia $$$ za okreÅ›lonÄ… liczbÄ™ zadanych obraÅ¼eÅ„
+- UsuniÄ™cie zbugowanego modelu "pielÄ™gniarki", ktÃ³rÄ… ciÄ™Å¼ko byÅ‚o trafiÄ‡
+- Optymalizacja parametrÃ³w konfiguracyjnych serwer Tower Defense
 - Naprawienie miniguna w sklepie
-- Naprawienie otrzymywanej iloœci z³ota i kasy po do³¹czeniu na serwer podczas trwania X wavu
-- Naprawienie taska odpowiedzialnego za wysy³anie potworów
+- Naprawienie otrzymywanej iloÅ›ci zÅ‚ota i kasy po doÅ‚Ä…czeniu na serwer podczas trwania X wavu
+- Naprawienie taska odpowiedzialnego za wysyÅ‚anie potworÃ³w
 - Dodanie nowej mapy: td_big jako jedna z podstawowych map do Tower Defense Mod
-- Naprawienie wyœwietlaj¹cego siê tekstu multi-language w nazwach rund. Od teraz wyœwietlaj¹ siê poprawnie.
+- Naprawienie wyÅ›wietlajÄ…cego siÄ™ tekstu multi-language w nazwach rund. Od teraz wyÅ›wietlajÄ… siÄ™ poprawnie.
 - Dodanie nowej mapy: td_striker jako jedna z podstawowych map do Tower Defense Mod
-- Zwiêkszenie liczby wavów w pliku standard_wave, oraz dodanie opcjonalnej trudniejszej wersji
-- Dodanie nowych natywów i forwardów [Dla Skrypterów]
-- Edytowanie systemu sklepu. Od teraz doszedl nowy plik konfiguracyjny "td_shop.cfg", do którego automatycznie przez plugin 
-zostaj¹ dopisane w³aœciwoœci ka¿dego itemu ze sklepu, które mo¿emy dowolnie zmieniaæ
-- Dodanie nowego pluginu "td_hs_damage" - 1.5x wiêksze obra¿enia po trafieniu w g³owe [Opcjonalnie]
-- Dodanie nowego pluginu "td_sprite_engine", oraz "td_sprite_ammo"[oba musz¹ byæ w³¹czone], które dodaj¹ do hudu wyœwietlaj¹ce siê sprity
-zwi¹zane ze statusem wie¿yczki w iloœci amunicji [Opcjonalnie]
-- Poprawki wyœwietlanych tekstów
-- Dodanie wiêcej tekstów multi-language
+- ZwiÄ™kszenie liczby wavÃ³w w pliku standard_wave, oraz dodanie opcjonalnej trudniejszej wersji
+- Dodanie nowych natywÃ³w i forwardÃ³w [Dla SkrypterÃ³w]
+- Edytowanie systemu sklepu. Od teraz doszedl nowy plik konfiguracyjny "td_shop.cfg", do ktÃ³rego automatycznie przez plugin 
+zostajÄ… dopisane wÅ‚aÅ›ciwoÅ›ci kaÅ¼dego itemu ze sklepu, ktÃ³re moÅ¼emy dowolnie zmieniaÄ‡
+- Dodanie nowego pluginu "td_hs_damage" - 1.5x wiÄ™ksze obraÅ¼enia po trafieniu w gÅ‚owe [Opcjonalnie]
+- Dodanie nowego pluginu "td_sprite_engine", oraz "td_sprite_ammo"[oba muszÄ… byÄ‡ wÅ‚Ä…czone], ktÃ³re dodajÄ… do hudu wyÅ›wietlajÄ…ce siÄ™ sprity
+zwiÄ…zane ze statusem wieÅ¼yczki w iloÅ›ci amunicji [Opcjonalnie]
+- Poprawki wyÅ›wietlanych tekstÃ³w
+- Dodanie wiÄ™cej tekstÃ³w multi-language
 - DEBUG MODE zostalo rozszerzone i usprawnione
 - DEBUG MODE jest od teraz angielskie
-- Dodano klasy ludzi. Doszed³ nowy plik konfiguracyjny "td_class.cfg" tworzony automatycznie przez plugin,
-wartoœci w nim mo¿na dowolnie zmieniaæ
-- Zmieniono œcie¿kê oraz system wczytywania ustawieñ wie¿yczek. Od teraz do ka¿dej mapy mo¿esz inaczej dostosowaæ ustawienia wie¿yczek.
-- Ulepszono system ulepszenia wie¿yczek. Od teraz mo¿esz dodaæ nieograniczon¹ iloœc ulepszeñ obra¿en i zasiêgu
-- Naprawiono komendê [LOAD_STANDARD_WAVE]
-- Dodano plugin odpowiadaj¹cy za g³osowanie na nastêpn¹ mapê, wraz z ni¹ cvary
-- Poprawiono modele potworów. Zosta³y zwiêkszone hitboxy g³owy, przez co ³atwiej trafiæ w g³owê i zadaæ wiêcej obra¿en
-- Zwiêkszono czytelnoœæ kodu obu silników oraz przeprowadzono drobne poprawki w nazewnictwie
-- Usuniêto bug z td_guns, w zwi¹zku z kupywaniem amunicji poza buyzone
+- Dodano klasy ludzi. DoszedÅ‚ nowy plik konfiguracyjny "td_class.cfg" tworzony automatycznie przez plugin,
+wartoÅ›ci w nim moÅ¼na dowolnie zmieniaÄ‡
+- Zmieniono Å›cieÅ¼kÄ™ oraz system wczytywania ustawieÅ„ wieÅ¼yczek. Od teraz do kaÅ¼dej mapy moÅ¼esz inaczej dostosowaÄ‡ ustawienia wieÅ¼yczek.
+- Ulepszono system ulepszenia wieÅ¼yczek. Od teraz moÅ¼esz dodaÄ‡ nieograniczonÄ… iloÅ›c ulepszeÅ„ obraÅ¼en i zasiÄ™gu
+- Naprawiono komendÄ™ [LOAD_STANDARD_WAVE]
+- Dodano plugin odpowiadajÄ…cy za gÅ‚osowanie na nastÄ™pnÄ… mapÄ™, wraz z niÄ… cvary
+- Poprawiono modele potworÃ³w. ZostaÅ‚y zwiÄ™kszone hitboxy gÅ‚owy, przez co Å‚atwiej trafiÄ‡ w gÅ‚owÄ™ i zadaÄ‡ wiÄ™cej obraÅ¼en
+- ZwiÄ™kszono czytelnoÅ›Ä‡ kodu obu silnikÃ³w oraz przeprowadzono drobne poprawki w nazewnictwie
+- UsuniÄ™to bug z td_guns, w zwiÄ…zku z kupywaniem amunicji poza buyzone
 - Dodano VIPA! Wraz z nimi nowe cvary
-- Dodano (przy zadawaniu obra¿eñ) informacje, czy strza³ byl heashotem
-- Dodano animacje œmierci potworów, kiedy zosta³y zabite headshotem
-- Zmieniono system przechodzenia przez enty, dziêki czemu mo¿na potwory spowalniaæ
+- Dodano (przy zadawaniu obraÅ¼eÅ„) informacje, czy strzaÅ‚ byl heashotem
+- Dodano animacje Å›mierci potworÃ³w, kiedy zostaÅ‚y zabite headshotem
+- Zmieniono system przechodzenia przez enty, dziÄ™ki czemu moÅ¼na potwory spowalniaÄ‡
 - Dodano model VIPA
 - Dodano modele graczy 
-- Dodano nowe dŸwiêki odtwarzaj¹ce siê podczas "czekania" na nastêpny wave. (odtwarzane w pobli¿u respawna potworów)
+- Dodano nowe dÅºwiÄ™ki odtwarzajÄ…ce siÄ™ podczas "czekania" na nastÄ™pny wave. (odtwarzane w pobliÅ¼u respawna potworÃ³w)
 
 /* End of Changelog */
 
-AKTUALNA LISTA MAP DOSTÊPNA: http://cs.gamebanana.com/maps/cats/8329
+AKTUALNA LISTA MAP DOSTÄ˜PNA: http://cs.gamebanana.com/maps/cats/8329
