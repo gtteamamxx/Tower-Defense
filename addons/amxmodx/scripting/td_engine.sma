@@ -23,6 +23,7 @@
 #include "tower-defense/engine/precaches.inl"
 #include "tower-defense/engine/natives.inl"
 #include "tower-defense/engine/add-to-full-pack.inl"
+#include "tower-defense/engine/end-game-manager.inl"
 
 #pragma semicolon 1
 #pragma dynamic 32768

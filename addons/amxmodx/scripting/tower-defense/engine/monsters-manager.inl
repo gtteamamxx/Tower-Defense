@@ -30,6 +30,11 @@ public monsterShotTraceAttack(monsterEntity, playerId, Float:damage, Float:direc
     CED_SetCell(monsterEntity, MONSTER_DATA_IS_LAST_SHOT_HEADSHOT, _:isPlayerShotHeadShot);
 }
 
+public removeMonsterHealthbar(monsterEntity)
+{
+    @removeMonsterHealthbar(monsterEntity);
+}
+
 public controlDamageTakenToMonster(monsterEntity, inflictorId, playerId, Float:damage, damageTypeBit)
 {
     if(!isMonster(monsterEntity) || !is_user_connected(playerId))
@@ -113,6 +118,7 @@ public monsterKilled(monsterEntity, playerId)
     new monsterEntity = removeMonsterEntityParameter[0];
     if(is_valid_ent(monsterEntity))
     {
+        ArrayDeleteItem(g_MonstersEntArray, ArrayFindValue(g_MonstersEntArray, monsterEntity));
         remove_entity(monsterEntity);
     }
 }
@@ -235,6 +241,7 @@ public monsterChangeTrack(monsterEntity, wallEntity)
 
     g_AliveMonstersNum--;
     @removeMonsterHealthbar(monsterEntity);
+    ArrayDeleteItem(g_MonstersEntArray, ArrayFindValue(g_MonstersEntArray, monsterEntity));
     remove_entity(monsterEntity);
 }
 
@@ -251,7 +258,7 @@ public monsterChangeTrack(monsterEntity, wallEntity)
     sendWaveMonsterParameter[1] = monsterTypeIndex;
     sendWaveMonsterParameter[2] = count;
 
-    set_task(delay, "@sendMonsterAndAfterSendNextOne", .parameter = sendWaveMonsterParameter, .len = 3);
+    set_task(delay, "@sendMonsterAndAfterSendNextOne", SEND_MONSTER_TASK, .parameter = sendWaveMonsterParameter, .len = 3);
 }
 
 @sendMonsterAndAfterSendNextOne(sendWaveMonsterParameter[3])
@@ -260,7 +267,7 @@ public monsterChangeTrack(monsterEntity, wallEntity)
     new monsterTypeIndex = sendWaveMonsterParameter[1];
     new monstersLeft = sendWaveMonsterParameter[2];
 
-    // if all monsters were sent
+    // if all monsters was sent
     if(monstersLeft == 0)
     {
         // we check if there's another in queue
@@ -288,7 +295,7 @@ public monsterChangeTrack(monsterEntity, wallEntity)
     @sendMonster(sendMonsterParameterArray);
 
     sendWaveMonsterParameter[2] = monstersLeft - 1;
-    set_task(deployInterval, "@sendMonsterAndAfterSendNextOne", .parameter = sendWaveMonsterParameter, .len = 3);
+    set_task(deployInterval, "@sendMonsterAndAfterSendNextOne", SEND_MONSTER_TASK, .parameter = sendWaveMonsterParameter, .len = 3);
 }
 
 @sendMonster(Array:sendMonsterParameterArray)
@@ -320,6 +327,8 @@ public monsterChangeTrack(monsterEntity, wallEntity)
         log_amx("Creating monster entity failed.");
         return;
     }
+
+    ArrayPushCell(g_MonstersEntArray, monsterEntity);
 
     g_AliveMonstersNum++;
     g_SentMonsters++;
@@ -371,8 +380,8 @@ public monsterChangeTrack(monsterEntity, wallEntity)
 
 @setMonsterClass(monsterEntity, monsterTypeName[33])
 {
-    new monsterEntityName[64];
-    formatex(monsterEntityName, charsmax(monsterEntityName), "%s_%s", MONSTER_ENTITY_NAME, monsterTypeName);
+    new monsterEntityName[64]; getMonsterClassName(monsterEntityName, monsterTypeName);
+
     cs_set_ent_class(monsterEntity, monsterEntityName);
     
     CED_SetString(monsterEntity, MONSTER_DATA_TYPE_KEY, monsterTypeName);

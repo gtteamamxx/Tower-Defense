@@ -32,6 +32,7 @@ public relaseTries()
 {
     @releaseModelsPrecacheArray();
     @releaseWaveDataArray();
+    @releaseMonsterEntArray();
 }
 
 @releaseTries()
@@ -53,6 +54,12 @@ public relaseTries()
 @initArrays()
 {
     @initWaveDataArray();
+    @initMonstersEntArray();
+}
+
+@initMonstersEntArray()
+{
+    g_MonstersEntArray = ArrayCreate();
 }
 
 @initWaveDataArray()
@@ -132,4 +139,9 @@ public relaseTries()
     }
 
     ArrayDestroy(g_WaveDataArray);
+}
+
+@releaseMonsterEntArray()
+{
+    ArrayDestroy(g_MonstersEntArray);
 }

@@ -44,6 +44,8 @@
 #define TRACK_WALL_BIT 1 << 4
 #define END_WALL_BIT 1 << 5
 
+#define SEND_MONSTER_TASK 1011
+
 enum MAP_ENTITIES_ENUM
 {
   START_ENTITY,

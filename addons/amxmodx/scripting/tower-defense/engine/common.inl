@@ -16,6 +16,7 @@ new Trie:g_ModelsConfigurationKeysTrie;
 new Array:g_ModelsPrecacheIdArray;
 
 new Array:g_WaveDataArray;
+new Array:g_MonstersEntArray;
 new Trie:g_MonsterTypesConfigurationKeysTrie;
 
 new Trie:g_WavesConfigurationKeysTrie;
@@ -23,7 +24,7 @@ new Trie:g_WavesConfigurationKeysTrie;
 new bool:g_IsGamePossible = true;
 new bool:g_HasAnyTracks = false;
 
-new g_AliveMonstersNum
+new g_AliveMonstersNum;
 new g_SentMonsters;
 
 public getConfigDirectory()
@@ -83,6 +84,11 @@ public getGlobalEnt(const entityName[])
 public bool:isMonster(entity)
 {
     return is_valid_ent(entity) && ((getEntityBitData(entity) & MONSTER_BIT) == MONSTER_BIT);
+}
+
+public getMonsterClassName(monsterEntityName[64], monsterTypeName[])
+{
+    formatex(monsterEntityName, charsmax(monsterEntityName), "%s_%s", MONSTER_ENTITY_NAME, monsterTypeName);
 }
 
 public bool:isMonsterKilled(entity)

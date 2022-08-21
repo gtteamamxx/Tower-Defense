@@ -112,7 +112,7 @@ public getWaveMonsterTypesNum(wave)
     return ArraySize(monsterTypesArray);
 }
 
-public getMaxWaveNumber() 
+getMaxWaveNumber() 
 {
     new maxWaveNumber = ArraySize(g_WaveDataArray) + 1;
     return maxWaveNumber;

@@ -15,7 +15,7 @@ public manageTowerOnMonsterTouchEndWall(monsterEntity)
         static towerEntity; 
         if (!towerEntity) 
         {
-            towerEntity = find_ent_by_class(-1, TOWER_ENTITY_NAME);
+            towerEntity = cs_find_ent_by_class(-1, TOWER_ENTITY_NAME);
         }
 
         @createExplodeEffectOnTowerPosition(towerEntity);
@@ -31,6 +31,8 @@ public manageTowerOnMonsterTouchEndWall(monsterEntity)
     g_TowerHealth -= damage;
 
     if (g_TowerHealth < 0) g_TowerHealth = 0;
+
+    checkIfItsEndGame();
 }
 
 @moveTowerDownByTakenDamage(towerEntity, damageTakenToTower)
