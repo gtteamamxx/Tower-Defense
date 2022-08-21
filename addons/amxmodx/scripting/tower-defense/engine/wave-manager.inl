@@ -72,6 +72,21 @@ public getNumberOfMonstersForMonsterTypeInWave(wave, monsterTypeIndex)
     return count[1] == 0 ? count[0] : random_num(count[0], count[1]);
 }
 
+public getDamageWhichMonsterWillTakeForTowerForMonsterTypeInWave(wave, monsterTypeIndex)
+{
+    if(!@isWaveValid(wave) || monsterTypeIndex < 0)
+    {
+        return -1;
+    }
+
+    new Trie:monsterTypeTrie = @getMonsterTypeTrie(wave, monsterTypeIndex);
+
+    new count[2];
+    TrieGetArray(monsterTypeTrie, keyToString(_:MONSTER_TOWER_DAMAGE), count, 2);
+    return count[1] == 0 ? count[0] : random_num(count[0], count[1]);
+}
+
+
 public getWaveTimeToWave(wave)
 {
     if(!@isWaveValid(wave))

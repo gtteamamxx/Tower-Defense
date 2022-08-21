@@ -10,6 +10,13 @@
 #define MONSTER_DATA_SPEED "monster_speed"
 #define MONSTER_DATA_HEALTHBAR_ENTITY "monster_healthbar"
 #define MONSTER_DATA_IS_LAST_SHOT_HEADSHOT "monster_headshot"
+#define MONSTER_DATA_TOWER_DAMAGE "monster_tower_damage"
+
+public getMonsterDamageToTakeForTower(monsterEntity) 
+{
+    new towerDamage; CED_GetCell(monsterEntity, MONSTER_DATA_TOWER_DAMAGE, towerDamage);
+    return towerDamage;
+}
 
 public monsterShotTraceAttack(monsterEntity, playerId, Float:damage, Float:direction[3], traceHandle, damageTypeBit)
 {
@@ -23,15 +30,15 @@ public monsterShotTraceAttack(monsterEntity, playerId, Float:damage, Float:direc
     CED_SetCell(monsterEntity, MONSTER_DATA_IS_LAST_SHOT_HEADSHOT, _:isPlayerShotHeadShot);
 }
 
-public constrollDamageTakenToMonster(monsterEntity, inflictorId, playerId, Float:damage, damageTypeBit)
+public controlDamageTakenToMonster(monsterEntity, inflictorId, playerId, Float:damage, damageTypeBit)
 {
     if(!isMonster(monsterEntity) || !is_user_connected(playerId))
     {
         return;
     }
 
-    new isDamageTakedByGun = damageTypeBit & DMG_BULLET;
-    if(isDamageTakedByGun)
+    new isDamageTakenByGun = damageTypeBit & DMG_BULLET;
+    if(isDamageTakenByGun)
     {
         damage = @controllDamageTakenToMonsterByGun(monsterEntity, playerId, damage);
     }
@@ -39,9 +46,22 @@ public constrollDamageTakenToMonster(monsterEntity, inflictorId, playerId, Float
     SetHamParamFloat(4, damage);
 }
 
+public showMonsterBloodEffect(monsterEntity, inflictorId, playerId, Float:damage, damageTypeBit) 
+{
+    if(!isMonster(monsterEntity) || isMonsterKilled(monsterEntity))
+    {
+        return;
+    }
+
+    if (random(2) == 0) // 50% chance of blood effect by shot to monster
+    {
+        createBloodEffectOnEntity(monsterEntity, .size = 15)
+    }
+}
+
 public showMonsterTakedDamage(monsterEntity, inflictorId, playerId, Float:damage, damageTypeBit)
 {
-    if((!isMonster(monsterEntity) && !isKilledMonster(monsterEntity)) || !is_user_connected(playerId))
+    if((!isMonster(monsterEntity) && !isMonsterKilled(monsterEntity)) || !is_user_connected(playerId))
     {
         return;
     }
@@ -55,6 +75,8 @@ public showMonsterTakedDamage(monsterEntity, inflictorId, playerId, Float:damage
     set_dhudmessage(255, 255, 255, -1.0, -1.0, 0, 0.0, 0.1);
     show_dhudmessage(playerId, "x");
 
+    if (actualMonsterHealth < 0.0) actualMonsterHealth = 0.0;
+
     client_print(playerId, print_center, "HP: %0.0f", actualMonsterHealth);
 
     @updateMonsterHealthbar(monsterEntity, actualMonsterHealth);
@@ -66,10 +88,15 @@ public monsterKilled(monsterEntity, playerId)
     {
         return HAM_IGNORED;
     }
+    
+    new bool:isMonsterKilledbyHeadshot; CED_GetCell(monsterEntity, MONSTER_DATA_IS_LAST_SHOT_HEADSHOT, isMonsterKilledbyHeadshot);
 
     @setMonsterKilledProperties(monsterEntity);
     @setMonsterKilledAnimation(monsterEntity);
     @removeMonsterHealthbar(monsterEntity);
+    createBloodEffectOnEntity(monsterEntity, .size = isMonsterKilledbyHeadshot ? 30 : 15)
+
+    onPlayerKilledMonster(playerId, isMonsterKilledbyHeadshot);
 
     new removeMonsterEntityParameter[1];
     removeMonsterEntityParameter[0] = monsterEntity;
@@ -168,21 +195,32 @@ public monsterChangeTrack(monsterEntity, wallEntity)
         return;
     }
 
+    // if monster touched wall entity
+    // then we should change monster move direction
     if(isTrackWall(wallEntity))
     {
+        // get current track
         new actualMonsterTrack; CED_GetCell(monsterEntity, MONSTER_DATA_TRACK_KEY, actualMonsterTrack);
         actualMonsterTrack++;
 
+        // get next track
         new trackEntity = getGlobalEnt(getTrackEntityName(.trackId = actualMonsterTrack));
-        if(!is_valid_ent(trackEntity))
+
+        new bool:isNextTrackEntityExist = bool:is_valid_ent(trackEntity);
+        if(!isNextTrackEntityExist)
         {
+            // if next track does not exists we aim monster to the end
             trackEntity = getMapEntityData(END_ENTITY);
             actualMonsterTrack = MONSTER_TARGET_END_ID;
         }
 
+        // set monster new track
         CED_SetCell(monsterEntity, MONSTER_DATA_TRACK_KEY, actualMonsterTrack);
+        
+        // aim monster to next track
         aimMonsterToTrack(monsterEntity, trackEntity);
     }
+    // if monster touched end wall
     else if(isEndWall(wallEntity))
     {
         @monsterTouchedEndWall(monsterEntity);
@@ -191,6 +229,8 @@ public monsterChangeTrack(monsterEntity, wallEntity)
 
 @monsterTouchedEndWall(monsterEntity)
 {
+    manageTowerOnMonsterTouchEndWall(monsterEntity);
+
     g_AliveMonstersNum--;
     @removeMonsterHealthbar(monsterEntity);
     remove_entity(monsterEntity);
@@ -224,18 +264,21 @@ public monsterChangeTrack(monsterEntity, wallEntity)
         {
             @startSendingWaveMonsters(wave, monsterTypeIndex + 1);
         }
+
         return;
     }
 
     new Float:monsterHealth = getRandomValueForMonsterTypeInWave(wave, monsterTypeIndex, MONSTER_HEALTH);
     new Float:monsterSpeed = getRandomValueForMonsterTypeInWave(wave, monsterTypeIndex, MONSTER_SPEED);
     new Float:deployInterval = getRandomValueForMonsterTypeInWave(wave, monsterTypeIndex, MONSTER_DEPLOY_INTERVAL);
+    new monsterTowerDamage = getDamageWhichMonsterWillTakeForTowerForMonsterTypeInWave(wave, monsterTypeIndex);
 
     new Array:sendMonsterParameterArray = ArrayCreate();
     ArrayPushCell(sendMonsterParameterArray, monsterHealth);
     ArrayPushCell(sendMonsterParameterArray, monsterSpeed);
     ArrayPushCell(sendMonsterParameterArray, monsterTypeIndex);
     ArrayPushCell(sendMonsterParameterArray, wave);
+    ArrayPushCell(sendMonsterParameterArray, monsterTowerDamage);
 
     @sendMonster(sendMonsterParameterArray);
 
@@ -249,7 +292,7 @@ public monsterChangeTrack(monsterEntity, wallEntity)
     new Float:monsterSpeed = Float:ArrayGetCell(sendMonsterParameterArray, 1);
     new monsterTypeIndex = ArrayGetCell(sendMonsterParameterArray, 2);
     new wave = ArrayGetCell(sendMonsterParameterArray, 3);
-
+    new monsterTowerDamage = ArrayGetCell(sendMonsterParameterArray, 4);
     ArrayDestroy(sendMonsterParameterArray);
 
     new monsterTypeName[33]; getMonsterTypeNameForMonsterTypeInWave(wave, monsterTypeIndex, monsterTypeName);
@@ -261,10 +304,10 @@ public monsterChangeTrack(monsterEntity, wallEntity)
         return;
     }
 
-    @createMonsterEntity(monsterTypeName, monsterHealth, monsterSpeed, monsterModel);
+    @createMonsterEntity(monsterTypeName, monsterHealth, monsterSpeed, monsterModel, monsterTowerDamage);
 }
 
-@createMonsterEntity(monsterTypeName[33], Float:monsterHealth, Float:monsterSpeed, monsterModel[128])
+@createMonsterEntity(monsterTypeName[33], Float:monsterHealth, Float:monsterSpeed, monsterModel[128], monsterTowerDamage)
 {
     new monsterEntity = cs_create_entity("info_target");
     if(monsterEntity == 0)
@@ -280,7 +323,7 @@ public monsterChangeTrack(monsterEntity, wallEntity)
     @setMonsterModel(monsterEntity, monsterModel);
     @setMonsterPosition(monsterEntity);
 
-    @setMonsterProperties(monsterEntity, monsterHealth, monsterSpeed);
+    @setMonsterProperties(monsterEntity, monsterHealth, monsterSpeed, monsterTowerDamage);
     @createMonsterHealthBar(monsterEntity);
 }
 
@@ -309,7 +352,7 @@ public monsterChangeTrack(monsterEntity, wallEntity)
     CED_SetCell(monsterEntity, MONSTER_DATA_HEALTHBAR_ENTITY, healthBarEntity);
 }
 
-@setMonsterProperties(monsterEntity, Float:monsterHealth, Float:monsterSpeed)
+@setMonsterProperties(monsterEntity, Float:monsterHealth, Float:monsterSpeed, monsterTowerDamage)
 {
     @setMonsterHealth(monsterEntity, monsterHealth);
     @setMonsterSpeed(monsterEntity, monsterSpeed);
@@ -318,6 +361,7 @@ public monsterChangeTrack(monsterEntity, wallEntity)
     @setMonsterBitData(monsterEntity);
     @setMonsterAnimationBySpeed(monsterEntity, monsterSpeed);
     @setMonsterTargetTrack(monsterEntity);
+    @setMonsterTowerDamage(monsterEntity, monsterTowerDamage)
 }
 
 @setMonsterClass(monsterEntity, monsterTypeName[33])
@@ -371,6 +415,11 @@ public monsterChangeTrack(monsterEntity, wallEntity)
 
     CED_SetCell(monsterEntity, MONSTER_DATA_TRACK_KEY, trackId);
     aimMonsterToTrack(monsterEntity, trackEntity);
+}
+
+@setMonsterTowerDamage(monsterEntity, monsterTowerDamage)
+{
+    CED_SetCell(monsterEntity, MONSTER_DATA_TOWER_DAMAGE, monsterTowerDamage);
 }
 
 @setMonsterHealth(monsterEntity, Float:monsterHealth)

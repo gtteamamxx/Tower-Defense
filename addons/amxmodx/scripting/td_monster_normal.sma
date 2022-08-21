@@ -101,8 +101,7 @@ public plugin_init()
 
 @monsterThink(monsterEntity)
 {
-    new chance = random_num(1, 100);
-    new bool:shouldMonsterAttackPlayer = chance >= (100 - PERCENTAGE_CHANCE_OF_MONSTER_PERFORM_ATTACK);
+    new bool:shouldMonsterAttackPlayer = random_num(1, 100) >= (100 - PERCENTAGE_CHANCE_OF_MONSTER_PERFORM_ATTACK);
 
     if(shouldMonsterAttackPlayer)
     {
@@ -120,10 +119,10 @@ startAttackingPlayer(monsterEntity)
 
     if(numberOfFoundPlayers > 0)
     {
-        new randomPlayer = 0;
-        randomPlayer = playersInRange[random(numberOfFoundPlayers)];
+        new randomPlayer = playersInRange[random(numberOfFoundPlayers)];
 
         @attackRandomPlayer(monsterEntity, .player = randomPlayer);
+
         return;
     }
 
@@ -154,7 +153,7 @@ startAttackingPlayer(monsterEntity)
 @prepareMonsterToThrowStoneToPlayer(param[2])
 {
     new monsterEntity = param[0];
-    if(td_is_killed_monster(monsterEntity))
+    if(td_is_monster_killed(monsterEntity))
     {
         return;
     }
@@ -167,14 +166,14 @@ startAttackingPlayer(monsterEntity)
 
     new Float:attackAnimationTime = sequenceFramerate / 100;
 
-    set_task(attackAnimationTime / 2, "@throwStoneToPlayer", .parameter = param, .len = 2);
+    set_task(attackAnimationTime / 3, "@throwStoneToPlayer", .parameter = param, .len = 2);
     set_task(attackAnimationTime, "@setMonsterToContinueHisTrack", .parameter = param, .len = 1);
 }
 
 @setMonsterToContinueHisTrack(param[1])
 {
     new monsterEntity = param[0];
-    if(td_is_killed_monster(monsterEntity))
+    if(td_is_monster_killed(monsterEntity))
     {
         return;
     }
@@ -191,7 +190,7 @@ startAttackingPlayer(monsterEntity)
     new monsterEntity = param[0];
     new playerId = param[1];
 
-    if(td_is_killed_monster(monsterEntity) || !is_user_alive(playerId))
+    if(td_is_monster_killed(monsterEntity) || !is_user_alive(playerId))
     {
         return;
     }
@@ -263,7 +262,7 @@ startAttackingPlayer(monsterEntity)
 
 @stopMonster(monsterEntity)
 {
-    entity_set_vector(monsterEntity, EV_VEC_velocity, Float:{0.0, 0.0, 0.0});
+    td_stop_monster(monsterEntity);
 }
 
 @isEntityStone(ent)

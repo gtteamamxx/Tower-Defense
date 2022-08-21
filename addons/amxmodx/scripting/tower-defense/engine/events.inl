@@ -14,8 +14,9 @@ public registerMonsterEvents()
     RegisterHam(Ham_Touch, "info_target", "monsterChangeTrack", 0);
 
     RegisterHam(Ham_TraceAttack, "info_target", "monsterShotTraceAttack");
-    RegisterHam(Ham_TakeDamage, "info_target", "constrollDamageTakenToMonster");
+    RegisterHam(Ham_TakeDamage, "info_target", "controlDamageTakenToMonster");
     RegisterHam(Ham_TakeDamage, "info_target", "showMonsterTakedDamage", 1);
+    RegisterHam(Ham_TakeDamage, "info_target", "showMonsterBloodEffect", 1);
 
     RegisterHam(Ham_Killed, "info_target", "monsterKilled")
 }
@@ -29,7 +30,12 @@ public registerMonsterEvents()
 
     new waveTimeToWave = getWaveTimeToWave(g_ActualWave);
 
-    createCounter(3, "startWaveCounter", "@startWaveCounterChanged", "@startWave");
+    createCounter(
+        .time = 3, 
+        .counterKey = "startWaveCounter", 
+        .counterChangedFunction = "@startWaveCounterChanged", 
+        .counterCompletedFunction = "@startWave"
+    );
 }
 
 @startWaveCounterChanged(time)

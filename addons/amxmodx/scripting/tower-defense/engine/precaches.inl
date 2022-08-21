@@ -12,7 +12,9 @@ public plugin_precache()
 
     for(new i = 0; i < _:MODELS_ENUM; ++i)
     {
-        precache_model(g_Models[MODELS_ENUM:i]);
+        new id = precache_model(g_Models[MODELS_ENUM:i]);
+
+        ArrayPushCell(g_ModelsPrecacheIdArray, id);
     }
 }
 
@@ -28,6 +30,7 @@ public relaseTries()
 
 @releaseArrays()
 {
+    @releaseModelsPrecacheArray();
     @releaseWaveDataArray();
 }
 
@@ -60,11 +63,15 @@ public relaseTries()
 @initModelsConfigurationTrie()
 {
     g_ModelsConfigurationKeysTrie = TrieCreate();
+    g_ModelsPrecacheIdArray = ArrayCreate();
 
     TrieSetCell(g_ModelsConfigurationKeysTrie, "TOWER_MODEL", _:TOWER_MODEL);
     TrieSetCell(g_ModelsConfigurationKeysTrie, "START_SPRITE_MODEL", _:START_SPRITE_MODEL);
     TrieSetCell(g_ModelsConfigurationKeysTrie, "END_SPRITE_MODEL", _:END_SPRITE_MODEL);
     TrieSetCell(g_ModelsConfigurationKeysTrie, "HEALTHBAR_SPRITE_MODEL", _:HEALTHBAR_SPRITE_MODEL);
+    TrieSetCell(g_ModelsConfigurationKeysTrie, "BLOOD_SPRITE_MODEL", _:BLOOD_SPRITE_MODEL);
+    TrieSetCell(g_ModelsConfigurationKeysTrie, "BLOODSPRAY_SPRITE_MODEL", _:BLOODSPRAY_SPRITE_MODEL);
+    TrieSetCell(g_ModelsConfigurationKeysTrie, "EXPLODE_SPRITE_MODEL", _:EXPLODE_SPRITE_MODEL);
 }
 
 @initMapConfigurationTrie()
@@ -89,10 +96,16 @@ public relaseTries()
     TrieSetCell(g_MonsterTypesConfigurationKeysTrie, "DeployInterval", _:MONSTER_DEPLOY_INTERVAL);
     TrieSetCell(g_MonsterTypesConfigurationKeysTrie, "Count", _:MONSTER_COUNT);
     TrieSetCell(g_MonsterTypesConfigurationKeysTrie, "DeployExtraDelay", _:MONSTER_DEPLOY_EXTRA_DELAY);
+    TrieSetCell(g_MonsterTypesConfigurationKeysTrie, "TowerDamage", _:MONSTER_TOWER_DAMAGE);
 
     g_WavesConfigurationKeysTrie = TrieCreate();
 
     TrieSetCell(g_WavesConfigurationKeysTrie, "TimeToWave", _:WAVE_TIME_TO_WAVE);
+}
+
+@releaseModelsPrecacheArray() 
+{
+    ArrayDestroy(g_ModelsPrecacheIdArray);
 }
 
 @releaseWaveDataArray()

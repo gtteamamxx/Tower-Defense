@@ -1,8 +1,11 @@
 {
-    "MAIN":{
-        "TOWER_MODEL": "models/Tower Defense/tower.mdl",
-        "START_SPRITE_MODEL": "sprites/Tower Defense/spawn.spr",
-        "END_SPRITE_MODEL": "sprites/Tower Defense/spawn.spr",
-        "HEALTHBAR_SPRITE_MODEL": "sprites/Tower Defense/healthbar.spr"
-    }
+	"MAIN": {
+		"TOWER_MODEL": "models/Tower Defense/tower.mdl",
+		"START_SPRITE_MODEL": "sprites/Tower Defense/spawn.spr",
+		"END_SPRITE_MODEL": "sprites/Tower Defense/spawn.spr",
+		"HEALTHBAR_SPRITE_MODEL": "sprites/Tower Defense/healthbar.spr",
+		"BLOOD_SPRITE_MODEL": "sprites/Tower Defense/blood.spr",
+		"BLOODSPRAY_SPRITE_MODEL": "sprites/Tower Defense/bloodspray.spr",
+		"EXPLODE_SPRITE_MODEL": "sprites/Tower Defense/zerogxplode.spr"
+	}
 }

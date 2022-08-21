@@ -9,10 +9,23 @@ public plugin_natives()
     register_native("td_register_monster", "@_td_register_monster");
     register_native("td_get_monster_entity_name", "@_td_get_monster_entity_name");
     register_native("td_is_monster", "@_td_is_monster");
-    register_native("td_is_killed_monster", "@_td_is_killed_monster");
+    register_native("td_is_monster_killed", "@_td_is_monster_killed");
     register_native("entity_set_aim", "@entity_set_aim");
     register_native("td_aim_monster_to_track", "@aimMonsterToTrack");
+    register_native("td_stop_monster", "@_td_stop_monster");
     register_native("td_get_monster_actual_track_id", "@_td_get_monster_actual_track_id");
+}
+
+@_td_stop_monster(pluginId, argc)
+{
+    new monsterEntity = get_param(1);
+
+    if (!isMonster(monsterEntity)) 
+    {
+        return;
+    }
+
+    entity_set_vector(monsterEntity, EV_VEC_velocity, Float:{0.0, 0.0, 0.0});
 }
 
 @_td_get_monster_actual_track_id(monsterEntity)
@@ -37,22 +50,21 @@ public @aimMonsterToTrack(pluginId, argc)
     entity_set_aim(ent1, ent2);
 }
 
-
 bool:@_td_is_monster(pluginId, argc)
 {
     new monsterEntity = get_param(1);
     return isMonster(monsterEntity);
 }
 
-bool:@_td_is_killed_monster(pluginId, argc)
+bool:@_td_is_monster_killed(pluginId, argc)
 {
     new monsterEntity = get_param(1);
-    return isKilledMonster(monsterEntity);
+    return isMonsterKilled(monsterEntity);
 }
 
 /*
     Params count - minimum 2
-    Param 1 string[33] - Monster type name
+    Param 1 - string[33] - Monster type name
     Param 2 - X string[128] - Path to monster model
 */
 bool:@_td_register_monster(pluginId, argc)

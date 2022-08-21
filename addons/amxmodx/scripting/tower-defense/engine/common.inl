@@ -13,6 +13,7 @@ new Trie:g_MapConfigurationKeysTrie;
 
 new g_Models[MODELS_ENUM][MODELS_CONFIG_PATH_LENGTH];
 new Trie:g_ModelsConfigurationKeysTrie;
+new Array:g_ModelsPrecacheIdArray;
 
 new Array:g_WaveDataArray;
 new Trie:g_MonsterTypesConfigurationKeysTrie;
@@ -84,7 +85,7 @@ public bool:isMonster(entity)
     return is_valid_ent(entity) && ((getEntityBitData(entity) & MONSTER_BIT) == MONSTER_BIT);
 }
 
-public bool:isKilledMonster(entity)
+public bool:isMonsterKilled(entity)
 {
     return is_valid_ent(entity) && ((getEntityBitData(entity) & MONSTER_KILLED_BIT) == MONSTER_KILLED_BIT);
 }
@@ -124,6 +125,40 @@ stock getTrackWallEntityName(trackId, trackName[14] = {})
 {
     formatex(trackName, charsmax(trackName), "track%d_wall", trackId);
     return trackName
+}
+
+stock getModelPrecacheId(MODELS_ENUM:model) 
+{
+	return ArrayGetCell(g_ModelsPrecacheIdArray, _:model);
+}
+
+stock createBloodEffectOnEntity(ent, size)
+{ 
+	if (!is_valid_ent(ent)) 
+	{
+		return;
+	}
+
+	new iOrigin[3]
+	new Float:fOrigin[3]
+	entity_get_vector(ent, EV_VEC_origin, fOrigin)
+	
+	FVecIVec(fOrigin, iOrigin)
+	
+	iOrigin[0] += random_num(-10, 10)
+	iOrigin[1] += random_num(-10, 10)
+	iOrigin[2] += random_num(-10, 30)
+
+	message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
+	write_byte(TE_BLOODSPRITE)
+	write_coord(iOrigin[0] + random_num(-20,20))
+	write_coord(iOrigin[1] + random_num(-20,20))
+	write_coord(iOrigin[2] + random_num(-20,20))
+	write_short(getModelPrecacheId(BLOODSPRAY_SPRITE_MODEL))
+	write_short(getModelPrecacheId(BLOOD_SPRITE_MODEL))
+	write_byte(229) // color index
+	write_byte(size) // size
+	message_end()
 }
 
 stock entity_set_aim(ent1, ent2)

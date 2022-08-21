@@ -169,6 +169,7 @@ public initializeGame()
     }
 
     loadMapConfigFromJsonFile(configurationFilePath);
+    
     loadWavesFromFile(configurationFilePath);
     @releaseWavesConfigurationDictionary();
 }

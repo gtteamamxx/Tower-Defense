@@ -253,7 +253,9 @@ public loadWavesFromFile(jsonFilePath[128])
             }
 
             new any:minValue, any:maxValue;
-            new bool:isFloatValue = WAVE_MONSTER_DATA_ENUM:dataType != MONSTER_COUNT;
+            new bool:isFloatValue = 
+                   WAVE_MONSTER_DATA_ENUM:dataType != MONSTER_COUNT
+                && WAVE_MONSTER_DATA_ENUM:dataType != MONSTER_TOWER_DAMAGE;
 
             if(!getMinMaxValueFromArray(minMaxArrayJson, minValue, maxValue, key, .float = isFloatValue))
             {
