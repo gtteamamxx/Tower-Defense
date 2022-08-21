@@ -3,6 +3,13 @@
 #endif
 #define td_json_events_included
 
+public registerClientEvents()
+{
+    RegisterHamPlayer(Ham_Spawn, "onPlayerSpawn", 1);
+
+    g_SyncHudInfo = CreateHudSyncObj();
+}
+
 public registerClientCommands()
 {
     register_clcmd("say /start", "@cmdStartWave");

@@ -226,6 +226,8 @@ public initializeGame()
     
     drop_to_floor(towerEntity)
 
+    g_TowerHealth = getMapConfigurationData(TOWER_HEALTH);
+
     return towerEntity;
 }
 

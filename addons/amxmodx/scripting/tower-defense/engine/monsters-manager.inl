@@ -89,6 +89,8 @@ public monsterKilled(monsterEntity, playerId)
         return HAM_IGNORED;
     }
     
+    g_AliveMonstersNum--;
+
     new bool:isMonsterKilledbyHeadshot; CED_GetCell(monsterEntity, MONSTER_DATA_IS_LAST_SHOT_HEADSHOT, isMonsterKilledbyHeadshot);
 
     @setMonsterKilledProperties(monsterEntity);
@@ -258,10 +260,13 @@ public monsterChangeTrack(monsterEntity, wallEntity)
     new monsterTypeIndex = sendWaveMonsterParameter[1];
     new monstersLeft = sendWaveMonsterParameter[2];
 
+    // if all monsters were sent
     if(monstersLeft == 0)
     {
+        // we check if there's another in queue
         if(monsterTypeIndex + 1 < getWaveMonsterTypesNum(wave))
         {
+            // if, so - send another wave
             @startSendingWaveMonsters(wave, monsterTypeIndex + 1);
         }
 

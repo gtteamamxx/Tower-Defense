@@ -9,6 +9,7 @@
 
 #include "tower-defense/engine/consts.inl"
 #include "tower-defense/engine/common.inl"
+#include "tower-defense/engine/tower.inl"
 #include "tower-defense/engine/json-loader.inl"
 #include "tower-defense/engine/json-wave-loader.inl"
 #include "tower-defense/engine/startup.inl"
@@ -16,13 +17,12 @@
 #include "tower-defense/engine/counter.inl"
 #include "tower-defense/engine/monsters-manager.inl"
 #include "tower-defense/engine/monster-types-manager.inl"
+#include "tower-defense/engine/player.inl"
+#include "tower-defense/engine/player-kills.inl"
 #include "tower-defense/engine/events.inl"
 #include "tower-defense/engine/precaches.inl"
 #include "tower-defense/engine/natives.inl"
 #include "tower-defense/engine/add-to-full-pack.inl"
-#include "tower-defense/engine/player.inl"
-#include "tower-defense/engine/player-kills.inl"
-#include "tower-defense/engine/tower.inl"
 
 #pragma semicolon 1
 #pragma dynamic 32768
@@ -35,7 +35,9 @@ public plugin_init()
 {
     register_plugin(PLUGIN, VERSION, AUTHOR);
 
+    registerClientEvents();
     registerClientCommands();
+
     registerMonsterEvents();
 
     registerAddToFullPack();

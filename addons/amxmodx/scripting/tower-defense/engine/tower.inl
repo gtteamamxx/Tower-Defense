@@ -3,18 +3,34 @@
 #endif
 #define td_engine_tower_includes
 
+new g_TowerHealth;
+
 public manageTowerOnMonsterTouchEndWall(monsterEntity) 
 {
+    new damageTakenToTower = getMonsterDamageToTakeForTower(monsterEntity);
+
     new bool:shouldTowerBeVisible = getMapConfigurationData(SHOW_TOWER);
     if (shouldTowerBeVisible) 
     {
-        static towerEntity; towerEntity = find_ent_by_class(-1, TOWER_ENTITY_NAME);
+        static towerEntity; 
+        if (!towerEntity) 
+        {
+            towerEntity = find_ent_by_class(-1, TOWER_ENTITY_NAME);
+        }
 
         @createExplodeEffectOnTowerPosition(towerEntity);
 
-        new damageTakenToTower = getMonsterDamageToTakeForTower(monsterEntity);
         @moveTowerDownByTakenDamage(towerEntity,damageTakenToTower);
     }
+
+    @takeDamageToTower(damageTakenToTower);
+}
+
+@takeDamageToTower(damage) 
+{
+    g_TowerHealth -= damage;
+
+    if (g_TowerHealth < 0) g_TowerHealth = 0;
 }
 
 @moveTowerDownByTakenDamage(towerEntity, damageTakenToTower)

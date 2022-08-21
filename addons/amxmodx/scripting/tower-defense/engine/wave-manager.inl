@@ -112,9 +112,15 @@ public getWaveMonsterTypesNum(wave)
     return ArraySize(monsterTypesArray);
 }
 
-@isWaveValid(wave)
+public getMaxWaveNumber() 
 {
     new maxWaveNumber = ArraySize(g_WaveDataArray) + 1;
+    return maxWaveNumber;
+}
+
+@isWaveValid(wave)
+{
+    new maxWaveNumber = getMaxWaveNumber();
     return 1 <= wave <= maxWaveNumber;
 }
 
