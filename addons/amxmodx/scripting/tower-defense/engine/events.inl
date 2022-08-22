@@ -12,7 +12,6 @@ public registerClientEvents()
 
 public registerClientCommands()
 {
-    register_clcmd("say /start", "@cmdStartWave");
 }
 
 public registerMonsterEvents()
@@ -25,9 +24,4 @@ public registerMonsterEvents()
     RegisterHam(Ham_TakeDamage, "info_target", "showMonsterBloodEffect", 1); // blood effect
 
     RegisterHam(Ham_Killed, "info_target", "monsterKilled");
-}
-
-@cmdStartWave(id)
-{
-    startGame();
 }

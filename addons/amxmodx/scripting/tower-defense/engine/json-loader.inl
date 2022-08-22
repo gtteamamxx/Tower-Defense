@@ -102,9 +102,9 @@ public loadMapConfigFromJsonFile(jsonFilePath[128])
         return;
     }
 
+    // if it's custom key, we just skip that line
     if(!@isTrieValid(g_MapConfigurationKeysTrie, key, type))
     {
-        log_amx("[Map] Undefined key: %s", key);
         return;
     }
 

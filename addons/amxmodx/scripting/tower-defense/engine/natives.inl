@@ -14,6 +14,7 @@ public plugin_natives()
     register_native("td_aim_monster_to_track", "@aimMonsterToTrack");
     register_native("td_stop_monster", "@_td_stop_monster");
     register_native("td_get_monster_actual_track_id", "@_td_get_monster_actual_track_id");
+    register_native("td_start_game", "@_td_start_game");
 }
 
 @_td_stop_monster(pluginId, argc)
@@ -113,4 +114,9 @@ bool:@_td_register_monster(pluginId, argc)
     getMonsterClassName(monsterEntityName, .monsterTypeName = monsterEntityName);
 
     set_string(2, monsterEntityName, get_param(3));
+}
+
+@_td_start_game()
+{
+    startGame();
 }

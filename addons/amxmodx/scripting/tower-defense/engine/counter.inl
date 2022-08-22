@@ -27,6 +27,25 @@ stock createCounter(time, counterKey[33], counterChangedFunction[33], counterCom
     set_task(delay, "@counterChanged", .parameter = counterKey, .len = 32);
 }
 
+stock isCounterExists(counterKey[33])
+{
+    return TrieKeyExists(g_CounterTrie, counterKey);
+}
+
+stock removeCounter(counterKey[33])
+{
+    if(!TrieKeyExists(g_CounterTrie, counterKey))
+    {
+        return;
+    }
+        
+    new Array:counterDataArray; 
+    TrieGetCell(g_CounterTrie, counterKey, .value = counterDataArray);
+    
+    ArrayDestroy(counterDataArray);
+    TrieDeleteKey(g_CounterTrie, counterKey);
+}
+
 @counterChanged(counterKey[33])
 {
     if(!TrieKeyExists(g_CounterTrie, counterKey))
@@ -46,9 +65,7 @@ stock createCounter(time, counterKey[33], counterChangedFunction[33], counterCom
 
         set_task(0.1, counterCompletedFunction);
 
-        ArrayDestroy(counterDataArray);
-        TrieDeleteKey(g_CounterTrie, counterKey);
-
+        removeCounter(counterKey);
         return;
     }
     else

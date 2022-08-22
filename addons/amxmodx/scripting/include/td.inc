@@ -18,3 +18,7 @@ native td_aim_monster_to_track(monsterEntity, trackEntity = -1);
 native td_get_monster_actual_track_id(monsterEntity);
 
 native td_stop_monster(monsterEntity);
+
+native td_start_game();
+
+forward td_on_configuration_load(configurationFilePath[128], bool:isGamePossible);

@@ -174,6 +174,8 @@ public initializeGame()
     @releaseWavesConfigurationDictionary();
 
     @prepareRandomMonstersCountForWaves();
+
+    executeOnConfigurationLoadForward(configurationFilePath, g_IsGamePossible);
 }
 
 @setStartEntities()

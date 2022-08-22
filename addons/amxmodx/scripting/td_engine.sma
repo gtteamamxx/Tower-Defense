@@ -25,6 +25,7 @@
 #include "tower-defense/engine/add-to-full-pack.inl"
 #include "tower-defense/engine/end-game-manager.inl"
 #include "tower-defense/engine/start-game-manager.inl"
+#include "tower-defense/engine/forwards.inl"
 
 #pragma semicolon 1
 #pragma dynamic 32768
@@ -39,6 +40,7 @@ public plugin_init()
 
     registerClientEvents();
     registerClientCommands();
+    registerForwards();
 
     registerMonsterEvents();
 
