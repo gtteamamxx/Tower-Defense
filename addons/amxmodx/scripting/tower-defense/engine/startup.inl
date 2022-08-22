@@ -172,6 +172,8 @@ public initializeGame()
     
     loadWavesFromFile(configurationFilePath);
     @releaseWavesConfigurationDictionary();
+
+    @prepareRandomMonstersCountForWaves();
 }
 
 @setStartEntities()
@@ -322,6 +324,31 @@ public initializeGame()
 {
     TrieDestroy(g_WavesConfigurationKeysTrie);
     TrieDestroy(g_MonsterTypesConfigurationKeysTrie);
+}
+
+// Function fills wave monsters count array
+// with randomly number of monsters per wave per monster type
+//
+// It's necessary due we need static number of monsters in wave
+@prepareRandomMonstersCountForWaves()
+{
+    for(new i = 0; i < ArraySize(g_WaveDataArray); ++i)
+    {
+        new Array:waveArray = Array:ArrayGetCell(g_WaveDataArray, i);
+        new Array:monsterTypesArray = Array:ArrayGetCell(waveArray, _:WAVE_MONSTER_TYPES);
+        new Array:monstersCountArray = Array:ArrayGetCell(waveArray, _:WAVE_MONSTERS_COUNT);
+        
+        for(new j = 0; j < ArraySize(monsterTypesArray); ++j)
+        {
+            new Trie:monsterTypeTrie = Trie:ArrayGetCell(monsterTypesArray, j);
+
+            new monsterTypeCount[2];
+            TrieGetArray(monsterTypeTrie, keyToString(_:MONSTER_COUNT), monsterTypeCount, 2);
+
+            new randomCount = random_num(monsterTypeCount[0], monsterTypeCount[1]);
+            ArrayPushCell(monstersCountArray, randomCount);
+        }
+    }
 }
 
 stock getMapConfigurationFilePath(output[128], bool:useDefaultConfig = false)

@@ -3,18 +3,32 @@
 #endif
 #define td_json_end_game_manager_included
 
-public checkIfItsEndGame()
+public bool:checkIfItsEndGame()
 {
     // If game hasn't started yet
     if (g_ActualWave < 0)
     {
-        return;
+        return false;
     }
 
+    new maxWaveNumber = getMaxWaveNumber();
+    new bool:isLastWave = g_ActualWave == maxWaveNumber;
+    new bool:areAllMonstersKilled = areAllMonstersKilledInCurrentWave();
+
+    // if tower was destroyed then monsters won
     if (g_TowerHealth <= 0)
     {
         @endGame();
+        return true;
     }
+    // if players killed all monsters then players have win
+    else if (isLastWave && areAllMonstersKilled) 
+    {
+        @endGame();
+        return true;
+    }
+
+    return false;
 }
 
 @endGame()

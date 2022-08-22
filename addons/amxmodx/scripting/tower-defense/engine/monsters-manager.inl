@@ -18,6 +18,19 @@ public getMonsterDamageToTakeForTower(monsterEntity)
     return towerDamage;
 }
 
+public bool:areAllMonstersKilledInCurrentWave()
+{
+    new monstersCountForWave = getTotalNumberOfMonstersToSendForWave(g_ActualWave);
+
+    if (monstersCountForWave == g_SentMonsters)
+    {
+        new bool:areAllMonstersKilled = g_AliveMonstersNum == 0;
+        return areAllMonstersKilled;
+    }
+
+    return false;
+}
+
 public monsterShotTraceAttack(monsterEntity, playerId, Float:damage, Float:direction[3], traceHandle, damageTypeBit)
 {
     if(!isMonster(monsterEntity) || !is_user_connected(playerId))
@@ -64,7 +77,7 @@ public showMonsterBloodEffect(monsterEntity, inflictorId, playerId, Float:damage
     }
 }
 
-public showMonsterTakedDamage(monsterEntity, inflictorId, playerId, Float:damage, damageTypeBit)
+public showMonsterTakenDamage(monsterEntity, inflictorId, playerId, Float:damage, damageTypeBit)
 {
     if((!isMonster(monsterEntity) && !isMonsterKilled(monsterEntity)) || !is_user_connected(playerId))
     {
@@ -80,9 +93,16 @@ public showMonsterTakedDamage(monsterEntity, inflictorId, playerId, Float:damage
     set_dhudmessage(255, 255, 255, -1.0, -1.0, 0, 0.0, 0.1);
     show_dhudmessage(playerId, "x");
 
-    if (actualMonsterHealth < 0.0) actualMonsterHealth = 0.0;
-
-    client_print(playerId, print_center, "HP: %0.0f", actualMonsterHealth);
+    // if player killed monster
+    if (actualMonsterHealth < 0.0)
+    {
+        actualMonsterHealth = 0.0;
+        client_print(playerId, print_center, "KILLED");
+    }
+    else
+    {
+        client_print(playerId, print_center, "HP: %0.0f", actualMonsterHealth);
+    }
 
     @updateMonsterHealthbar(monsterEntity, actualMonsterHealth);
 }
@@ -98,19 +118,26 @@ public monsterKilled(monsterEntity, playerId)
 
     new bool:isMonsterKilledbyHeadshot; CED_GetCell(monsterEntity, MONSTER_DATA_IS_LAST_SHOT_HEADSHOT, isMonsterKilledbyHeadshot);
 
+    createBloodEffectOnEntity(monsterEntity, .size = isMonsterKilledbyHeadshot ? 30 : 15)
+
     @setMonsterKilledProperties(monsterEntity);
     @setMonsterKilledAnimation(monsterEntity);
     @removeMonsterHealthbar(monsterEntity);
-    createBloodEffectOnEntity(monsterEntity, .size = isMonsterKilledbyHeadshot ? 30 : 15)
+    @removeMonsterEntityByDelay(monsterEntity, 6.0);
 
     onPlayerKilledMonster(playerId, isMonsterKilledbyHeadshot);
 
-    new removeMonsterEntityParameter[1];
-    removeMonsterEntityParameter[0] = monsterEntity;
-
-    set_task(6.0, "@removeMonsterEntity", .parameter = removeMonsterEntityParameter, .len = 1);
+    checkIfWaveIsCompleted();
 
     return HAM_SUPERCEDE;
+}
+
+@removeMonsterEntityByDelay(monsterEntity, Float:delay)
+{
+    new removeMonsterEntityParameter[1]; 
+    removeMonsterEntityParameter[0] = monsterEntity;
+
+    set_task(delay, "@removeMonsterEntity", .parameter = removeMonsterEntityParameter, .len = 1);
 }
 
 @removeMonsterEntity(removeMonsterEntityParameter[1])
@@ -248,7 +275,7 @@ public monsterChangeTrack(monsterEntity, wallEntity)
 @startSendingWaveMonsters(wave, monsterTypeIndex)
 {
     new monsterTypeName[33];
-    new count = getNumberOfMonstersForMonsterTypeInWave(wave, monsterTypeIndex);
+    new count = getNumberOfMonstersToSend(wave, monsterTypeIndex);
     new Float:delay = getRandomValueForMonsterTypeInWave(wave, monsterTypeIndex, MONSTER_DEPLOY_EXTRA_DELAY);
 
     getMonsterTypeNameForMonsterTypeInWave(wave, monsterTypeIndex, monsterTypeName);

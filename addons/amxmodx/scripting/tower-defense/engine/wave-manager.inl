@@ -5,33 +5,6 @@
 
 new g_ActualWave;
 
-public bool:getWaveMonstersTotalCount(wave, totalCount[2])
-{
-    if(!@isWaveValid(wave))
-    {
-        return false;
-    }
-
-    new Array:waveMonsterTypesArray = @getWaveMonsterTypesArray(wave);
-
-    new monsterTypesCount = ArraySize(waveMonsterTypesArray);
-
-    for(new i = 0; i < monsterTypesCount; i++)
-    {
-        new Trie:monsterTypeTrie = Trie:@getMonsterTypeTrieFromMonsterTypesArray(
-            .monsterTypesArray = waveMonsterTypesArray,
-            .monsterTypeIndex = i
-        );
-
-        new count[2];
-        TrieGetArray(monsterTypeTrie, keyToString(_:MONSTER_COUNT), count, 2);
-        totalCount[0] += count[0];
-        totalCount[1] += count[1];
-    }
-
-    return true;
-}
-
 public Float:getRandomValueForMonsterTypeInWave(wave, monsterTypeIndex, WAVE_MONSTER_DATA_ENUM:key)
 {
     if(!@isWaveValid(wave) || monsterTypeIndex < 0)
@@ -72,6 +45,53 @@ public getNumberOfMonstersForMonsterTypeInWave(wave, monsterTypeIndex)
     return count[1] == 0 ? count[0] : random_num(count[0], count[1]);
 }
 
+public getNumberOfMonstersToSend(wave, monsterTypeIndex)
+{
+    if(!@isWaveValid(wave) || monsterTypeIndex < 0)
+    {
+        return -1;
+    }
+
+    new Array:monstersCountArray = @getWaveMonsterCountArray(wave);
+
+    new count = ArrayGetCell(monstersCountArray, monsterTypeIndex);
+
+    return count;
+}
+
+public getTotalNumberOfMonstersToSendForWave(wave)
+{
+    if(!@isWaveValid(wave))
+    {
+        return 0;
+    }
+
+    static previousResult;
+    static previousWaveNumber;
+
+    // we can cache wave total monsters count 
+    // because mostly it will be used to display current wave 
+    // monsters count
+    if (previousWaveNumber == wave)
+    {
+        // return cache value
+        return previousResult;
+    }
+
+    new Array:monstersCountArray = @getWaveMonsterCountArray(wave);
+
+    new totalCount = 0;
+
+    for(new i = 0; i < ArraySize(monstersCountArray); ++i)
+    {
+        totalCount += ArrayGetCell(monstersCountArray, i);
+    }
+
+    previousResult = totalCount;
+
+    return totalCount;
+}
+
 public getDamageWhichMonsterWillTakeForTowerForMonsterTypeInWave(wave, monsterTypeIndex)
 {
     if(!@isWaveValid(wave) || monsterTypeIndex < 0)
@@ -86,7 +106,6 @@ public getDamageWhichMonsterWillTakeForTowerForMonsterTypeInWave(wave, monsterTy
     return count[1] == 0 ? count[0] : random_num(count[0], count[1]);
 }
 
-
 public getWaveTimeToWave(wave)
 {
     if(!@isWaveValid(wave))
@@ -97,6 +116,7 @@ public getWaveTimeToWave(wave)
     new Trie:waveConfigurationTrie = @getWaveConfigurationTrie(wave);
     new timeToWave = -1;
     TrieGetCell(waveConfigurationTrie, keyToString(_:WAVE_TIME_TO_WAVE), .value = timeToWave);
+
     return timeToWave;
 }
 
@@ -112,9 +132,9 @@ public getWaveMonsterTypesNum(wave)
     return ArraySize(monsterTypesArray);
 }
 
-getMaxWaveNumber() 
+public getMaxWaveNumber() 
 {
-    new maxWaveNumber = ArraySize(g_WaveDataArray) + 1;
+    new maxWaveNumber = ArraySize(g_WaveDataArray);
     return maxWaveNumber;
 }
 
@@ -139,6 +159,12 @@ Array:@getWaveMonsterTypesArray(wave)
 {
     new Array:waveArray = @getWaveArray(wave);
     return Array:ArrayGetCell(waveArray, _:WAVE_MONSTER_TYPES);
+}
+
+Array:@getWaveMonsterCountArray(wave)
+{
+    new Array:waveArray = @getWaveArray(wave);
+    return Array:ArrayGetCell(waveArray, _:WAVE_MONSTERS_COUNT);
 }
 
 Trie:@getMonsterTypeTrieFromMonsterTypesArray(Array:monsterTypesArray, monsterTypeIndex)

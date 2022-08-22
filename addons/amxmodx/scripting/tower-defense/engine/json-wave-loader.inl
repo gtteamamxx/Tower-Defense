@@ -57,6 +57,7 @@ public loadWavesFromFile(jsonFilePath[128])
             new Array:waveArray = @initWaveTrie();
             @initConfigurationTrieForWaveArray(waveArray);
             @initWaveMonsterTypesArrayForWaveArray(waveArray);
+            @initWaveMonsterCountArrayForWaveArray(waveArray);
 
             @setInitialConfigurationForWaveArray(waveArray);
 
@@ -95,6 +96,13 @@ public loadWavesFromFile(jsonFilePath[128])
     new Array:monsterTypesArrayForWave = ArrayCreate();
     ArrayPushCell(waveArray, monsterTypesArrayForWave);
 }
+
+@initWaveMonsterCountArrayForWaveArray(Array:waveArray)
+{
+    new Array:monsterCountArrayForWave = ArrayCreate();
+    ArrayPushCell(waveArray, monsterCountArrayForWave);
+}
+
 
 @initMonsterTypeTrieForWaveMonsterTypeArray(Array:waveMonsterTypeArray)
 {

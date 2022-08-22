@@ -125,6 +125,7 @@ public relaseTries()
 
         new Trie:waveConfigurationTrie = Trie:ArrayGetCell(waveArray, _:WAVE_CONFIG);
         new Array:monsterTypesArray = Array:ArrayGetCell(waveArray, _:WAVE_MONSTER_TYPES);
+        new Array:monstersCountArray = Array:ArrayGetCell(waveArray, _:WAVE_MONSTERS_COUNT);
 
         new monsterTypesCount = ArraySize(monsterTypesArray);
         for(new j = 0; j < monsterTypesCount; ++j)
@@ -136,6 +137,7 @@ public relaseTries()
         ArrayDestroy(monsterTypesArray);
         TrieDestroy(waveConfigurationTrie);
         ArrayDestroy(waveArray);
+        ArrayDestroy(monstersCountArray);
     }
 
     ArrayDestroy(g_WaveDataArray);
