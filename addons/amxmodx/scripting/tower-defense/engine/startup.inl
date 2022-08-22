@@ -18,6 +18,7 @@ public loadModelsConfiguration()
     }
 
     @releaseModelsConfigurationDictionary();
+
 }
 
 public loadMapConfiguration()

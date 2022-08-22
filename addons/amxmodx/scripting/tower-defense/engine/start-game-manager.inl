@@ -23,6 +23,8 @@ public checkIfWaveIsCompleted()
 
     if (isWaveFinished)
     {
+        executeOnWaveEndForward(g_ActualWave);
+
         new bool:isEndGame = checkIfItsEndGame();
 
         // if it's end game we shouldn't start new wave

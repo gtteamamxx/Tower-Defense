@@ -33,6 +33,8 @@ public bool:checkIfItsEndGame()
 
 @endGame()
 {
+    executeOnGameEndForward();
+
     @stopAllMonsters();
     @stopSendingNewMonsters();
 }

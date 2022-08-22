@@ -61,6 +61,8 @@ public controlDamageTakenToMonster(monsterEntity, inflictorId, playerId, Float:d
         damage = @controllDamageTakenToMonsterByGun(monsterEntity, playerId, damage);
     }
 
+    executeOnDamageTakenToMonsterForward(monsterEntity, playerId, damage);
+
     SetHamParamFloat(4, damage);
 }
 
@@ -114,6 +116,8 @@ public monsterKilled(monsterEntity, playerId)
         return HAM_IGNORED;
     }
     
+    executeOnMonsterKilledForward(monsterEntity, playerId);
+
     g_AliveMonstersNum--;
 
     new bool:isMonsterKilledbyHeadshot; CED_GetCell(monsterEntity, MONSTER_DATA_IS_LAST_SHOT_HEADSHOT, isMonsterKilledbyHeadshot);

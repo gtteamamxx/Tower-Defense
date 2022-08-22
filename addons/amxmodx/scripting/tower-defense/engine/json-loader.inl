@@ -37,11 +37,6 @@ public loadModelsConfigurationFromFile(jsonFilePath[128])
         @loadMainModelsConfiguration(mainJsonObject);
         json_free(mainJsonObject);
     }
-    else
-    {
-        log_amx("[Models] No configuration for key: %s", key);
-        setGameStatus(.status = false);
-    }
 }
 
 @loadMainModelsConfiguration(JSON:json)
