@@ -6,6 +6,9 @@
 	"SHOW_END_SPRITE": false,
 	"TIME_TO_WAVE": 15,
 	"START_ZONE": "-28.2 -694.1 100.0 -150.0 -150.0 -50.0 150.0 150.0 50.0",
+	"MAP_VOTE_ZONE_1": "96.3 248.1 100.0 -100.0 -100.0 -30.0 100.0 100.0 30.0",
+	"MAP_VOTE_ZONE_2": "369.4 232.0 100.0 -100.0 -100.0 -30.0 100.0 100.0 30.0",
+	"MAP_VOTE_ZONE_3": "323.9 624.0 100.0 -100.0 -100.0 -30.0 100.0 100.0 30.0",
 	"WAVES": {
 		"1": {
 			"CONFIG": {
@@ -19,57 +22,6 @@
 					"DeployInterval": [1.0],
 					"TowerDamage": [5],
 					"Count": [1, 2]
-				},
-				{
-					"Type": "FAST",
-					"Health": [50, 150],
-					"Speed": [265.0, 300.0],
-					"DeployInterval": [1.0, 3.0],
-					"Count": [1, 2],
-					"TowerDamage": [3],
-					"DeployExtraDelay": [1.0]
-				},
-				{
-					"Type": "STRENGTH",
-					"Health": [300, 450],
-					"Speed": [150, 200],
-					"DeployInterval": [3.0, 6.0],
-					"Count": [1, 2],
-					"TowerDamage": [7],
-					"DeployExtraDelay": [1.0]
-				}
-			]
-		},
-		"2": {
-			"CONFIG": {
-				"TimeToWave": 3
-			},
-			"MONSTER_TYPES": [
-				{
-					"Type": "NORMAL",
-					"Health": [100, 250],
-					"Speed": [220.0, 260.0],
-					"DeployInterval": [1.0],
-					"TowerDamage": [5],
-					"Count": [1, 2]
-				},
-				{
-					"Type": "FAST",
-					"Health": [50, 150],
-					"Speed": [265.0, 300.0],
-					"DeployInterval": [1.0, 3.0],
-					"Count": [1, 2],
-					"TowerDamage": [3],
-					"DeployExtraDelay": [3.0]
-				},
-				{
-					"Type": "STRENGTH",
-					"Health": [300, 450],
-					"Speed": [150, 200],
-					"DeployInterval": [3.0, 6.0],
-					"Count": [1, 2],
-					"TowerDamage": [7],
-					"DeployExtraDelay": [1.0]
 				}
 			]
 		}

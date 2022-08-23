@@ -4,6 +4,7 @@
 #include <fakemeta>
 #include <fakemeta_util>
 #include <engine>
+#include <hamsandwich>
 
 #include "tower-defense/engine/counter.inl"
 #include "tower-defense/engine/consts.inl"
@@ -15,7 +16,6 @@
 #define START_ZONE_KEY "START_ZONE"
 #define START_ZONE_SPRITE "START_ZONE_SPRITE"
 #define START_ZONE_CLASS_NAME "startzone"
-#define TD_MODELS ""
 #define EV_INT_startzone_sprite_entity EV_INT_iuser1
 #define STAY_TIME 10
 #define STAY_ZONE_HUD_TASK_ID 9992
@@ -40,6 +40,8 @@ public plugin_init()
 
     register_touch(START_ZONE_CLASS_NAME, "player", "startZoneTouched");
 
+    RegisterHamPlayer(Ham_Killed, "onPlayerKilled", 1);
+
     g_PlayersInStartZoneArray = ArrayCreate();
 
     initCounterTrie();
@@ -62,6 +64,11 @@ public plugin_end()
     ArrayDestroy(g_PlayersInStartZoneArray);
 
     destroyCounterTrie();
+}
+
+public onPlayerKilled(id)
+{
+    @setIsPlayerInStartZone(id, .value = false);
 }
 
 public client_disconnected(id)
@@ -381,10 +388,16 @@ public onStartZoneTimeElapsed()
 @removeCurrentStartZone()
 {
     if(is_valid_ent(g_StartZoneEntity)) 
-	{
-		remove_entity(entity_get_int(g_StartZoneEntity, EV_INT_startzone_sprite_entity));
-		remove_entity(g_StartZoneEntity);
-	}
+    {
+        new spriteEnt = entity_get_int(g_StartZoneEntity, EV_INT_startzone_sprite_entity);
+
+        if(is_valid_ent(spriteEnt))
+        {
+            remove_entity(spriteEnt);
+        }
+
+        remove_entity(g_StartZoneEntity);
+    }
 }
 
 @createStartZoneBox()
@@ -453,14 +466,14 @@ public onStartZoneTimeElapsed()
 
 @getAlivePlayersNum()
 {
-	new num = 0;
-	for(new i = 1 ; i <= get_maxplayers(); ++i)
-	{
-		if(is_user_alive(i))
-			num++;
-	}
-	
-	return num;
+    new num = 0;
+    for(new i = 1 ; i <= get_maxplayers(); ++i)
+    {
+        if(is_user_alive(i))
+            num++;
+    }
+
+    return num;
 }
 
 @getRequiredNumberOfPlayers()

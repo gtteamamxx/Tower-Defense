@@ -96,15 +96,16 @@ public plugin_precache()
         return;
     }
 
-    formatex(g_SoundLevelUp, charsmax(g_SoundLevelUp), "sound/%s", g_SoundLevelUp);
-    if(file_exists(g_SoundLevelUp))
+    new lvlUpPath[128];
+    formatex(lvlUpPath, charsmax(lvlUpPath), "sound/%s", g_SoundLevelUp);
+    if(file_exists(lvlUpPath))
     {
-        replace(g_SoundLevelUp, charsmax(g_SoundLevelUp), "sound/", "");
-        precache_sound(g_SoundLevelUp);
+        replace(lvlUpPath, charsmax(lvlUpPath), "sound/", "");
+        precache_sound(lvlUpPath);
     }
     else 
     {
-        log_to_file("TDGUNMOD.txt", "DEBUG: Sound of levelup '%s' is not exist", g_SoundLevelUp);
+        log_to_file("TDGUNMOD.txt", "DEBUG: Sound of levelup '%s' is not exist", lvlUpPath);
     }
 }
 
@@ -838,7 +839,7 @@ public checkIfUserEarnedNewLevel(id)
 		ColorChat(id, GREEN, "^x01 You has just earned new weapon level: %d!", level);
 		client_cmd(id, "spk %s", g_SoundLevelUp);
 		
-		ColorChat(id, GREEN, "%s^x01 Also, you has just unlocked:");
+		ColorChat(id, GREEN, "^x01 Also, you has just unlocked:");
 		
 		new weapons[MAX_WEAPONS_PER_LEVEL][33], len;
 		
