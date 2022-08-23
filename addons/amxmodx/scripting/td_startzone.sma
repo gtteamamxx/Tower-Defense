@@ -6,14 +6,16 @@
 #include <engine>
 
 #include "tower-defense/engine/counter.inl"
+#include "tower-defense/engine/consts.inl"
 
 #define PLUGIN "Tower Defense: Start Zone"
 #define VERSION "1.0"
 #define AUTHOR "GT Team"
 
 #define START_ZONE_KEY "START_ZONE"
+#define START_ZONE_SPRITE "START_ZONE_SPRITE"
 #define START_ZONE_CLASS_NAME "startzone"
-
+#define TD_MODELS ""
 #define EV_INT_startzone_sprite_entity EV_INT_iuser1
 #define STAY_TIME 10
 #define STAY_ZONE_HUD_TASK_ID 9992
@@ -28,6 +30,7 @@ new Array:g_PlayersInStartZoneArray;
 new g_AreRequiredNumberOfPlayersCountInStartZone;
 
 new g_LeftTime = STAY_TIME;
+new g_StartZoneSpritePath[128];
 
 public plugin_init() 
 {
@@ -44,9 +47,14 @@ public plugin_init()
 
 public plugin_precache()
 {
+    loadModelsConfiguration();
+
     g_SpriteWhiteLine = precache_model("sprites/white.spr");
 
-    precache_model("sprites/Tower Defense/startzone.spr");
+    if (strlen(g_StartZoneSpritePath) > 0)
+    {
+        precache_model(g_StartZoneSpritePath);
+    }
 }
 
 public plugin_end()
@@ -59,6 +67,37 @@ public plugin_end()
 public client_disconnected(id)
 {
     @setIsPlayerInStartZone(id, .value = false);
+}
+
+public loadModelsConfiguration()
+{
+    new configurationFilePath[128];
+    formatex(configurationFilePath, 127, "%s/%s.json", CONFIG_DIRECTORY, MODELS_CONFIG_FILE);
+
+    log_amx("[START ZONE] Loading startzone models from file: %s", configurationFilePath);
+
+    new JSON:json = json_parse(configurationFilePath, .is_file = true, .with_comments = true);
+
+    if(!json_is_object(json))
+    {
+        log_amx("[START ZONE] Models file is not valid JSON file");
+        return;
+    }
+
+    new JSON:startZoneModelsKeyJson = json_object_get_value(json, START_ZONE_KEY);
+    if (startZoneModelsKeyJson == Invalid_JSON)
+    {
+        log_amx("[START ZONE] No %s key", START_ZONE_KEY);
+        return;
+    }
+
+    if(!json_object_get_string(startZoneModelsKeyJson, START_ZONE_SPRITE, g_StartZoneSpritePath, charsmax(g_StartZoneSpritePath)))
+    {
+        log_amx("[START ZONE] %s not found in %s", START_ZONE_SPRITE, configurationFilePath);
+        return;
+    }
+    json_free(startZoneModelsKeyJson);
+    json_free(json);
 }
 
 public td_on_configuration_load(configurationFilePath[128], bool:isGamePossible)
@@ -77,21 +116,19 @@ public td_on_configuration_load(configurationFilePath[128], bool:isGamePossible)
         log_amx("[START ZONE] File is not valid JSON file");
         return;
     }
-    else
+
+    new startZoneCoordinates[128]
+    if(!json_object_get_string(json, START_ZONE_KEY, startZoneCoordinates, charsmax(startZoneCoordinates)))
     {
-        new startZoneCoordinates[128]
-        if(!json_object_get_string(json, START_ZONE_KEY, startZoneCoordinates, charsmax(startZoneCoordinates)))
-        {
-            log_amx("[START ZONE] Invalid start zone JSON value");
-        }
-        else
-        {            
-            @loadStartZoneCoordinates(startZoneCoordinates);
+        log_amx("[START ZONE] Invalid start zone JSON value");
+    }
+    else
+    {            
+        @loadStartZoneCoordinates(startZoneCoordinates);
 
-            @createStartZone();
+        @createStartZone();
 
-            @startShowingHud();
-        }
+        @startShowingHud();
     }
 
     json_free(json);
@@ -166,7 +203,7 @@ public @setIsPlayerInStartZone(id, bool:value)
 @showHowManySecondsLeftToStayInStartZoneHud()
 {
     set_hudmessage(0, 255, 0, 0.06, 0.63, 1, 1.0, 1.1, 0.2, 0.2, 3)
-    show_hudmessage(0, "Stay yet %d %s in start zone...^nTD created by %s", g_LeftTime, g_LeftTime == 1 ? "second" : "seconds",  AUTHOR);
+    show_hudmessage(0, "Stay yet %d %s in start zone...^nTower Defense created by %s", g_LeftTime, g_LeftTime == 1 ? "second" : "seconds",  AUTHOR);
 }
 
 @startShowingHud()
@@ -244,19 +281,19 @@ public @setIsPlayerInStartZone(id, bool:value)
     {
         g_AreRequiredNumberOfPlayersCountInStartZone = true;
 
-        if (!isCounterExists("start_zone_stay_key"))
+        if (!isCounterExists(START_ZONE_KEY))
         {
             g_LeftTime = STAY_TIME;
-            createCounter(STAY_TIME, "start_zone_stay_key", "startZoneStaySecondElapsed", "onStartZoneTimeElapsed");
+            createCounter(STAY_TIME, START_ZONE_KEY, "startZoneStaySecondElapsed", "onStartZoneTimeElapsed");
         }
     }
     else 
     {
         g_AreRequiredNumberOfPlayersCountInStartZone = false;
 
-        if (isCounterExists("start_zone_stay_key"))
+        if (isCounterExists(START_ZONE_KEY))
         {
-            removeCounter("start_zone_stay_key");
+            removeCounter(START_ZONE_KEY);
         }
     }
 }
@@ -284,7 +321,7 @@ public onStartZoneTimeElapsed()
     fOrigin[2] = g_StartZoneCoordinations[0][2] + 55.0; // sprite just above start zone
 
     entity_set_vector(ent, EV_VEC_origin, fOrigin);
-    entity_set_model(ent, "sprites/Tower Defense/startzone.spr");
+    entity_set_model(ent, g_StartZoneSpritePath);
     entity_set_float(ent, EV_FL_scale, 0.45);
 
     fm_set_rendering(ent, kRenderFxNone, 0, 0, 0, kRenderTransAdd, 255);
