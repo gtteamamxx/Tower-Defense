@@ -18,25 +18,38 @@ public bool:checkIfItsEndGame()
     // if tower was destroyed then monsters won
     if (g_TowerHealth <= 0)
     {
-        @endGame();
+        @endGame(.win = false);
         return true;
     }
     // if players killed all monsters then players have win
     else if (isLastWave && areAllMonstersKilled) 
     {
-        @endGame();
+        @endGame(.win = true);
         return true;
     }
 
     return false;
 }
 
-@endGame()
+@endGame(bool:win)
 {
-    executeOnGameEndForward();
+    executeOnGameEndForward(win);
 
     @stopAllMonsters();
     @stopSendingNewMonsters();
+    @playEndGameSound(win);
+}
+
+@playEndGameSound(bool:win)
+{
+    if (win)
+    {
+        playSoundGlobalRandom(WIN);
+    }
+    else
+    {
+        playSoundGlobalRandom(LOSE);
+    }
 }
 
 @stopAllMonsters()

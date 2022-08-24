@@ -64,7 +64,15 @@ public startNextWave()
     set_hudmessage(212, 255, 255, 0.14, 0.57, 0, 3.0, 1.05)
     show_hudmessage(0, "Wave %d will start in: %ds", g_ActualWave, time);
 
-    playSoundGlobalRandom(WAVE_COUNTDOWN);
+    if (time < 5 || (time > 5 && time % 3 == 0)) 
+    {
+        playSoundGlobalRandom(WAVE_COUNTDOWN);
+    }
+
+    if (random(4) == 0) // 25% chance of growl sound at start position
+    {
+        playRandomGrowlSoundAtStartPosition();
+    }
 }
 
 @startWave()
@@ -75,4 +83,11 @@ public startNextWave()
     playSoundGlobalRandom(WAVE_START);
 
     startSendingWaveMonsters(g_ActualWave);
+}
+
+playRandomGrowlSoundAtStartPosition()
+{
+    new startEntity = getMapEntityData(START_ENTITY);
+
+    playSoundAroundEntRandom(startEntity, MONSTER_GROWL)
 }

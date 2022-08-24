@@ -12,6 +12,8 @@
 #define MONSTER_DATA_IS_LAST_SHOT_HEADSHOT "monster_headshot"
 #define MONSTER_DATA_TOWER_DAMAGE "monster_tower_damage"
 
+#define MONSTER_AMBIENT_SOUND_KEY "monster_"
+
 public getMonsterDamageToTakeForTower(monsterEntity) 
 {
     new towerDamage; CED_GetCell(monsterEntity, MONSTER_DATA_TOWER_DAMAGE, towerDamage);
@@ -79,6 +81,19 @@ public showMonsterBloodEffect(monsterEntity, inflictorId, playerId, Float:damage
     }
 }
 
+public playMonsterHitSound(monsterEntity, inflictorId, playerId, Float:damage, damageTypeBit) 
+{
+    if(!isMonster(monsterEntity) || isMonsterKilled(monsterEntity))
+    {
+        return;
+    }
+
+    if (random(5) == 0) // 20% chance of emit hit sound
+    {
+        playSoundAroundEntRandom(monsterEntity, MONSTER_HIT)
+    }
+}
+
 public showMonsterTakenDamage(monsterEntity, inflictorId, playerId, Float:damage, damageTypeBit)
 {
     if((!isMonster(monsterEntity) && !isMonsterKilled(monsterEntity)) || !is_user_connected(playerId))
@@ -99,7 +114,6 @@ public showMonsterTakenDamage(monsterEntity, inflictorId, playerId, Float:damage
     if (actualMonsterHealth < 0.0)
     {
         actualMonsterHealth = 0.0;
-        client_print(playerId, print_center, "KILLED");
     }
     else
     {
@@ -116,6 +130,8 @@ public monsterKilled(monsterEntity, playerId)
         return HAM_IGNORED;
     }
     
+    playSoundAroundEntRandom(monsterEntity, MONSTER_DIE);
+
     executeOnMonsterKilledForward(monsterEntity, playerId);
 
     g_AliveMonstersNum--;
@@ -128,7 +144,7 @@ public monsterKilled(monsterEntity, playerId)
     @setMonsterKilledAnimation(monsterEntity);
     @removeMonsterHealthbar(monsterEntity);
     @removeMonsterEntityByDelay(monsterEntity, 6.0);
-
+    
     onPlayerKilledMonster(playerId, isMonsterKilledbyHeadshot);
 
     checkIfWaveIsCompleted();
@@ -370,6 +386,7 @@ public monsterChangeTrack(monsterEntity, wallEntity)
 
     @setMonsterProperties(monsterEntity, monsterHealth, monsterSpeed, monsterTowerDamage);
     @createMonsterHealthBar(monsterEntity);
+    @startPlayingMonsterSounds(monsterEntity);    
 }
 
 @createMonsterHealthBar(monsterEntity)
@@ -395,6 +412,46 @@ public monsterChangeTrack(monsterEntity, wallEntity)
     setEntityBitData(healthBarEntity, MONSTER_HEALTHBAR_BIT);
 
     CED_SetCell(monsterEntity, MONSTER_DATA_HEALTHBAR_ENTITY, healthBarEntity);
+}
+
+@startPlayingMonsterSounds(monsterEntity)
+{
+    // define unique key for monster ambient sounds
+    new key[33];
+    formatex(key, 32, "%s%d", MONSTER_AMBIENT_SOUND_KEY, monsterEntity);
+
+    // create counter to play monster ambient sounds
+    // as long as monster lives
+    createCounter(
+        99999,
+        key,
+        "@playMonsterSound",
+        EMPTY_STRING,
+        .customInfo = monsterEntity
+    );
+}
+
+@playMonsterSound(time, monsterEntity, counterKey[33])
+{
+    // if monster is killed we don't want to play
+    // any sounds more, so delete existing counter
+    if (!is_valid_ent(monsterEntity) || isMonsterKilled(monsterEntity)) 
+    {
+        removeCounter(counterKey);
+        return;
+    }
+
+    // if monster is not moving do not play sound
+    if (!@isMonsterMoving(monsterEntity)) 
+    {
+        return;
+    }
+
+    // 5% chance to play monster ambient sound
+    if(random(20) == 0) 
+    {
+        playSoundAroundEntRandom(monsterEntity, MONSTER_SOUND);
+    }
 }
 
 @setMonsterProperties(monsterEntity, Float:monsterHealth, Float:monsterSpeed, monsterTowerDamage)
@@ -482,11 +539,13 @@ public monsterChangeTrack(monsterEntity, wallEntity)
 any:@getStartEntityOrigin()
 {
     static Float:startOrigin[3];
+
     if(startOrigin[0] == 0.0 && startOrigin[1] == 0.0 && startOrigin[2] == 0.0) 
     {
         new startEntity = getMapEntityData(START_ENTITY);
         entity_get_vector(startEntity, EV_VEC_origin, startOrigin)
     }
+
     return startOrigin;
 }
 
@@ -527,4 +586,15 @@ stock aimMonsterToTrack(monsterEntity, trackEntity = -1)
     new Float:monsterSpeed; CED_GetCell(monsterEntity, MONSTER_DATA_SPEED, monsterSpeed);
     velocity_by_aim(monsterEntity, floatround(monsterSpeed), velocityVector);
     entity_set_vector(monsterEntity, EV_VEC_velocity, velocityVector);
+}
+
+bool:@isMonsterMoving(monsterEntity) 
+{
+    new Float:velocity[3];
+    entity_get_vector(monsterEntity, EV_VEC_velocity, velocity);
+
+    new bool:isMonsterMoving 
+        = velocity[0] != 0 || velocity[1] != 0 || velocity[2] != 0;
+
+    return isMonsterMoving;
 }

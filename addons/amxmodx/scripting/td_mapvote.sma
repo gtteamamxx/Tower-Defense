@@ -532,7 +532,7 @@ public loadModelsConfiguration()
     set_hudmessage(255, 0, 0, 0.2, 0.49, 0, 1.0, 1.1)
     show_hudmessage(0, "Get ready to vote map in %d %s", time, time == 1 ? "second" : "seconds");
 
-    if(time <= 6) 
+    if(time <= 10) 
     {
         @speakFx(time);
     }

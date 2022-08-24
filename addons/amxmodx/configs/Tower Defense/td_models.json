@@ -1,17 +1,17 @@
 {
 	"MAIN": {
-		"TOWER_MODEL": "models/Tower Defense/tower.mdl",
-		"START_SPRITE_MODEL": "sprites/Tower Defense/spawn.spr",
-		"END_SPRITE_MODEL": "sprites/Tower Defense/spawn.spr",
-		"HEALTHBAR_SPRITE_MODEL": "sprites/Tower Defense/healthbar.spr",
-		"BLOOD_SPRITE_MODEL": "sprites/Tower Defense/blood.spr",
-		"BLOODSPRAY_SPRITE_MODEL": "sprites/Tower Defense/bloodspray.spr",
-		"EXPLODE_SPRITE_MODEL": "sprites/Tower Defense/zerogxplode.spr"
+		"TOWER_MODEL": "models/TDNew/tower.mdl",
+		"START_SPRITE_MODEL": "sprites/TDNew/spawn.spr",
+		"END_SPRITE_MODEL": "sprites/TDNew/spawn.spr",
+		"HEALTHBAR_SPRITE_MODEL": "sprites/TDNew/healthbar.spr",
+		"BLOOD_SPRITE_MODEL": "sprites/TDNew/blood.spr",
+		"BLOODSPRAY_SPRITE_MODEL": "sprites/TDNew/bloodspray.spr",
+		"EXPLODE_SPRITE_MODEL": "sprites/TDNew/zerogxplode.spr"
 	},
 	"START_ZONE": {
-		"START_ZONE_SPRITE": "sprites/Tower Defense/startzone.spr"
+		"START_ZONE_SPRITE": "sprites/TDNew/startzone.spr"
 	},
 	"MAP_VOTE_ZONE": {
-		"VOTE_ZONE_SPRITE": "sprites/Tower Defense/votemap_sprites.spr"
+		"VOTE_ZONE_SPRITE": "sprites/TDNew/votemap_sprites.spr"
 	}
 }

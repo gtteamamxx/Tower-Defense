@@ -12,16 +12,16 @@ new g_ForwardTakeDamage;
 public registerForwards()
 {
     g_ForwardOnConfigurationLoad = CreateMultiForward("td_on_configuration_load", ET_IGNORE, FP_ARRAY, FP_CELL);
-    g_ForwardOnGameEnd = CreateMultiForward("td_on_game_end", ET_IGNORE);
+    g_ForwardOnGameEnd = CreateMultiForward("td_on_game_end", ET_IGNORE, FP_CELL);
     g_ForwardOnWaveEnd = CreateMultiForward("td_on_wave_end", ET_IGNORE, FP_CELL);
     g_ForwardOnMonsterKilled = CreateMultiForward("td_on_monster_killed", ET_IGNORE, FP_CELL, FP_CELL);
     g_ForwardTakeDamage = CreateMultiForward("td_on_damage_taken_to_monster", ET_CONTINUE, FP_CELL, FP_CELL,  FP_FLOAT);
 }
 
-public executeOnGameEndForward()
+public executeOnGameEndForward(bool:win)
 {
     new iRet;
-    ExecuteForward(g_ForwardOnGameEnd, iRet);
+    ExecuteForward(g_ForwardOnGameEnd, iRet, _:win);
 }
 
 public executeOnDamageTakenToMonsterForward(monsterEntity, playerId, Float:fDamage)

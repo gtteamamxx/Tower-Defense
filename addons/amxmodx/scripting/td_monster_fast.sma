@@ -7,10 +7,10 @@
 
 #define MONSTER_KEY "FAST"
 
-#define MODEL_1 "models/Tower Defense/fast1.mdl"
-#define MODEL_2 "models/Tower Defense/fast2.mdl"
-#define MODEL_3 "models/Tower Defense/fast3.mdl"
-#define MODEL_4 "models/Tower Defense/fast4.mdl"
+#define MODEL_1 "models/TDNew/fast1.mdl"
+#define MODEL_2 "models/TDNew/fast2.mdl"
+#define MODEL_3 "models/TDNew/fast3.mdl"
+#define MODEL_4 "models/TDNew/fast4.mdl"
 
 public plugin_init() 
 {

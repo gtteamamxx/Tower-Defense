@@ -7,10 +7,10 @@
 
 #define MONSTER_KEY "STRENGTH"
 
-#define MODEL_1 "models/Tower Defense/strength1.mdl"
-#define MODEL_2 "models/Tower Defense/strength2.mdl"
-#define MODEL_3 "models/Tower Defense/strength3.mdl"
-#define MODEL_4 "models/Tower Defense/strength4.mdl"
+#define MODEL_1 "models/TDNew/strength1.mdl"
+#define MODEL_2 "models/TDNew/strength2.mdl"
+#define MODEL_3 "models/TDNew/strength3.mdl"
+#define MODEL_4 "models/TDNew/strength4.mdl"
 
 public plugin_init() 
 {

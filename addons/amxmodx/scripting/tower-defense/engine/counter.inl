@@ -77,6 +77,7 @@ stock removeCounter(counterKey[33])
         new functionId = get_func_id(.funcName = counterCompletedFunction);
         callfunc_begin_i(functionId);
         callfunc_push_int(customInfo);
+        callfunc_push_str(counterKey);
         callfunc_end();
 
         removeCounter(counterKey);

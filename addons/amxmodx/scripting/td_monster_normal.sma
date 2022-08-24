@@ -13,11 +13,11 @@
 #define MONSTER_KEY "NORMAL"
 #define STONE_CLASS_NAME "stone"
 
-#define MODEL_1 "models/Tower Defense/normal1.mdl"
-#define MODEL_2 "models/Tower Defense/normal2.mdl"
-#define MODEL_3 "models/Tower Defense/normal3.mdl"
-#define MODEL_4 "models/Tower Defense/normal4.mdl"
-#define STONE_MODEL "models/Tower Defense/stone.mdl"
+#define MODEL_1 "models/TDNew/normal1.mdl"
+#define MODEL_2 "models/TDNew/normal2.mdl"
+#define MODEL_3 "models/TDNew/normal3.mdl"
+#define MODEL_4 "models/TDNew/normal4.mdl"
+#define STONE_MODEL "models/TDNew/stone.mdl"
 
 #define TRAIL_SPRITE "sprites/laserbeam.spr"
 
@@ -36,6 +36,8 @@
 
 new g_trailSprite;
 new g_screenShakeMsgId;
+
+new bool:g_isGameFinished = false;
 
 public plugin_precache()
 {
@@ -62,6 +64,11 @@ public plugin_init()
     g_screenShakeMsgId = get_user_msgid("ScreenShake");
 }
 
+public td_on_game_end()
+{
+    g_isGameFinished = true;
+}
+
 @registerMonsterThink()
 {
     new monsterEntityName[64];
@@ -72,12 +79,14 @@ public plugin_init()
 
 @stoneTouchedPlayer(stoneEntity, touchedEntity)
 {
+    // if it's not stone then finish
     if(!@isEntityStone(stoneEntity))
     {
         return;
     }
 
-    if(is_user_alive(touchedEntity))
+    // impact on player only if game is not finished
+    if(is_user_alive(touchedEntity) && !g_isGameFinished)
     {
         new playerId = touchedEntity;
 
@@ -101,6 +110,12 @@ public plugin_init()
 
 @monsterThink(monsterEntity)
 {
+    // if game just finished then don't do anything
+    if (g_isGameFinished) 
+    {
+        return;
+    }
+
     new bool:shouldMonsterAttackPlayer = random_num(1, 100) >= (100 - PERCENTAGE_CHANCE_OF_MONSTER_PERFORM_ATTACK);
 
     if(shouldMonsterAttackPlayer)
@@ -122,7 +137,6 @@ startAttackingPlayer(monsterEntity)
         new randomPlayer = playersInRange[random(numberOfFoundPlayers)];
 
         @attackRandomPlayer(monsterEntity, .player = randomPlayer);
-
         return;
     }
 
@@ -153,7 +167,9 @@ startAttackingPlayer(monsterEntity)
 @prepareMonsterToThrowStoneToPlayer(param[2])
 {
     new monsterEntity = param[0];
-    if(td_is_monster_killed(monsterEntity))
+
+    // if monster is killed or game just finished don't do anything
+    if(td_is_monster_killed(monsterEntity) || g_isGameFinished)
     {
         return;
     }
@@ -173,7 +189,8 @@ startAttackingPlayer(monsterEntity)
 @setMonsterToContinueHisTrack(param[1])
 {
     new monsterEntity = param[0];
-    if(td_is_monster_killed(monsterEntity))
+    // if monster is killed or game just finished don't do anything
+    if(td_is_monster_killed(monsterEntity) || g_isGameFinished)
     {
         return;
     }

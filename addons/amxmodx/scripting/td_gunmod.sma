@@ -100,8 +100,7 @@ public plugin_precache()
     formatex(lvlUpPath, charsmax(lvlUpPath), "sound/%s", g_SoundLevelUp);
     if(file_exists(lvlUpPath))
     {
-        replace(lvlUpPath, charsmax(lvlUpPath), "sound/", "");
-        precache_sound(lvlUpPath);
+        precache_sound(g_SoundLevelUp);
     }
     else 
     {

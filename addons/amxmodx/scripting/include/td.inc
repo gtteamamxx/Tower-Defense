@@ -23,7 +23,7 @@ native td_start_game();
 
 forward td_on_configuration_load(configurationFilePath[128], bool:isGamePossible);
 
-forward td_on_game_end();
+forward td_on_game_end(bool:win);
 
 forward td_on_wave_end(wave);
 

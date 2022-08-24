@@ -138,8 +138,15 @@ public playSoundGlobalRandom(SOUND_ENUM:sound)
     new soundPath[128];
     getRandomSoundFromSoundArray(sound, soundPath, 127);
    
-    client_print(0, 3, soundPath);
     client_cmd(0, "spk %s", soundPath);
+}
+
+public playSoundAroundEntRandom(ent, SOUND_ENUM:sound)
+{
+    new soundPath[128];
+    getRandomSoundFromSoundArray(sound, soundPath, 127);
+   
+    emit_sound(ent, CHAN_AUTO, soundPath, 1.0, ATTN_NORM, 0, PITCH_NORM);
 }
 
 public getRandomSoundFromSoundArray(SOUND_ENUM:sound, soundPath[], len)
