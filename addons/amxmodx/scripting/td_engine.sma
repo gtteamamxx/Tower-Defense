@@ -11,7 +11,9 @@
 #include "tower-defense/engine/common.inl"
 #include "tower-defense/engine/tower.inl"
 #include "tower-defense/engine/json-loader.inl"
+#include "tower-defense/engine/json-models-loader.inl"
 #include "tower-defense/engine/json-wave-loader.inl"
+#include "tower-defense/engine/json-sounds-loader.inl"
 #include "tower-defense/engine/startup.inl"
 #include "tower-defense/engine/wave-manager.inl"
 #include "tower-defense/engine/counter.inl"
@@ -24,7 +26,7 @@
 #include "tower-defense/engine/natives.inl"
 #include "tower-defense/engine/add-to-full-pack.inl"
 #include "tower-defense/engine/end-game-manager.inl"
-#include "tower-defense/engine/start-game-manager.inl"
+#include "tower-defense/engine/game-manager.inl"
 #include "tower-defense/engine/forwards.inl"
 
 #pragma semicolon 1
@@ -51,6 +53,17 @@ public plugin_init()
 
 public plugin_end()
 {
+    log_amx("Clearing mod");
+
+    log_amx("%d %d %d %d %d %d", 
+        _:g_WaveDataArray,
+        _:g_MonstersEntArray,
+        _:g_MonsterTypesConfigurationKeysTrie,
+        _:g_WavesConfigurationKeysTrie,
+        _:g_SoundsConfigurationKeysTrie,
+        _:g_SoundsConfigurationPathsArray
+    );
+
     @clearTowerDefenseMod();
 }
 

@@ -55,6 +55,10 @@ public plugin_end()
 {
     destroyCounterTrie();
 
+    @removeAllMapVoteEntities();
+
+    @clearArrays();
+
     @saveMapNameAsLastPlayed();
 }
 
@@ -403,6 +407,7 @@ public loadModelsConfiguration()
 
 @blankCb(id, menu, item) 
 { 
+    menu_destroy(menu);
     return PLUGIN_HANDLED;
 }
 
@@ -453,6 +458,11 @@ public loadModelsConfiguration()
 
 @clearArrays()
 {
+    if (g_NextMapNamesArray == Invalid_Array) 
+    {
+        return;
+    }
+
     new mapsCount = ArraySize(g_NextMapNamesArray);
 
     for(new i = 0; i < mapsCount; ++i) 
@@ -786,6 +796,11 @@ public loadModelsConfiguration()
 
 @removeAllMapVoteEntities()
 {
+    if (g_NextMapNamesArray == Invalid_Array) 
+    {
+        return;
+    }
+
     new mapsCount = ArraySize(g_NextMapNamesArray);
     for(new i = 0; i < mapsCount; ++i)
     {

@@ -3,27 +3,34 @@
 #endif
 #define td_engine_common_includes
 
-#define foreach(%1,%2) for( new iCurrentElement = 0 , %2 = %1[ 0 ];  iCurrentElement < sizeof %1 ; iCurrentElement++ , %2 = iCurrentElement < sizeof %1 ? %1[ iCurrentElement ] : 0  )
-#define foreach_i(%1,%2,%3) for( new iCurrentElement = 0 , %2 = %1[ 0 ];  iCurrentElement < sizeof %1 ;  %3 = ++iCurrentElement , %2 = iCurrentElement < sizeof %1 ? %1[ iCurrentElement ] : 0 )
-
+// map entites
 new g_MapEntityData[MAP_ENTITIES_ENUM];
 
+// configuration
 new any:g_MapConfiguration[MAP_CONFIGURATION_ENUM];
 new Trie:g_MapConfigurationKeysTrie;
 
+// models
 new g_Models[MODELS_ENUM][MODELS_CONFIG_PATH_LENGTH];
 new Trie:g_ModelsConfigurationKeysTrie;
 new Array:g_ModelsPrecacheIdArray;
 
+// wave
 new Array:g_WaveDataArray;
 new Array:g_MonstersEntArray;
 new Trie:g_MonsterTypesConfigurationKeysTrie;
 
 new Trie:g_WavesConfigurationKeysTrie;
 
+// sounds
+new Trie:g_SoundsConfigurationKeysTrie;
+new Array:g_SoundsConfigurationPathsArray;
+
+// common
 new bool:g_IsGamePossible = true;
 new bool:g_HasAnyTracks = false;
 
+// monsters
 new g_AliveMonstersNum;
 new g_SentMonsters;
 
@@ -86,9 +93,14 @@ public bool:isMonster(entity)
     return is_valid_ent(entity) && ((getEntityBitData(entity) & MONSTER_BIT) == MONSTER_BIT);
 }
 
-public getMonsterClassName(monsterEntityName[64], monsterTypeName[])
+public isTrieValid(Trie:trie, key[], &type)
 {
-    formatex(monsterEntityName, charsmax(monsterEntityName), "%s_%s", MONSTER_ENTITY_NAME, monsterTypeName);
+    return TrieKeyExists(trie, key) && TrieGetCell(trie, key, type);
+}
+
+public getMonsterClassName(monsterEntityName[], monsterTypeName[])
+{
+    format(monsterEntityName, 63, "%s_%s", MONSTER_ENTITY_NAME, monsterTypeName);
 }
 
 public bool:isMonsterKilled(entity)
@@ -113,12 +125,35 @@ public bool:isHealthBar(entity)
 
 public getEntityBitData(entity)
 {
-	return entity_get_int(entity, EV_INT_iuser1);
+    return entity_get_int(entity, EV_INT_iuser1);
 }
 
 public setEntityBitData(entity, bitData)
 {
-	entity_set_int(entity, EV_INT_iuser1, bitData);
+    entity_set_int(entity, EV_INT_iuser1, bitData);
+}
+
+public playSoundGlobalRandom(SOUND_ENUM:sound)
+{
+    new soundPath[128];
+    getRandomSoundFromSoundArray(sound, soundPath, 127);
+   
+    client_print(0, 3, soundPath);
+    client_cmd(0, "spk %s", soundPath);
+}
+
+public getRandomSoundFromSoundArray(SOUND_ENUM:sound, soundPath[], len)
+{
+    // get sound array
+    new Array:soundArray = ArrayGetCell(g_SoundsConfigurationPathsArray, _:sound);
+    
+    // get number of sounds
+    new size = ArraySize(soundArray);
+
+    // calculate random sound index
+    new soundIndex = random(size);
+
+    ArrayGetString(soundArray, soundIndex, soundPath, len);
 }
 
 stock getTrackEntityName(trackId, trackName[9] = {})
@@ -135,101 +170,101 @@ stock getTrackWallEntityName(trackId, trackName[14] = {})
 
 stock getModelPrecacheId(MODELS_ENUM:model) 
 {
-	return ArrayGetCell(g_ModelsPrecacheIdArray, _:model);
+    return ArrayGetCell(g_ModelsPrecacheIdArray, _:model);
 }
 
 stock createBloodEffectOnEntity(ent, size)
 { 
-	if (!is_valid_ent(ent)) 
-	{
-		return;
-	}
+    if (!is_valid_ent(ent)) 
+    {
+        return;
+    }
 
-	new iOrigin[3]
-	new Float:fOrigin[3]
-	entity_get_vector(ent, EV_VEC_origin, fOrigin)
-	
-	FVecIVec(fOrigin, iOrigin)
-	
-	iOrigin[0] += random_num(-10, 10)
-	iOrigin[1] += random_num(-10, 10)
-	iOrigin[2] += random_num(-10, 30)
+    new iOrigin[3];
+    new Float:fOrigin[3];
+    entity_get_vector(ent, EV_VEC_origin, fOrigin);
 
-	message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-	write_byte(TE_BLOODSPRITE)
-	write_coord(iOrigin[0] + random_num(-20,20))
-	write_coord(iOrigin[1] + random_num(-20,20))
-	write_coord(iOrigin[2] + random_num(-20,20))
-	write_short(getModelPrecacheId(BLOODSPRAY_SPRITE_MODEL))
-	write_short(getModelPrecacheId(BLOOD_SPRITE_MODEL))
-	write_byte(229) // color index
-	write_byte(size) // size
-	message_end()
+    FVecIVec(fOrigin, iOrigin);
+
+    iOrigin[0] += random_num(-10, 10);
+    iOrigin[1] += random_num(-10, 10);
+    iOrigin[2] += random_num(-10, 30);
+
+    message_begin(MSG_BROADCAST, SVC_TEMPENTITY);
+    write_byte(TE_BLOODSPRITE);
+    write_coord(iOrigin[0] + random_num(-20,20));
+    write_coord(iOrigin[1] + random_num(-20,20));
+    write_coord(iOrigin[2] + random_num(-20,20));
+    write_short(getModelPrecacheId(BLOODSPRAY_SPRITE_MODEL));
+    write_short(getModelPrecacheId(BLOOD_SPRITE_MODEL));
+    write_byte(229); // color index
+    write_byte(size); // size
+    message_end();
 }
 
 stock entity_set_aim(ent1, ent2)
 {
-	if(!is_valid_ent(ent1) || !is_valid_ent(ent2) || ent1 == ent2)
+    if(!is_valid_ent(ent1) || !is_valid_ent(ent2) || ent1 == ent2)
     {
         return 0;
     }
-    
-	static Float:offset[3];
-	static Float:ent1origin[3];
-	static Float:ent2origin[3];
-	static Float:view_angles[3];
-	
-	entity_get_vector(ent2, EV_VEC_origin, ent2origin);
-	entity_get_vector(ent1, EV_VEC_origin, ent1origin);
-	
-	static Float:ent2_angles[3];
-	entity_get_vector(ent2, EV_VEC_v_angle, ent2_angles);
-	ent2origin[0] += offset[0] * (((floatabs(ent2_angles[1]) - 90) / 90) * -1);
-	ent2origin[1] += offset[1] * (1 - (floatabs(90 - floatabs(ent2_angles[1])) / 90));
-	ent2origin[2] += offset[2];
-	
-	ent2origin[0] -= ent1origin[0];
-	ent2origin[1] -= ent1origin[1];
-	ent2origin[2] -= ent1origin[2];
-	
-	static Float:hyp;
-	hyp = floatsqroot( (ent2origin[0] * ent2origin[0]) + (ent2origin[1] * ent2origin[1]));
-	
-	static x, y, z;
-	x=0, y=0, z=0;
-	
-	if(ent2origin[0]>=0.0)  x=1;
-	if(ent2origin[1]>=0.0)  y=1;
-	if(ent2origin[2]>=0.0)  z=1;
-	
-	if(ent2origin[0]==0.0) ent2origin[0] = 0.000001;
-	if(ent2origin[1]==0.0) ent2origin[1] = 0.000001;
-	if(ent2origin[2]==0.0) ent2origin[2] = 0.000001;
-	
-	ent2origin[0]=floatabs(ent2origin[0]);
-	ent2origin[1]=floatabs(ent2origin[1]);
-	ent2origin[2]=floatabs(ent2origin[2]);
-	
-	view_angles[1] = floatatan2(ent2origin[1],ent2origin[0],degrees);
-	
-	if(x && !y) view_angles[1] = -1 * ( 180 - view_angles[1] );
-	if(!x && !y) view_angles[1] = ( 180 - view_angles[1] );
-	if(!x && y) view_angles[1] = view_angles[1] = 180 + floatabs(180 - view_angles[1]);
-	if(x && !y) view_angles[1] = view_angles[1] = 0 - floatabs(-180 - view_angles[1]);
-	if(!x && !y) view_angles[1] *= -1;
-	
-	while(view_angles[1] > 180.0)  view_angles[1] -= 180;
-	while(view_angles[1] < -180.0) view_angles[1] += 180;
 
-	if(view_angles[1]==180.0 || view_angles[1]==-180.0) view_angles[1]=-179.999999;
-	view_angles[0] = floatasin(ent2origin[2] / hyp, degrees);
-	
-	if(z) view_angles[0] *= -1
+    static Float:offset[3];
+    static Float:ent1origin[3];
+    static Float:ent2origin[3];
+    static Float:view_angles[3];
 
-	entity_set_int(ent1, EV_INT_fixangle, 1);
-	entity_set_vector(ent1, EV_VEC_v_angle, view_angles);
-	entity_set_vector(ent1, EV_VEC_angles, view_angles);
-	entity_set_int(ent1, EV_INT_fixangle, 1);
+    entity_get_vector(ent2, EV_VEC_origin, ent2origin);
+    entity_get_vector(ent1, EV_VEC_origin, ent1origin);
 
-	return 1;
+    static Float:ent2_angles[3];
+    entity_get_vector(ent2, EV_VEC_v_angle, ent2_angles);
+    ent2origin[0] += offset[0] * (((floatabs(ent2_angles[1]) - 90) / 90) * -1);
+    ent2origin[1] += offset[1] * (1 - (floatabs(90 - floatabs(ent2_angles[1])) / 90));
+    ent2origin[2] += offset[2];
+
+    ent2origin[0] -= ent1origin[0];
+    ent2origin[1] -= ent1origin[1];
+    ent2origin[2] -= ent1origin[2];
+
+    static Float:hyp;
+    hyp = floatsqroot( (ent2origin[0] * ent2origin[0]) + (ent2origin[1] * ent2origin[1]));
+
+    static x, y, z;
+    x=0, y=0, z=0;
+
+    if(ent2origin[0]>=0.0)  x=1;
+    if(ent2origin[1]>=0.0)  y=1;
+    if(ent2origin[2]>=0.0)  z=1;
+
+    if(ent2origin[0]==0.0) ent2origin[0] = 0.000001;
+    if(ent2origin[1]==0.0) ent2origin[1] = 0.000001;
+    if(ent2origin[2]==0.0) ent2origin[2] = 0.000001;
+
+    ent2origin[0]=floatabs(ent2origin[0]);
+    ent2origin[1]=floatabs(ent2origin[1]);
+    ent2origin[2]=floatabs(ent2origin[2]);
+
+    view_angles[1] = floatatan2(ent2origin[1],ent2origin[0],degrees);
+
+    if(x && !y) view_angles[1] = -1 * ( 180 - view_angles[1] );
+    if(!x && !y) view_angles[1] = ( 180 - view_angles[1] );
+    if(!x && y) view_angles[1] = view_angles[1] = 180 + floatabs(180 - view_angles[1]);
+    if(x && !y) view_angles[1] = view_angles[1] = 0 - floatabs(-180 - view_angles[1]);
+    if(!x && !y) view_angles[1] *= -1;
+
+    while(view_angles[1] > 180.0)  view_angles[1] -= 180;
+    while(view_angles[1] < -180.0) view_angles[1] += 180;
+
+    if(view_angles[1]==180.0 || view_angles[1]==-180.0) view_angles[1]=-179.999999;
+    view_angles[0] = floatasin(ent2origin[2] / hyp, degrees);
+
+    if(z) view_angles[0] *= -1
+
+    entity_set_int(ent1, EV_INT_fixangle, 1);
+    entity_set_vector(ent1, EV_VEC_v_angle, view_angles);
+    entity_set_vector(ent1, EV_VEC_angles, view_angles);
+    entity_set_int(ent1, EV_INT_fixangle, 1);
+
+    return 1;
 }

@@ -63,6 +63,8 @@ public plugin_end()
 {
     ArrayDestroy(g_PlayersInStartZoneArray);
 
+    @removeCurrentStartZone();
+
     destroyCounterTrie();
 }
 

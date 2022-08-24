@@ -136,7 +136,7 @@ public plugin_init()
 	register_clcmd("buy", "cmdOpenBuyMenu");
 	register_clcmd("buyequip", "cmdOpenBuyMenu");
 	
-	RegisterHam(Ham_Spawn, "player", "playerSpawned", 1);
+	RegisterHamPlayer(Ham_Spawn, "playerSpawned", 1);
 	register_event("CurWeapon", "eventCurWeapon", "be", "1=1");
 	g_HudStatusText = get_user_msgid("StatusText");
 
@@ -262,6 +262,11 @@ public td_on_damage_taken_to_monster(monsterEntity, playerId, Float:fDamage)
 
 public playerSpawned(id)
 {
+	if (!is_user_connected(id)) 
+	{
+		return;
+	}
+
 	if(!strlen(g_PlayerSelectedWeapons[id][0]) && !strlen(g_PlayerSelectedWeapons[id][1]))
 		showWeaponMenu(id);
 
@@ -472,7 +477,7 @@ public cmdOpenBuyMenu(id)
 	
 public showWeaponMenu(id)
 {
-	if(!g_isGameAvailable)
+	if(!g_isGameAvailable || !is_user_connected(id))
 		return;
 	
 	static szTitle[64];

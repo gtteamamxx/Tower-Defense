@@ -3,64 +3,22 @@
 #endif
 #define td_engine_jsonloader_includes
 
-public loadModelsConfigurationFromFile(jsonFilePath[128])
+public logBadValues(Trie:trie)
 {
-    new JSON:json = json_parse(jsonFilePath, .is_file = true, .with_comments = true);
+    new TrieIter:trieIteration = TrieIterCreate(trie);
 
-    if(!json_is_object(json))
+    new key[128];
+    while(!TrieIterEnded(trieIteration))
     {
-        log_amx("[Models] Configuration file is not valid JSON file");
+        TrieIterGetKey(trieIteration, key, charsmax(key));
+
+        log_amx("Bad value for configuration of key: %s", key);
         setGameStatus(.status = false);
-        json_free(json);
-        return;
+
+        TrieIterNext(trieIteration);
     }
 
-    new itemsCount = json_object_get_count(json);
-
-    for(new i = 0; i < itemsCount; ++i)
-    {
-        @loadModelsConfigurationFromLine(json, .line = i);
-    }
-
-    @logBadValues(g_ModelsConfigurationKeysTrie);
-    json_free(json);
-}
-
-@loadModelsConfigurationFromLine(JSON:json, line)
-{
-    new key[MODELS_CONFIG_KEY_LENGTH];
-    json_object_get_name(json, line, key, charsmax(key));
-
-    if(equal(key, MODEL_MAIN_SCHEMA))
-    {
-        new JSON:mainJsonObject = json_object_get_value(json, key);
-        @loadMainModelsConfiguration(mainJsonObject);
-        json_free(mainJsonObject);
-    }
-}
-
-@loadMainModelsConfiguration(JSON:json)
-{
-    new key[MODELS_CONFIG_KEY_LENGTH], type;
-    new itemsCount = json_object_get_count(json);
-    for(new i = 0; i < itemsCount; ++i)
-    {
-        json_object_get_name(json, i, key, charsmax(key));
-
-        if(!@isTrieValid(g_ModelsConfigurationKeysTrie, key, type))
-        {
-            log_amx("[Models] Undefined key: %s. ", key);
-            setGameStatus(.status = false);
-            continue;
-        }
-
-        new path[MODELS_CONFIG_PATH_LENGTH];
-        json_object_get_string(json, key, path, charsmax(path));
-
-        copy(g_Models[MODELS_ENUM:type], charsmax(path), path);
-
-        TrieDeleteKey(g_ModelsConfigurationKeysTrie, key);
-    }
+    TrieIterDestroy(trieIteration);
 }
 
 public loadMapConfigFromJsonFile(jsonFilePath[128])
@@ -82,7 +40,7 @@ public loadMapConfigFromJsonFile(jsonFilePath[128])
         @loadMapConfigurationFromJsonLine(json, .line = i);
     }
 
-    @logBadValues(g_MapConfigurationKeysTrie);
+    logBadValues(g_MapConfigurationKeysTrie);
 
     json_free(json);
 }
@@ -98,7 +56,7 @@ public loadMapConfigFromJsonFile(jsonFilePath[128])
     }
 
     // if it's custom key, we just skip that line
-    if(!@isTrieValid(g_MapConfigurationKeysTrie, key, type))
+    if(!isTrieValid(g_MapConfigurationKeysTrie, key, type))
     {
         return;
     }
@@ -143,27 +101,4 @@ bool:@setMapConfigurationValueByType(JSON:json, MAP_CONFIGURATION_ENUM:type, key
     json_free(jsonConfigValue)
 
     return true;
-}
-
-@isTrieValid(Trie:trie, key[], &type)
-{
-    return TrieKeyExists(trie, key) && TrieGetCell(trie, key, type);
-}
-
-@logBadValues(Trie:trie)
-{
-    new TrieIter:trieIteration = TrieIterCreate(trie);
-
-    new key[128];
-    while(!TrieIterEnded(trieIteration))
-    {
-        TrieIterGetKey(trieIteration, key, charsmax(key));
-
-        log_amx("Bad value for configuration of key: %s", key);
-        setGameStatus(.status = false);
-
-        TrieIterNext(trieIteration);
-    }
-
-    TrieIterDestroy(trieIteration);
 }

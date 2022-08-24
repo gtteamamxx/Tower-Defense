@@ -9,13 +9,10 @@ public plugin_precache()
     @initArrays();
 
     loadModelsConfiguration();
+    @precacheModels();
 
-    for(new i = 0; i < _:MODELS_ENUM; ++i)
-    {
-        new id = precache_model(g_Models[MODELS_ENUM:i]);
-
-        ArrayPushCell(g_ModelsPrecacheIdArray, id);
-    }
+    loadSoundsConfiguration();
+    @precacheSounds();
 }
 
 public releaseArrays()
@@ -28,11 +25,38 @@ public relaseTries()
     @releaseTries();
 }
 
+@precacheModels()
+{
+    for(new i = 0; i < _:MODELS_ENUM; ++i)
+    {
+        new id = precache_model(g_Models[MODELS_ENUM:i]);
+
+        ArrayPushCell(g_ModelsPrecacheIdArray, id);
+    }
+}
+
+@precacheSounds()
+{
+    for(new i = 0; i < _:SOUND_ENUM; ++i)
+    {
+        new Array:soundPathsArray = Array:ArrayGetCell(g_SoundsConfigurationPathsArray, i);
+
+        for(new j = 0; j < ArraySize(soundPathsArray); ++j) 
+        {
+            new soundPath[128];
+            ArrayGetString(soundPathsArray, j, soundPath, 127);
+
+            precache_sound(soundPath);
+        }
+    }
+}
+
 @releaseArrays()
 {
     @releaseModelsPrecacheArray();
     @releaseWaveDataArray();
     @releaseMonsterEntArray();
+    @releaseSoundsArray();
 }
 
 @releaseTries()
@@ -46,6 +70,7 @@ public relaseTries()
     @initMapConfigurationTrie();
     @initModelsConfigurationTrie();
     @initWavesConfigurationTrie();
+    @initSoundsConfigurationTrie();
 
     initCounterTrie();
     initMonsterTypesManagerTries();
@@ -55,6 +80,7 @@ public relaseTries()
 {
     @initWaveDataArray();
     @initMonstersEntArray();
+    @initSoundsArray();
 }
 
 @initMonstersEntArray()
@@ -65,6 +91,18 @@ public relaseTries()
 @initWaveDataArray()
 {
     g_WaveDataArray = ArrayCreate();
+}
+
+@initSoundsArray()
+{
+    g_SoundsConfigurationPathsArray = ArrayCreate();
+
+    // fill array with empty arrays which'll contain sounds paths
+    for(new i = 0; i < _:SOUND_ENUM; ++i)
+    {
+        new Array:soundsArray = ArrayCreate(128);
+        ArrayPushCell(g_SoundsConfigurationPathsArray, soundsArray);
+    }
 }
 
 @initModelsConfigurationTrie()
@@ -91,6 +129,21 @@ public relaseTries()
     TrieSetCell(g_MapConfigurationKeysTrie, "TOWER_HEALTH", _:TOWER_HEALTH);
     TrieSetCell(g_MapConfigurationKeysTrie, "SHOW_BLAST_ON_MONSTER_TOUCH", _:SHOW_BLAST_ON_MONSTER_TOUCH);
     TrieSetCell(g_MapConfigurationKeysTrie, "TIME_TO_WAVE", _:MAP_TIME_TO_WAVE);
+}
+
+@initSoundsConfigurationTrie()
+{
+    g_SoundsConfigurationKeysTrie = TrieCreate();
+
+    TrieSetCell(g_SoundsConfigurationKeysTrie, "WAVE_COUNTDOWN", _:WAVE_COUNTDOWN);
+    TrieSetCell(g_SoundsConfigurationKeysTrie, "WAVE_CLEAR", _:WAVE_CLEAR);
+    TrieSetCell(g_SoundsConfigurationKeysTrie, "WAVE_START", _:WAVE_START);
+    TrieSetCell(g_SoundsConfigurationKeysTrie, "LOSE", _:LOSE);
+    TrieSetCell(g_SoundsConfigurationKeysTrie, "WIN", _:WIN);
+    TrieSetCell(g_SoundsConfigurationKeysTrie, "MONSTER_DIE", _:MONSTER_DIE);
+    TrieSetCell(g_SoundsConfigurationKeysTrie, "MONSTER_GROWL", _:MONSTER_GROWL);
+    TrieSetCell(g_SoundsConfigurationKeysTrie, "MONSTER_HIT", _:MONSTER_HIT);
+    TrieSetCell(g_SoundsConfigurationKeysTrie, "MONSTER_SOUND", _:MONSTER_SOUND);
 }
 
 @initWavesConfigurationTrie()
@@ -134,10 +187,12 @@ public relaseTries()
             TrieDestroy(monsterTypeTrie);
         }
 
-        ArrayDestroy(monsterTypesArray);
         TrieDestroy(waveConfigurationTrie);
-        ArrayDestroy(waveArray);
+
+        ArrayDestroy(monsterTypesArray);
         ArrayDestroy(monstersCountArray);
+
+        ArrayDestroy(waveArray);
     }
 
     ArrayDestroy(g_WaveDataArray);
@@ -146,4 +201,15 @@ public relaseTries()
 @releaseMonsterEntArray()
 {
     ArrayDestroy(g_MonstersEntArray);
+}
+
+@releaseSoundsArray()
+{
+    for(new i = 0; i < _:SOUND_ENUM; ++i)
+    {
+        new Array:soundPathsArray = Array:ArrayGetCell(g_SoundsConfigurationPathsArray, i);
+        ArrayDestroy(soundPathsArray);
+    }
+
+    ArrayDestroy(g_SoundsConfigurationPathsArray);
 }

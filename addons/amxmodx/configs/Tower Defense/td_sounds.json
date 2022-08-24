@@ -1,0 +1,29 @@
+{
+	"LOSE": ["Tower Defense/lose.wav"],
+	"WIN": ["Tower Defense/win.wav"],
+    "WAVE_START": ["Tower Defense/wave_start.wav"],
+    "WAVE_CLEAR": ["Tower Defense/wave_clear.wav"],
+    "WAVE_COUNTDOWN": ["Tower Defense/wave_countdown.wav"],
+	"MONSTER_DIE": [
+        "Tower Defense/monster_die1.wav",
+        "Tower Defense/monster_die2.wav",
+        "Tower Defense/monster_die3.wav",
+        "Tower Defense/monster_die4.wav"
+    ],
+    "MONSTER_HIT": [
+        "Tower Defense/monster_hit1.wav",
+        "Tower Defense/monster_hit2.wav",
+        "Tower Defense/monster_hit3.wav",
+        "Tower Defense/monster_hit4.wav"
+    ],
+    "MONSTER_GROWL": [
+        "Tower Defense/monster_growl1.wav",
+        "Tower Defense/monster_growl2.wav",
+        "Tower Defense/monster_growl3.wav",
+        "Tower Defense/monster_growl4.wav"
+    ],
+    "MONSTER_SOUND": [
+        "Tower Defense/monster_sound1.wav",
+        "Tower Defense/monster_sound2.wav"
+    ]
+}

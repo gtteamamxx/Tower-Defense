@@ -18,13 +18,28 @@ public loadModelsConfiguration()
     }
 
     @releaseModelsConfigurationDictionary();
+}
 
+public loadSoundsConfiguration()
+{
+    new soundsConfigurationFilePath[128];
+    @getSoundsConfigurationFilePath(soundsConfigurationFilePath);
+    
+    if(!file_exists(soundsConfigurationFilePath))
+    {
+        log_amx("[Models] Configuration file %s for sounds doesn't exist.", soundsConfigurationFilePath);
+    }
+    else 
+    {
+        loadSoundsConfigurationFromFile(soundsConfigurationFilePath);
+    }
+
+    @releaseSoundsConfigurationDictionary();
 }
 
 public loadMapConfiguration()
 {
     @loadMapConfigurationFromConfigurationFile();
-    @releaseMapConfigurationDictionary();
 
     @setStartEntities();
     @setEndEntities();
@@ -177,6 +192,8 @@ public initializeGame()
     @prepareRandomMonstersCountForWaves();
 
     executeOnConfigurationLoadForward(configurationFilePath, g_IsGamePossible);
+
+    @releaseMapConfigurationDictionary();
 }
 
 @setStartEntities()
@@ -308,6 +325,11 @@ public initializeGame()
     formatex(path, charsmax(path), "%s/%s.json", getConfigDirectory(), MODELS_CONFIG_FILE);
 }
 
+@getSoundsConfigurationFilePath(path[128])
+{
+    formatex(path, charsmax(path), "%s/%s.json", getConfigDirectory(), SOUNDS_CONFIG_FILE);
+}
+
 @hideEntity(entity)
 {
     fm_set_rendering(entity, .r = 0, .g = 0, .b = 0, .render = kRenderTransAdd, .amount = 0)
@@ -321,6 +343,11 @@ public initializeGame()
 @releaseModelsConfigurationDictionary()
 {
     TrieDestroy(g_ModelsConfigurationKeysTrie);
+}
+
+@releaseSoundsConfigurationDictionary()
+{
+    TrieDestroy(g_SoundsConfigurationKeysTrie);
 }
 
 @releaseWavesConfigurationDictionary()
@@ -358,11 +385,11 @@ stock getMapConfigurationFilePath(output[128], bool:useDefaultConfig = false)
 {
     if(!useDefaultConfig) 
     {
-       get_mapname(output, charsmax(output));
+        get_mapname(output, charsmax(output));
     }
     else 
     {
-       output = DEFAULT_CONFIG_FILE;
+        output = DEFAULT_CONFIG_FILE;
     }
 
     format(output, charsmax(output), "%s/%s.json", getConfigDirectory(), output);

@@ -273,6 +273,7 @@ startAttackingPlayer(monsterEntity)
 @hurtPlayer(playerId)
 {
     new health = get_user_health(playerId) - STONE_DAMAGE;
+
     set_user_health(playerId, health);
 }
 
