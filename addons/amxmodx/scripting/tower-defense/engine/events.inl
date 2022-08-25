@@ -22,7 +22,7 @@ public registerMonsterEvents()
     RegisterHam(Ham_TakeDamage, "info_target", "controlDamageTakenToMonster"); // headshot damage multiplier
     RegisterHam(Ham_TakeDamage, "info_target", "showMonsterTakenDamage", 1); // damage info
     RegisterHam(Ham_TakeDamage, "info_target", "showMonsterBloodEffect", 1); // blood effect
-    RegisterHam(Ham_TakeDamage, "info_target", "playMonsterHitSound", 1); // hitSound
+    RegisterHam(Ham_TakeDamage, "info_target", "playMonsterHitSound", 1); // hit sound
 
     RegisterHam(Ham_Killed, "info_target", "monsterKilled");
 }

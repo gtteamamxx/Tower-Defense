@@ -88,7 +88,7 @@ public playMonsterHitSound(monsterEntity, inflictorId, playerId, Float:damage, d
         return;
     }
 
-    if (random(5) == 0) // 20% chance of emit hit sound
+    if (random(4) == 0) // 25% chance of emit hit sound
     {
         playSoundAroundEntRandom(monsterEntity, MONSTER_HIT)
     }
@@ -421,7 +421,6 @@ public monsterChangeTrack(monsterEntity, wallEntity)
     formatex(key, 32, "%s%d", MONSTER_AMBIENT_SOUND_KEY, monsterEntity);
 
     // create counter to play monster ambient sounds
-    // as long as monster lives
     createCounter(
         99999,
         key,
@@ -435,7 +434,7 @@ public monsterChangeTrack(monsterEntity, wallEntity)
 {
     // if monster is killed we don't want to play
     // any sounds more, so delete existing counter
-    if (!is_valid_ent(monsterEntity) || isMonsterKilled(monsterEntity)) 
+    if (isMonsterKilled(monsterEntity) || !is_valid_ent(monsterEntity)) 
     {
         removeCounter(counterKey);
         return;

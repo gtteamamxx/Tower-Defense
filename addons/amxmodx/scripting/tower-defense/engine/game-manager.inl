@@ -69,7 +69,7 @@ public startNextWave()
         playSoundGlobalRandom(WAVE_COUNTDOWN);
     }
 
-    if (random(4) == 0) // 25% chance of growl sound at start position
+    if (random(3) == 0) // 33% chance of growl effect at start position
     {
         playRandomGrowlSoundAtStartPosition();
     }
