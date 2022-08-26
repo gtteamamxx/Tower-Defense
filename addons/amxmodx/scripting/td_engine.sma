@@ -75,6 +75,8 @@ public plugin_end()
 {
     releaseArrays();
     relaseTries();
+
+    destoryForwards();
 }
 
 @isGamePossible()

@@ -6,4 +6,5 @@
 public registerTurretEvents()
 {
     registerEventsForTurretMoving();
+    registerTurretThink();
 }

@@ -12,8 +12,12 @@
 	"TURRETS": {
 		"BULLET": {
 			"MAX_COUNT": 25,
+			"ACTIVATION_TIME": 8.0,
+			"RELOAD_TIME": 5.0,
+			"UPGRADE_TIME": 10.0,
+			"START_AMMO": 50,
 			"DAMAGE": [[3, 5]],
-			"RANGE": [[3, 4]],
+			"RANGE": [[200, 400]],
 			"FIRERATE": [[1, 3]],
 			"ACCURACY": [
 				[0.5, 0.6],

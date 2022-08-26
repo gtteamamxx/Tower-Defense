@@ -8,7 +8,7 @@ public registerEventsForTurretMoving()
     register_think(TURRET_MOVE_CLASSNAME, "@refreshTurretMovingPosition");
 }
 
-public createTurretForCreationForPlayer(id)
+public createTurretForCreationForPlayer(id, turretKey[33])
 {
     // if player is not alive we can't do it
     if (!is_user_alive(id)) 
@@ -16,14 +16,13 @@ public createTurretForCreationForPlayer(id)
         return;
     }
 
-    @createTurretEntityForMoving(.ownerId = id);
+    @createTurretEntityForMoving(turretKey, .ownerId = id);
 }
 
 @refreshTurretMovingPosition(ent)
 {
     // get owner id
-    new ownerId;
-    CED_GetCell(ent, CED_TURRET_OWNER_KEY, ownerId);
+    new ownerId = getTurretOwner(ent);
 
     // get new position and set it
     new Float:ownerOrigin[3];
@@ -48,27 +47,36 @@ public createTurretForCreationForPlayer(id)
     @updateTurretModelByPosibilityOfPlacing(ent);
 
     // start next think
-    entity_set_float(ent, EV_FL_nextthink, get_gametime() +  0.051);
+    entity_set_float(ent, EV_FL_nextthink, get_gametime() +  0.05);
 }
 
-@createTurretEntityForMoving(ownerId)
+@createTurretEntityForMoving(turretKey[33], ownerId)
 {
     // create entity
     new ent = cs_create_entity("info_target");
 
-    @setMovingPropertiesToEntity(ownerId, ent);
+    // set basic properties
+    @setMovingPropertiesToEntity(ownerId, ent, turretKey);
+
+    // attach ranger
+    createAndAttachRangerToTurret(ent);
 }
 
-@setMovingPropertiesToEntity(ownerId, ent)
+@setMovingPropertiesToEntity(ownerId, ent, turretKey[33])
 {
     // get start position
     new Float:ownerOrigin[3];
     getOriginByDistFromPlayer(ownerId, DIST_MOVING, ownerOrigin)
 
     // set required properties
-    entity_set_vector(ent, EV_VEC_origin, ownerOrigin);
-    entity_set_int(ent, EV_INT_solid, SOLID_NOT);
     entity_set_string(ent, EV_SZ_classname, TURRET_MOVE_CLASSNAME);
+    entity_set_vector(ent, EV_VEC_origin, ownerOrigin);
+    entity_set_size(ent, Float:{-16.0, -16.0, 0.0}, Float:{16.0, 16.0, 48.0});
+    entity_set_int(ent, EV_INT_solid, SOLID_NOT);
+    CED_SetString(ent, CED_TURRET_KEY, turretKey);
+
+    // set turret is moving
+    CED_SetCell(ent, CED_TURRET_IS_MOVING, 1);
 
     // set owner
     CED_SetCell(ent, CED_TURRET_OWNER_KEY, ownerId);
@@ -86,8 +94,7 @@ public createTurretForCreationForPlayer(id)
 @calculateIfEntityCanBePlacedAtCurrentPosition(ent)
 {
     // get owner id
-    new ownerId;
-    CED_GetCell(ent, CED_TURRET_OWNER_KEY, ownerId);
+    new ownerId = getTurretOwner(ent);
 
     new entlist[3];
     new bool:canBePlacedHere = true;

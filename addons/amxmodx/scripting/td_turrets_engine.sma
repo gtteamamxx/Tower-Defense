@@ -9,7 +9,6 @@
 #include <hamsandwich>
 
 #include "tower-defense/engine/consts.inl"
-#include "tower-defense/engine/counter.inl"
 
 #include "tower-defense/turrets-engine/consts.inl"
 #include "tower-defense/turrets-engine/global.inl"
@@ -28,6 +27,9 @@
 #include "tower-defense/turrets-engine/turret-move-manager.inl"
 #include "tower-defense/turrets-engine/turret-creation.inl"
 #include "tower-defense/turrets-engine/player-events.inl"
+#include "tower-defense/turrets-engine/turret-think.inl"
+#include "tower-defense/turrets-engine/ranger-events.inl"
+#include "tower-defense/turrets-engine/ranger-manager.inl"
 
 #pragma semicolon 1
 #pragma dynamic 32768
@@ -44,8 +46,9 @@ public plugin_init()
     registerPlayerEvents();    
 
     registerTurretEvents();
+    registerRangerEvents();
 
-    set_task(3.0, "@checkIfTurretsAreAvailable");
+    set_task(1.0, "@checkIfTurretsAreAvailable");
 }
 
 public plugin_end()
@@ -61,6 +64,7 @@ public plugin_end()
     {
         log_amx("[TURRETS] No turrets loaded.");
     }
+    
     // if there are registered turrets then let
     // module start
     //

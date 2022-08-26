@@ -15,6 +15,9 @@ public createTurretForPlayer(id, turretKey[33])
     new turretEntity;
     CED_GetCell(id, CED_PLAYER_MOVING_TURRET_ENTITY_KEY, turretEntity);
 
+    // hide rangers
+    detachRangersFromTurret(turretEntity);
+
     // set data that user is not moving anymore
     @updateUserIsNotMovingAnymore(id);
 
@@ -24,11 +27,16 @@ public createTurretForPlayer(id, turretKey[33])
     // set other informations like store turret key, turret level, etc
     @setTurretProperties(turretEntity, turretKey);
 
+    // notify plugin that turret has been created
+    @sendTurretCreatedForward(turretEntity, id, turretKey);
+
     // activate turret
-    @activateTurret(turretEntity, id, turretKey);
+    new Float:activationTime = getTurretActivationTime(turretKey);
+
+    entity_set_float(turretEntity, EV_FL_nextthink, get_gametime() + activationTime);
 }
 
-@activateTurret(turretEntity, id, turretKey[33])
+@sendTurretCreatedForward(turretEntity, id, turretKey[33])
 {
     // get destination plugin
     new pluginId = getPluginIdByTurretKey(turretKey);
@@ -39,8 +47,17 @@ public createTurretForPlayer(id, turretKey[33])
 @setTurretProperties(ent, turretKey[33])
 {
     // set basic properties
-    CED_SetCell(ent, CED_TURRET_LEVEL, 1);
-    CED_SetString(ent, CED_TURRET_KEY, turretKey);
+    CED_SetCell(ent, CED_TURRET_ACCURACY_LEVEL, 1);
+    CED_SetCell(ent, CED_TURRET_FIRERATE_LEVEL, 1);
+    CED_SetCell(ent, CED_TURRET_DAMAGE_LEVEL, 1);
+    CED_SetCell(ent, CED_TURRET_RANGE_LEVEL, 1);
+
+    // turret is not moving anymore
+    CED_SetCell(ent, CED_TURRET_IS_MOVING, 0);
+
+    // set start ammo
+    new startAmmo = getTurretStartAmmo(turretKey);
+    CED_SetCell(ent, CED_TURRET_AMMO, startAmmo);
 
     // update turret model
     entity_set_model(ent, "models/TDNew/sentrygun_1.mdl");
@@ -49,10 +66,12 @@ public createTurretForPlayer(id, turretKey[33])
     entity_set_string(ent, EV_SZ_classname, TURRET_CLASSNAME);
 
     // make turret touchable
-    entity_set_int(ent, EV_INT_solid, SOLID_TRIGGER)
+    entity_set_int(ent, EV_INT_solid, SOLID_TRIGGER);
 
     // remove fade effect
     fm_set_rendering(ent, kRenderFxNone, 0, 0, 0, kRenderNormal, 0);
+
+    DispatchSpawn(ent);
 }
 
 @addTurretToUsersTurret(id, turretEntity)

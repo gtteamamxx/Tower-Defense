@@ -48,6 +48,22 @@ public removeTurretEntity(ent)
         return;
     }
 
+    // get rangers
+    new rangerMinEntity, rangerMaxEntity;
+    CED_GetCell(ent, CED_TURRET_RANGER_MIN_ENTITY_KEY, rangerMinEntity);
+    CED_GetCell(ent, CED_TURRET_RANGER_MAX_ENTITY_KEY, rangerMaxEntity);
+
+    // remove rangers
+    if (is_valid_ent(rangerMinEntity))
+    {
+        remove_entity(rangerMinEntity);
+    }
+
+    if (is_valid_ent(rangerMaxEntity))
+    {
+        remove_entity(rangerMaxEntity);
+    }
+
     // remove turret
     remove_entity(ent);
 }
@@ -59,10 +75,7 @@ public removeMovingTurretForPlayer(id)
     CED_GetCell(id, CED_PLAYER_MOVING_TURRET_ENTITY_KEY, turretEntity);
 
     // remove turret
-    if (is_valid_ent(turretEntity))
-    {
-        remove_entity(turretEntity);
-    }
+    removeTurretEntity(turretEntity);
 
     // set player entity moving entity as null
     CED_SetCell(id, CED_PLAYER_MOVING_TURRET_ENTITY_KEY, 0);
@@ -109,13 +122,14 @@ public removeMovingTurretForPlayer(id)
         // exactly turret info
         for(new TURRET_INFO:i; _:i < ArraySize(turretInfoArray); i = TURRET_INFO:(_:i + 1)) 
         {
-            // it's only number so we don't need to free it
-            if (i == TURRET_MAX_COUNT) continue;
-
             // get item which is an array of levels
             new Array:turretInfoDetails = ArrayGetCell(turretInfoArray, _:i);
 
             // free turret details array
+            // note: we don't have to be sure that turretInfoDetails is 
+            // exactly an array because
+            // ArrayDestroy returns 1 on success and 0 on failure 
+            // no errors are thrown
             ArrayDestroy(turretInfoDetails);
         }
 

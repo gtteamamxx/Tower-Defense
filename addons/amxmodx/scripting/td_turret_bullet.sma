@@ -1,5 +1,6 @@
 #include <amxmodx>
 #include <td_turrets>
+#include <engine>
 
 #define PLUGIN "Tower Defense Turret: Bullet"
 #define VERSION "1.0"
@@ -17,5 +18,5 @@ public plugin_init()
 
 public td_on_turret_created(ent, id)
 {
-    client_print(0, 3, "%d %d", ent, id);
+    entity_set_float(turretEntity, EV_FL_nextthink, get_gametime() + activationTime);
 }

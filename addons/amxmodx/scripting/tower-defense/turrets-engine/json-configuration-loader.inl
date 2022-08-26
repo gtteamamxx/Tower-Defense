@@ -76,25 +76,8 @@ public initializeConfigurationFromFile(configurationFilePath[128])
         return;
     }
 
-    // create configuration key with turret name
-    new Array:turretInfoArray = ArrayCreate();
-    TrieSetCell(g_TurretInfoTrie, turretName, turretInfoArray, .replace = false);
-
-    // create and fill configuration array 
-    for(new i = 0; i < numberOfConfigurations; ++i)
-    {
-        // if it's max count then it should be number
-        if (TURRET_INFO:i == TURRET_MAX_COUNT) 
-        {
-            ArrayPushCell(turretInfoArray, 0);
-        }
-        // in other case it's an array
-        else
-        {
-            new Array:configurationArray = ArrayCreate(2);
-            ArrayPushCell(turretInfoArray, configurationArray);
-        }
-    }
+    // init configuration for turret
+    new Array:turretInfoArray = @createAndConfigurationArrayForTurret(turretName);
 
     // loop through all configurations
     for(new i; i < numberOfConfigurations; i = ++i) 
@@ -108,15 +91,12 @@ public initializeConfigurationFromFile(configurationFilePath[128])
         // if config value is number
         if (json_is_number(configurationJson))
         {
-            if (equali(configName, MAX_COUNT_SCHEMA))
-            {
-                @loadTurretMaxCount(configurationJson, turretInfoArray)
-            }
+            @loadConfigurationInfoNumber(JSON:configurationJson, Array:turretInfoArray, configName);
         }
         // if config value is array
         else if(json_is_array(configurationJson))
         {
-            new Array:configurationArray = ArrayGetCell(turretInfoArray, @getConfigIndex(configName));
+            new Array:configurationArray = ArrayGetCell(turretInfoArray, @getArrayTurretInfoIndex(configName));
 
             // load configuration data
             @loadConfigurationInfo(configurationJson, configurationArray, turretName, configName);
@@ -132,10 +112,59 @@ public initializeConfigurationFromFile(configurationFilePath[128])
     }
 }
 
-@loadTurretMaxCount(JSON:configurationJson, Array:turretInfoArray)
+Array:@createAndConfigurationArrayForTurret(turretKey[33])
 {
-    new maxTurretsCount = json_get_number(configurationJson);
-    ArraySetCell(turretInfoArray, _:TURRET_MAX_COUNT, maxTurretsCount);
+    // create configuration key with turret name
+    new Array:turretInfoArray = ArrayCreate();
+
+    // create and fill configuration array 
+    for(new i = 0; i < _:TURRET_INFO; ++i)
+    {
+        // if it's number configuration
+        if (TURRET_INFO:i == TURRET_MAX_COUNT
+        || TURRET_INFO:i == TURRET_ACTIVATION_TIME
+        || TURRET_INFO:i == TURRET_RELOAD_TIME
+        || TURRET_INFO:i == TURRET_UPGRADE_TIME
+        || TURRET_INFO:i == TURRET_START_AMMO) 
+        {
+            ArrayPushCell(turretInfoArray, 0.0);
+        }
+        // in other case it's an array
+        else
+        {
+            new Array:configurationArray = ArrayCreate(2);
+            ArrayPushCell(turretInfoArray, configurationArray);
+        }
+    }
+
+    TrieSetCell(g_TurretInfoTrie, turretKey, turretInfoArray);
+
+    return turretInfoArray;
+}
+
+@loadConfigurationInfoNumber(JSON:configurationJson, Array:turretInfoArray, configName[33])
+{
+    // get number value
+    new Float:value = json_get_real(configurationJson);
+    
+    new key = -1;
+
+    if (equali(configName, MAX_COUNT_SCHEMA)) key = _:TURRET_MAX_COUNT;
+    else if (equali(configName, ACTIVATION_TIME_SCHEMA)) key = _:TURRET_ACTIVATION_TIME;
+    else if (equali(configName, RELOAD_TIME_SCHEMA)) key = _:TURRET_RELOAD_TIME;
+    else if (equali(configName, UPGRADE_TIME_SCHEMA)) key = _:TURRET_UPGRADE_TIME;
+    else if (equali(configName, START_AMMO_SCHEMA)) key = _:TURRET_START_AMMO;
+
+    // if key was found
+    if (key != -1) 
+    {
+        // set value
+        ArraySetCell(turretInfoArray, key, value);
+    }
+    else
+    {
+        log_amx("[TURRETS] Undefined config key: %s", configName);
+    }
 }
 
 @loadConfigurationInfo(JSON:configurationJson, Array:configurationArray, turretName[33], configName[33])
@@ -183,7 +212,7 @@ public initializeConfigurationFromFile(configurationFilePath[128])
     }
 }
 
-@getConfigIndex(configName[33])
+@getArrayTurretInfoIndex(configName[33])
 {
     if (equali(configName, DAMAGE_SCHEMA)) return _:TURRET_DAMAGE;
     if (equali(configName, RANGE_SCHEMA)) return _:TURRET_RANGE;

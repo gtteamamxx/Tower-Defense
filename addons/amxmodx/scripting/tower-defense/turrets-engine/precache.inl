@@ -15,4 +15,5 @@ public plugin_precache()
     precache_model("models/TDNew/sentrygun_3.mdl");
     precache_model("models/TDNew/sentrygun_4.mdl");
     precache_model("models/TDNew/sentrygun_5.mdl");
+    precache_model("sprites/TDNew/ranger.spr");
 }

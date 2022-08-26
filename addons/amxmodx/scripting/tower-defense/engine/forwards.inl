@@ -52,3 +52,12 @@ public executeOnConfigurationLoadForward(configurationFilePath[128], bool:isGame
         isGamePossible
     );
 }
+
+public destoryForwards()
+{
+    DestroyForward(g_ForwardOnConfigurationLoad);
+    DestroyForward(g_ForwardOnGameEnd);
+    DestroyForward(g_ForwardOnWaveEnd);
+    DestroyForward(g_ForwardOnMonsterKilled);
+    DestroyForward(g_ForwardTakeDamage);
+}

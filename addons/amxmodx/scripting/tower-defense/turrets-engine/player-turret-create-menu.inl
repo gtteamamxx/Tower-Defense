@@ -8,7 +8,8 @@ public startCreatingTurretForPlayer(id, turretKey[33])
     // show player menu to create turret here
     @showPlayerCreateHereMenu(id, turretKey);
 
-    createTurretForCreationForPlayer(id);
+    // create turret to allow player select position
+    createTurretForCreationForPlayer(id, turretKey);
 }
 
 @showPlayerCreateHereMenu(id, turretKey[33])

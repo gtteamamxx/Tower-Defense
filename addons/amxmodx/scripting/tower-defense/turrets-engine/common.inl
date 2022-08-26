@@ -26,12 +26,72 @@ public Array:getPlayersTurretArray(id)
     return playersTurretArray; 
 }
 
+public bool:isTurretMoving(ent)
+{
+    new isTurretMoving;
+    CED_GetCell(ent, CED_TURRET_IS_MOVING, isTurretMoving);
+
+    return isTurretMoving == 1;
+}
+
+public isTurretOfKey(ent, turretKey[33])
+{
+    new realTurretKey[33];
+    getTurretKey(ent, realTurretKey);
+
+    new bool:isTurretOfKey = bool:equali(realTurretKey, turretKey);
+    return isTurretOfKey;
+}
+
+public getNumberOfTurretsOnServer(turretKeyToFind[33])
+{
+    new numberOfTurrets = 0;
+
+    //get maximum number of players
+    new numberOfPlayers = get_maxplayers();
+
+    // loop through all players which may be connected
+    for(new i = 1; i <= numberOfPlayers; ++i)
+    {
+        if (!is_user_connected(i)) continue;
+
+        // get player turrets array
+        new Array:playerTurretsArray = getPlayersTurretArray(i);
+
+        // if player doesn't have any turret skip
+        if (playerTurretsArray == Invalid_Array) continue;
+
+        // loop through all player turrets
+        new numberOfPlayerTurrets = ArraySize(playerTurretsArray);
+        for(new j = 0; j < numberOfPlayerTurrets; ++j)
+        {
+            new ent = ArrayGetCell(playerTurretsArray, j);
+
+            // if it's turret we want then add number fo turrets
+            if (isTurretOfKey(ent, turretKeyToFind))
+            {
+                numberOfTurrets++;
+            }
+        }
+    }
+
+    return numberOfTurrets;
+}
+
 public getPluginIdByTurretKey(turretKey[33])
 {
     new Array:turretInfoArray;
     TrieGetCell(g_RegisteredTurretsTrie, turretKey, turretInfoArray);
 
     return ArrayGetCell(turretInfoArray, _:TURRET_PLUGIN_ID);
+}
+
+public getTurretOwner(ent)
+{
+    new ownerId;
+    CED_GetCell(ent, CED_TURRET_OWNER_KEY, ownerId);
+
+    return ownerId;
 }
 
 public getTurretName(turretKey[33], turretName[33])
@@ -42,13 +102,70 @@ public getTurretName(turretKey[33], turretName[33])
     ArrayGetString(turretInfoArray, _:TURRET_NAME, turretName, 32);
 }
 
+public Float:getTurretActivationTime(turretKey[33])
+{
+    new Array:turretInfoArray;
+    TrieGetCell(g_TurretInfoTrie, turretKey, turretInfoArray);
+
+    new Float:activationTime = Float:ArrayGetCell(turretInfoArray, _:TURRET_ACTIVATION_TIME);
+    
+    return activationTime;
+}
+
+public getTurretRangeForLevel(turretKey[33], rangeLevel, Float:range[2])
+{
+    new Array:turretInfoArray;
+    TrieGetCell(g_TurretInfoTrie, turretKey, turretInfoArray);
+
+    new Array:rangeArray = ArrayGetCell(turretInfoArray, _:TURRET_RANGE);
+
+    ArrayGetArray(rangeArray, rangeLevel - 1, range);
+}
+
+public isTurret(ent)
+{
+    new blank;
+    new isKeyExists = CED_GetCell(ent, CED_TURRET_OWNER_KEY, blank);
+    return isKeyExists;
+}
+
+public isRanger(ent)
+{
+    new blank;
+    new isKeyExists = CED_GetCell(ent, CED_RANGER_TURRET_ENTITY_KEY, blank);
+    return isKeyExists;
+}
+
+public Float:getTurretRange(turretKey[33])
+{
+    new Array:turretInfoArray;
+    TrieGetCell(g_TurretInfoTrie, turretKey, turretInfoArray);
+
+    new Float:activationTime = Float:ArrayGetCell(turretInfoArray, _:TURRET_ACTIVATION_TIME);
+    
+    return activationTime;
+}
+
+public getTurretKey(ent, turretKey[33])
+{
+    CED_GetString(ent, CED_TURRET_KEY, turretKey, 32);
+}
+
+public getTurretStartAmmo(turretKey[33])
+{
+    new Array:turretInfoArray;
+    TrieGetCell(g_TurretInfoTrie, turretKey, turretInfoArray);
+
+    new ammo = ArrayGetCell(turretInfoArray, _:TURRET_START_AMMO);
+    return ammo;
+}
+
 public getMaxNumberOfTurrets(turretKey[33])
 {
     new Array:turretInfoArray;
     TrieGetCell(g_TurretInfoTrie, turretKey, turretInfoArray);
 
-    new numberOfTurrets = ArrayGetCell(turretInfoArray, _:TURRET_MAX_COUNT);
-
+    new numberOfTurrets = floatround(ArrayGetCell(turretInfoArray, _:TURRET_MAX_COUNT));
     return numberOfTurrets;
 }
 
@@ -96,5 +213,5 @@ stock getOriginByDistFromPlayer(id, Float:dist, Float:origin[3])
 
     origin[0] = playerOrigin[0] + dist * floatcos(angle[1], degrees) * (floatabs(floatcos(angle[0], degrees)));
     origin[1] = playerOrigin[1] + dist * floatsin(angle[1], degrees) * (floatabs(floatcos(angle[0], degrees)));
-    origin[2] = playerOrigin[2]
+    origin[2] = playerOrigin[2];
 }
