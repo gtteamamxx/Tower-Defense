@@ -24,7 +24,7 @@ public registerAddToFullPack()
     static Float:monsterOrigin[3];
 
     entity_get_vector(ENT, EV_VEC_origin, monsterOrigin);
-    monsterOrigin[2] += 45.0; // TODO: Wysokość healthabru będzie z konfiguracji użytkownika
+    monsterOrigin[2] += 45.0;
     entity_set_vector(healthBarEntity, EV_VEC_origin, monsterOrigin);
 
     return FMRES_IGNORED;

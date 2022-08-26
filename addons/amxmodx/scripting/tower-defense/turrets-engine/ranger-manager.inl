@@ -95,7 +95,6 @@ public createAndAttachRangerToTurret(ent)
 
 @showRangerWhenPlayerIsTouchingTurret(ent, id)
 {
-    client_print(0, 3, "%d, %d", ent, id);
     // get turret owner
     new ownerId = getTurretOwner(ent);
 

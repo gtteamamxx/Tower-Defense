@@ -15,6 +15,7 @@ public plugin_natives()
     register_native("td_stop_monster", "@_td_stop_monster");
     register_native("td_get_monster_actual_track_id", "@_td_get_monster_actual_track_id");
     register_native("td_start_game", "@_td_start_game");
+    register_native("td_get_monsters_in_sphere", "@_td_get_monsters_in_sphere");
 }
 
 @_td_stop_monster(pluginId, argc)
@@ -33,6 +34,40 @@ public plugin_natives()
 {
     new actualMonsterTrack; CED_GetCell(monsterEntity, MONSTER_DATA_TRACK_KEY, actualMonsterTrack);
     return actualMonsterTrack;
+}
+
+@_td_get_monsters_in_sphere(pluginId, argc)
+{
+    new ent = get_param(1);
+    new Float:distance = get_param_f(2);
+    new len = get_param(4);
+    
+    // if no monsters then no need to calculate
+    new monstersNum = getMonstersNumberOnMap();
+    if (monstersNum == 0)
+    {
+        return 0;
+    }
+
+    static monsters[64]
+    new monstersInDistanceNum;
+    for(new i = 0; i < monstersNum; ++i)
+    {
+        new monsterEntity = ArrayGetCell(g_MonstersEntArray, i);
+        if (isMonsterKilled(monsterEntity)) continue;
+
+        new Float:entityDistance = entity_range(ent, monsterEntity);
+        if (entityDistance <= distance)
+        {
+            monsters[monstersInDistanceNum++] = monsterEntity;
+
+            if (monstersInDistanceNum == len) break;
+        }
+    }
+
+    set_string(3, monsters, len);
+
+    return monstersInDistanceNum;
 }
 
 public @aimMonsterToTrack(pluginId, argc)

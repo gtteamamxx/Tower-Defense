@@ -21,6 +21,8 @@ native td_stop_monster(monsterEntity);
 
 native td_start_game();
 
+native td_get_monsters_in_sphere(ent, Float:distance, monsters[], len);
+
 forward td_on_configuration_load(configurationFilePath[128], bool:isGamePossible);
 
 forward td_on_game_end(bool:win);
@@ -29,4 +31,4 @@ forward td_on_wave_end(wave);
 
 forward td_on_monster_killed(monsterEntity, player);
 
-forward td_on_damage_taken_to_monster(monsterEntity, player, Float:fDamage)
+forward td_on_damage_taken_to_monster(monsterEntity, player, Float:fDamage);

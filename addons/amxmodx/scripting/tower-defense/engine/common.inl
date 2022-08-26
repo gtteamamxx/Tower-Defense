@@ -113,6 +113,12 @@ public bool:isTrackWall(entity)
     return is_valid_ent(entity) && ((getEntityBitData(entity) & TRACK_WALL_BIT) == TRACK_WALL_BIT);
 }
 
+public getMonstersNumberOnMap()
+{
+    new monstersNum = ArraySize(g_MonstersEntArray);
+    return monstersNum;
+}
+
 public bool:isEndWall(entity)
 {
     return is_valid_ent(entity) && ((getEntityBitData(entity) & END_WALL_BIT) == END_WALL_BIT);

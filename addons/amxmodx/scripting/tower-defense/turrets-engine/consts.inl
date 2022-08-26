@@ -24,6 +24,7 @@
 #define CED_TURRET_FIRERATE_LEVEL "turret_firerate"
 #define CED_TURRET_DAMAGE_LEVEL "turret_damage"
 #define CED_TURRET_RANGE_LEVEL "turret_range"
+#define CED_TURRET_TARGET_MONSTER_ENTITY "turret_target"
 
 #define CED_TURRET_RANGER_MIN_ENTITY_KEY "turret_ranger_min"
 #define CED_TURRET_RANGER_MAX_ENTITY_KEY "turret_ranger_max"
@@ -59,12 +60,23 @@ enum TURRET_INFO
     TURRET_ACCURACY
 };
 
+enum TURRET_SHOT_RESULT
+{
+    No_Monster_Found = -1
+}
+
+enum TURRET_PREVIOUSLY_TARGET
+{
+    No_Monster
+}
+
 enum TURRET_SHOT_MODE
 {
     NEAREST,
     FARTHEST,
     STRONGEST,
-    WEAKEST
+    WEAKEST,
+    FOLLOW
 }
 
 enum REGISTERED_TURRET_INFO

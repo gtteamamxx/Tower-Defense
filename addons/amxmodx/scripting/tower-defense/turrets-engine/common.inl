@@ -102,6 +102,22 @@ public getTurretName(turretKey[33], turretName[33])
     ArrayGetString(turretInfoArray, _:TURRET_NAME, turretName, 32);
 }
 
+public getTurretTargetMonster(ent)
+{
+    new monsterEntity; 
+    CED_GetCell(ent, CED_TURRET_TARGET_MONSTER_ENTITY, monsterEntity);
+
+    return monsterEntity;
+}
+
+public getTurretAmmo(ent)
+{
+    new turretAmmo; 
+    CED_GetCell(ent, CED_TURRET_AMMO, turretAmmo);
+
+    return turretAmmo;
+}
+
 public Float:getTurretActivationTime(turretKey[33])
 {
     new Array:turretInfoArray;
@@ -110,6 +126,23 @@ public Float:getTurretActivationTime(turretKey[33])
     new Float:activationTime = Float:ArrayGetCell(turretInfoArray, _:TURRET_ACTIVATION_TIME);
     
     return activationTime;
+}
+
+public Float:getTurretRangeToShot(ent)
+{
+    // get current turret range level
+    new rangeLevel;
+    CED_GetCell(ent, CED_TURRET_RANGE_LEVEL, rangeLevel);
+
+    // get turret key
+    new turretKey[33];
+    getTurretKey(ent, turretKey);
+
+    new Float:range[2];
+    getTurretRangeForLevel(turretKey, rangeLevel, range);
+
+    // return max range
+    return range[1];
 }
 
 public getTurretRangeForLevel(turretKey[33], rangeLevel, Float:range[2])
@@ -167,6 +200,14 @@ public getMaxNumberOfTurrets(turretKey[33])
 
     new numberOfTurrets = floatround(ArrayGetCell(turretInfoArray, _:TURRET_MAX_COUNT));
     return numberOfTurrets;
+}
+
+stock turnTurretToMonster(ent, any:monster, bool:turnBarrel = false)
+{
+    new Float:monsterOrigin[3];
+    entity_get_vector(monster, EV_VEC_origin, monsterOrigin);
+
+    turnTurretToOrigin(ent, monsterOrigin, turnBarrel);
 }
 
 stock turnTurretToOrigin(ent, Float:enemyOrigin[3] = {0.0, 0.0, 0.0}, bool:turnBarrel = false)
