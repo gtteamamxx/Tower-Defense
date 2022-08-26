@@ -20,6 +20,7 @@
 #include "tower-defense/turrets-engine/player-commands.inl"
 #include "tower-defense/turrets-engine/natives.inl"
 #include "tower-defense/turrets-engine/forwards.inl"
+#include "tower-defense/turrets-engine/calculate-monster-target.inl"
 #include "tower-defense/turrets-engine/turret-registration.inl"
 #include "tower-defense/turrets-engine/turrets-menu.inl"
 #include "tower-defense/turrets-engine/player-turret-create-menu.inl"

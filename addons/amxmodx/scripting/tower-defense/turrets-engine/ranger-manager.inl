@@ -11,6 +11,7 @@ public registerEventsForManageRangerVisibility()
     register_think(RANGER_CLASSNAME, "@hideRangerWhenPlayerIsNotTouchingTurret");
 }
 
+
 public registerEventsForManageRangerPosition()
 {
     // update ranger position when player's moving turret
@@ -147,6 +148,11 @@ public createAndAttachRangerToTurret(ent)
 
 @refreshRangerPositionWhenTurretIsMoving(ent)
 {
+    if (!is_valid_ent(ent))
+    {
+        return;
+    }
+    
     // get turret
     new turretEntity;
     CED_GetCell(ent, CED_RANGER_TURRET_ENTITY_KEY, turretEntity);

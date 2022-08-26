@@ -46,6 +46,9 @@ public createTurretForPlayer(id, turretKey[33])
 
 @setTurretProperties(ent, turretKey[33])
 {
+    // update class name
+    entity_set_string(ent, EV_SZ_classname, TURRET_CLASSNAME);
+
     // set basic properties
     CED_SetCell(ent, CED_TURRET_ACCURACY_LEVEL, 1);
     CED_SetCell(ent, CED_TURRET_FIRERATE_LEVEL, 1);
@@ -62,16 +65,17 @@ public createTurretForPlayer(id, turretKey[33])
     // update turret model
     entity_set_model(ent, "models/TDNew/sentrygun_1.mdl");
 
-    // update class name
-    entity_set_string(ent, EV_SZ_classname, TURRET_CLASSNAME);
+    new classname[33];
+    entity_get_string(ent, EV_SZ_classname, classname, 32);
+
+    client_print(0, print_chat, "size updated %d, %s", ent, classname);
 
     // make turret touchable
     entity_set_int(ent, EV_INT_solid, SOLID_TRIGGER);
+    entity_set_size(ent, Float:{-16.0, -16.0, 0.0}, Float:{16.0, 16.0, 48.0});
 
     // remove fade effect
     fm_set_rendering(ent, kRenderFxNone, 0, 0, 0, kRenderNormal, 0);
-
-    DispatchSpawn(ent);
 }
 
 @addTurretToUsersTurret(id, turretEntity)

@@ -18,5 +18,4 @@ public plugin_init()
 
 public td_on_turret_created(ent, id)
 {
-    entity_set_float(turretEntity, EV_FL_nextthink, get_gametime() + activationTime);
 }
