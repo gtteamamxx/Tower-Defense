@@ -42,14 +42,7 @@ public bool:checkIfItsEndGame()
 
 @playEndGameSound(bool:win)
 {
-    if (win)
-    {
-        playSoundGlobalRandom(WIN);
-    }
-    else
-    {
-        playSoundGlobalRandom(LOSE);
-    }
+    playSoundGlobalRandom(win ? WIN : LOSE);
 }
 
 @stopAllMonsters()

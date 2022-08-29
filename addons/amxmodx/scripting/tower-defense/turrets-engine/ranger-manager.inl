@@ -11,7 +11,6 @@ public registerEventsForManageRangerVisibility()
     register_think(RANGER_CLASSNAME, "@hideRangerWhenPlayerIsNotTouchingTurret");
 }
 
-
 public registerEventsForManageRangerPosition()
 {
     // update ranger position when player's moving turret
@@ -35,6 +34,9 @@ public detachRangersFromTurret(ent)
     {
         remove_entity(maxRangerEnt);
     }
+
+    CED_SetCell(ent, CED_TURRET_RANGER_MIN_ENTITY_KEY, -1);
+    CED_SetCell(ent, CED_TURRET_RANGER_MAX_ENTITY_KEY, -1);
 }
 
 public createAndAttachRangerToTurret(ent)
@@ -45,16 +47,9 @@ public createAndAttachRangerToTurret(ent)
         return;
     }
     
-    // get turret key
-    new turretKey[33];
-    getTurretKey(ent, turretKey);
-
-    // get turret range level
-    new rangeLevel = @getTurretRangeLevel(ent);
-
     // get min and max of turrets range
     new Float:minMaxRange[2];
-    getTurretRangeForLevel(turretKey, rangeLevel, minMaxRange);
+    getCurrentTurretRange(ent, minMaxRange);
 
     // create rangers for turret
     new minRangerEnt = @createRangerEnt(ent, minMaxRange[0], .r = 0, .g = 255, .b = 0);
@@ -80,10 +75,21 @@ public createAndAttachRangerToTurret(ent)
     // get player id
     new id = getTurretOwner(turretEntity);
 
+    // if player is showing turret menu for same turret, we don't need to check
+    // anymore if he's touching turret
+    new showedTurretEntityByMenu = getShowedTurretEntInDetailMenu(id);
+    
+    if(showedTurretEntityByMenu == turretEntity)
+    {
+        // delay next check
+        entity_set_float(ent, EV_FL_nextthink, get_gametime() + 0.5);
+        return;
+    }
+
     // if player is not touching turret anymore
     // or he's touching another turret then remove ranger
     new entlist[2]
-    if (!find_sphere_class(id, TURRET_CLASSNAME, 1.0, entlist, 1) || entlist[0] != turretEntity)
+    if (!find_sphere_class(id, TURRET_CLASSNAME, 32.0, entlist, 1) || entlist[0] != turretEntity)
     {
         detachRangersFromTurret(turretEntity);
         return;
@@ -104,17 +110,24 @@ public createAndAttachRangerToTurret(ent)
         return;
     }
 
+    // don't show ranger on touch when player is showing turret rangers by menu
+    new showedTurretEntityByMenu = getShowedTurretEntInDetailMenu(id);
+    if(showedTurretEntityByMenu == ent)
+    {
+        return;
+    }
+
     // get current rangers for turret
     new minRangerEnt, maxRangerEnt;
     CED_GetCell(ent, CED_TURRET_RANGER_MIN_ENTITY_KEY, minRangerEnt);
     CED_GetCell(ent, CED_TURRET_RANGER_MAX_ENTITY_KEY, maxRangerEnt);
+
 
     // if turret currently has rangers don't do anything
     if (is_valid_ent(minRangerEnt) && is_valid_ent(maxRangerEnt)) 
     {
         return;
     }
-
     // create ranger for turret
     createAndAttachRangerToTurret(ent);
 
@@ -217,17 +230,4 @@ public createAndAttachRangerToTurret(ent)
     entity_set_float(ent, EV_FL_nextthink, get_gametime() + 0.1);
 
     return ent;
-}
-
-@getTurretRangeLevel(ent)
-{
-    new rangeLevel;
-
-    // if turret doesn't have range level show smallest one
-    if (!CED_GetCell(ent, CED_TURRET_RANGE_LEVEL, rangeLevel))
-    {
-        rangeLevel = 1
-    }
-
-    return rangeLevel;
 }

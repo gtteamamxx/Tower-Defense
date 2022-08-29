@@ -69,10 +69,23 @@ public executeOnTurretNoAmmoForward(pluginId, ent, id)
     DestroyForward(forwardId);
 }
 
-public executeOnTurretShotForward(pluginId, ent, monster, id)
+public executeOnTurretShotForward(pluginId, ent, monster, id, Float:damage)
 {
     // create callback pointer
-    new forwardId = CreateOneForward(pluginId, "td_on_turret_shot", FP_CELL, FP_CELL, FP_CELL);
+    new forwardId = CreateOneForward(pluginId, "td_on_turret_shot", FP_CELL, FP_CELL, FP_CELL, FP_FLOAT);
+
+    // execute
+    new ret;
+    ExecuteForward(forwardId, ret, ent, monster, id, damage);
+
+    // free memory
+    DestroyForward(forwardId);
+}
+
+public executeOnTurretShotMissForward(pluginId, ent, monster, id)
+{
+        // create callback pointer
+    new forwardId = CreateOneForward(pluginId, "td_on_turret_shot_miss", FP_CELL, FP_CELL, FP_CELL);
 
     // execute
     new ret;

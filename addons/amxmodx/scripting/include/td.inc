@@ -11,6 +11,8 @@ native bool:td_is_monster(entity);
 
 native bool:td_is_monster_killed(entity);
 
+native td_take_monster_damage(id, monster, Float:damage, damageBit);
+
 native entity_set_aim(ent1, ent2);
 
 native td_aim_monster_to_track(monsterEntity, trackEntity = -1);

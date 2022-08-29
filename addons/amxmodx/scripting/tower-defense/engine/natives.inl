@@ -16,6 +16,7 @@ public plugin_natives()
     register_native("td_get_monster_actual_track_id", "@_td_get_monster_actual_track_id");
     register_native("td_start_game", "@_td_start_game");
     register_native("td_get_monsters_in_sphere", "@_td_get_monsters_in_sphere");
+    register_native("td_take_monster_damage", "@_td_take_monster_damage");
 }
 
 @_td_stop_monster(pluginId, argc)
@@ -126,6 +127,27 @@ bool:@_td_register_monster(pluginId, argc)
     register_monster(pluginId, monsterTypeKey, monsterModelsArray)
 
     return true;
+}
+
+// param 1 - player
+// param 2 - monster
+// param 3 - damage
+// param 4 - damage bit
+
+@_td_take_monster_damage(pluginId, argc)
+{
+    if (argc < 4)
+    {
+        log_amx("Bad use of _td_take_monster_damage");
+        return;
+    }
+
+    new id = get_param(1);
+    new monster = get_param(2);
+    new Float:damage = get_param_f(3);
+    new damageBit = get_param(4);
+
+    ExecuteHamB(Ham_TakeDamage, monster, id, id, damage, damageBit, 1);
 }
 
 /*

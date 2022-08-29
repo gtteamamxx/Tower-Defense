@@ -46,7 +46,7 @@ public createTurretForCreationForPlayer(id, turretKey[33])
     // update model
     @updateTurretModelByPosibilityOfPlacing(ent);
 
-    // start next think
+    // start next think if turret is still moving
     entity_set_float(ent, EV_FL_nextthink, get_gametime() +  0.05);
 }
 
@@ -81,6 +81,13 @@ public createTurretForCreationForPlayer(id, turretKey[33])
     // set owner
     CED_SetCell(ent, CED_TURRET_OWNER_KEY, ownerId);
     
+    // set basic properties
+    CED_SetCell(ent, CED_TURRET_ACCURACY_LEVEL, 1);
+    CED_SetCell(ent, CED_TURRET_FIRERATE_LEVEL, 1);
+    CED_SetCell(ent, CED_TURRET_DAMAGE_LEVEL, 1);
+    CED_SetCell(ent, CED_TURRET_RANGE_LEVEL, 1);
+    CED_SetCell(ent, CED_TURRET_SHOT_MODE, NEAREST);
+
     // assign moving entity to player
     CED_SetCell(ownerId, CED_PLAYER_MOVING_TURRET_ENTITY_KEY, ent);
 

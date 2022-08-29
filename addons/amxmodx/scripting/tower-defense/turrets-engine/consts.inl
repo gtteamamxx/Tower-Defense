@@ -10,7 +10,9 @@
 
 // player turret data keys
 #define CED_PLAYER_TURRETS_ARRAY_KEY "player_turrets_array"
-#define CED_PLAYER_MOVING_TURRET_ENTITY_KEY "turret_moving_ent"
+#define CED_PLAYER_MOVING_TURRET_ENTITY_KEY "player_turret_moving_ent"
+#define CED_PLAYER_TOUCHING_TURRET_ENTITY_KEY  "player_turret_touching_ent"
+#define CED_PLAYER_SHOWED_MENU_TURRET_KEY "player_showed_menu_turret_key"
 
 // ranger data keys
 #define CED_RANGER_TURRET_ENTITY_KEY "ranger_turret"
@@ -20,11 +22,16 @@
 #define CED_TURRET_OWNER_KEY "turret_owner"
 #define CED_TURRET_KEY "turret_key"
 #define CED_TURRET_AMMO "turret_ammo"
+#define CED_TURRET_IS_LOW_AMMO "turret_is_low_ammo"
 #define CED_TURRET_ACCURACY_LEVEL "turret_accuracy"
 #define CED_TURRET_FIRERATE_LEVEL "turret_firerate"
 #define CED_TURRET_DAMAGE_LEVEL "turret_damage"
 #define CED_TURRET_RANGE_LEVEL "turret_range"
 #define CED_TURRET_TARGET_MONSTER_ENTITY "turret_target"
+#define CED_TURRET_SHOT_MODE "turret_shot_mode"
+#define CED_TURRET_IS_ENABLED "turret_enabled"
+#define CED_TURRET_IS_UPGRADING "turret_is_upgrading"
+#define CED_TURRET_IS_RELOADING "turret_is_reloading"
 
 #define CED_TURRET_RANGER_MIN_ENTITY_KEY "turret_ranger_min"
 #define CED_TURRET_RANGER_MAX_ENTITY_KEY "turret_ranger_max"
@@ -44,6 +51,7 @@
 #define RELOAD_TIME_SCHEMA "RELOAD_TIME"
 #define UPGRADE_TIME_SCHEMA "UPGRADE_TIME"
 #define START_AMMO_SCHEMA "START_AMMO"
+#define RELOAD_AMMO_SCHEMA "RELOAD_AMMO"
 
 #define DIST_MOVING 70.0
 
@@ -54,6 +62,7 @@ enum TURRET_INFO
     TURRET_RELOAD_TIME,
     TURRET_UPGRADE_TIME,
     TURRET_START_AMMO,
+    TURRET_RELOAD_AMMO,
     TURRET_DAMAGE,
     TURRET_RANGE,
     TURRET_FIRERATE,

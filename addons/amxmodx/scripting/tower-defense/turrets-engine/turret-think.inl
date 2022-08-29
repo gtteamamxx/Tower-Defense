@@ -10,6 +10,14 @@ public registerTurretThink()
 
 public @onTurretThink(ent)
 {
+    // if turret cannot be active, we don't want to let it
+    if (!@canBeTurretActivated(ent)) 
+    {
+        // check can be turret activated after a while
+        entity_set_float(ent, EV_FL_nextthink, get_gametime() + 0.5);
+        return PLUGIN_CONTINUE;
+    }
+
     // get turret range
     new Float:shotRange = getTurretRangeToShot(ent);
 
@@ -17,7 +25,8 @@ public @onTurretThink(ent)
     new TURRET_PREVIOUSLY_TARGET:previousMonsterTarget = TURRET_PREVIOUSLY_TARGET:getTurretTargetMonster(ent);
 
     // get monster new target
-    new TURRET_SHOT_RESULT:newMonsterTarget = getTargetByShotMode(ent, shotRange, FOLLOW);
+    new TURRET_SHOT_MODE:turretShotMode = getTurretShotMode(ent);
+    new TURRET_SHOT_RESULT:newMonsterTarget = getTargetByShotMode(ent, shotRange, turretShotMode);
     
     // if no monster in range
     if (newMonsterTarget == No_Monster_Found)
@@ -59,8 +68,12 @@ public @onTurretThink(ent)
     // send forward
     @sendTurretStopFireForward(ent);
 
+    emit_sound(ent, CHAN_AUTO, "TDNew/turret_stop.wav", 1.0, ATTN_NORM, 0, PITCH_NORM);
+
     // wait some time to find another monster
     entity_set_float(ent, EV_FL_nextthink, get_gametime() + 2.0);
+
+    @showTurretHudInformationIfIsPlayerInDetailMenu(ent, "TARGET GONE");
 }
 
 @onTurretIdle(ent)
@@ -70,6 +83,8 @@ public @onTurretThink(ent)
 
     // check new monsters in range every 0.5 second
     entity_set_float(ent, EV_FL_nextthink, get_gametime() + 0.5);
+
+    @showTurretHudInformationIfIsPlayerInDetailMenu(ent, "SEARCHING");
 }
 
 @onTurretNoAmmo(ent)
@@ -77,8 +92,16 @@ public @onTurretThink(ent)
     // send forward
     @sendTurretNoAmmoForward(ent);
 
+    new ownerId = getTurretOwner(ent);
+
+    // emit sound on turret location
+    emit_sound(ent, CHAN_AUTO, "TDNew/turret_noammo.wav", 1.0, ATTN_NORM, 0, PITCH_NORM);
+
+    // emit sound for player
+    client_cmd(ownerId, "spk TDNew/turret_noammo.wav");
+
     // stop turret
-    entity_set_float(ent, EV_FL_nextthink, 0.0);
+    entity_set_float(ent, EV_FL_nextthink,  0.0);
 }
 
 @onTurretShot(ent, any:monster)
@@ -92,18 +115,55 @@ public @onTurretThink(ent)
     // decrease turret ammo
     @decreaseTurretAmmo(ent);
 
-    // shot firerate
-    entity_set_float(ent, EV_FL_nextthink, get_gametime() + 1.0);
+    // if no ammo, we can't calculate next think
+    // because turret need to be stopped
+    new turretAmmo = getTurretAmmo(ent);
+    if (turretAmmo > 0)
+    {
+        // shot by turret firerate
+        new Float:firerate = @getTurretFirerate(ent);
+
+        entity_set_float(ent, EV_FL_nextthink, get_gametime() + firerate);
+    }
 }
 
 @shot(ent, any:monster)
 {
-    @sendTurretShotForward(ent, monster);
+    new Float:turretAccuracy[2];
+    getCurrentTurretAccuracy(ent, turretAccuracy);
+
+    new Float:accuracy = random_float(turretAccuracy[0], turretAccuracy[1]);
+    new bool:isShotMiss = bool:(random_float(0.0, 1.0) <= (1.0 - accuracy));
+
+    if (isShotMiss)
+    {
+        @sendTurretShotMissForward(ent, monster);
+        @showTurretHudInformationIfIsPlayerInDetailMenu(ent, "MISS");
+    } 
+    else
+    {
+        new Float:distance = entity_range(ent, monster);
+        new Float:damage = getTurretDamageForDistance(ent, distance);
+
+        @sendTurretShotForward(ent, monster, damage);
+
+        new szDamage[128];
+        num_to_str(floatround(damage), szDamage, 127);
+        @showTurretHudInformationIfIsPlayerInDetailMenu(ent, szDamage);
+    }
 }
 
 @onTurretLowAmmo(ent)
 {
     @sendTurretLowAmmoForward(ent)
+
+    new ownerId = getTurretOwner(ent);    
+
+    emit_sound(ent, CHAN_AUTO, "TDNew/turret_lowammo.wav", 1.0, ATTN_NORM, 0, PITCH_NORM);
+
+    client_cmd(ownerId, "spk TDNew/turret_lowammo.wav");
+
+    @showTurretHudInformationIfIsPlayerInDetailMenu(ent, "LOW AMMO!");
 }
 
 @onTurretStartShot(ent, any:monster)
@@ -117,8 +177,12 @@ public @onTurretThink(ent)
     // send forward
     @sendTurretStartFireForward(ent, monster);
 
+    emit_sound(ent, CHAN_AUTO, "TDNew/turret_start.wav", 1.0, ATTN_NORM, 0, PITCH_NORM);
+
     // start shotting after 1s
     entity_set_float(ent, EV_FL_nextthink, get_gametime() + 1.0);
+
+    @showTurretHudInformationIfIsPlayerInDetailMenu(ent, "TARGET FOUND");
 }
 
 @decreaseTurretAmmo(ent)
@@ -130,8 +194,8 @@ public @onTurretThink(ent)
     // save data
     CED_SetCell(ent, CED_TURRET_AMMO, turretAmmo);
 
-    // if ammo level reached low ammo send information
-    if (turretAmmo < 10)
+    // if low ammo level reached, send notification
+    if (getTurretLowAmmoLevel(ent) == turretAmmo)
     {
         @onTurretLowAmmo(ent);
     }
@@ -139,6 +203,10 @@ public @onTurretThink(ent)
     {
         @onTurretNoAmmo(ent);
     }
+
+    // refresh turret detail menu if is opened
+    // to update for e.g. ammo count
+    refreshTurretDetailMenuIfPlayerStillHaveItOpened(ent);
 }
 
 @updateMonsterTarget(ent, any:monster)
@@ -191,7 +259,7 @@ public @onTurretThink(ent)
     executeOnTurretStartFireForward(pluginId, ent, monster, ownerId);
 }
 
-@sendTurretShotForward(ent, monster)
+@sendTurretShotMissForward(ent, monster)
 {
     // get owner
     new ownerId = getTurretOwner(ent);
@@ -203,7 +271,22 @@ public @onTurretThink(ent)
     // execute forward
     new pluginId = getPluginIdByTurretKey(turretKey);
 
-    executeOnTurretShotForward(pluginId, ent, monster, ownerId);
+    executeOnTurretShotMissForward(pluginId, ent, monster, ownerId);
+}
+
+@sendTurretShotForward(ent, monster, Float:damage)
+{
+    // get owner
+    new ownerId = getTurretOwner(ent);
+
+    // get turret key
+    new turretKey[33];
+    getTurretKey(ent, turretKey);
+
+    // execute forward
+    new pluginId = getPluginIdByTurretKey(turretKey);
+
+    executeOnTurretShotForward(pluginId, ent, monster, ownerId, damage);
 }
 
 @sendTurretLowAmmoForward(ent)
@@ -234,4 +317,29 @@ public @onTurretThink(ent)
     new pluginId = getPluginIdByTurretKey(turretKey);
 
     executeOnTurretStopFireForward(pluginId, ent, ownerId);
+}
+
+Float:@getTurretFirerate(ent)
+{
+    new Float:firerateLevels[2];
+    getCurrentTurretFirerate(ent, firerateLevels);
+
+    new Float:firerate = random_float(firerateLevels[0], firerateLevels[1]);
+
+    return firerate;
+}
+
+@showTurretHudInformationIfIsPlayerInDetailMenu(ent, szMessage[128])
+{
+    new ownerId = getTurretOwner(ent);
+    if (getShowedTurretEntInDetailMenu(ownerId) == ent)
+    {
+        set_dhudmessage(255, 255, 255, -1.0, 0.9, 0, 0.9, 0.5);
+        show_dhudmessage(ownerId, szMessage);
+    }
+}
+
+bool:@canBeTurretActivated(ent)
+{
+    return isTurretEnabled(ent) && !isTurretReloading(ent);
 }

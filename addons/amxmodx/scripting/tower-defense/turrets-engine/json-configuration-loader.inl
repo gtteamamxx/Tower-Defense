@@ -125,7 +125,8 @@ Array:@createAndConfigurationArrayForTurret(turretKey[33])
         || TURRET_INFO:i == TURRET_ACTIVATION_TIME
         || TURRET_INFO:i == TURRET_RELOAD_TIME
         || TURRET_INFO:i == TURRET_UPGRADE_TIME
-        || TURRET_INFO:i == TURRET_START_AMMO) 
+        || TURRET_INFO:i == TURRET_START_AMMO
+        || TURRET_INFO:i == TURRET_RELOAD_AMMO) 
         {
             ArrayPushCell(turretInfoArray, 0.0);
         }
@@ -154,6 +155,7 @@ Array:@createAndConfigurationArrayForTurret(turretKey[33])
     else if (equali(configName, RELOAD_TIME_SCHEMA)) key = _:TURRET_RELOAD_TIME;
     else if (equali(configName, UPGRADE_TIME_SCHEMA)) key = _:TURRET_UPGRADE_TIME;
     else if (equali(configName, START_AMMO_SCHEMA)) key = _:TURRET_START_AMMO;
+    else if (equali(configName, RELOAD_AMMO_SCHEMA)) key = _:TURRET_RELOAD_AMMO;
 
     // if key was found
     if (key != -1) 

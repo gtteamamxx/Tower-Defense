@@ -23,11 +23,13 @@
 #include "tower-defense/turrets-engine/calculate-monster-target.inl"
 #include "tower-defense/turrets-engine/turret-registration.inl"
 #include "tower-defense/turrets-engine/turrets-menu.inl"
+#include "tower-defense/turrets-engine/turret-detail-menu.inl"
 #include "tower-defense/turrets-engine/player-turret-create-menu.inl"
 #include "tower-defense/turrets-engine/turret-events.inl"
 #include "tower-defense/turrets-engine/turret-move-manager.inl"
 #include "tower-defense/turrets-engine/turret-creation.inl"
 #include "tower-defense/turrets-engine/player-events.inl"
+#include "tower-defense/turrets-engine/player-turret-touch-information.inl"
 #include "tower-defense/turrets-engine/turret-think.inl"
 #include "tower-defense/turrets-engine/ranger-events.inl"
 #include "tower-defense/turrets-engine/ranger-manager.inl"
@@ -69,7 +71,7 @@ public plugin_end()
     // if there are registered turrets then let
     // module start
     //
-    // turret registration is made only when config is loaded
+    // turret registration is madde only when config is loaded
     // so valdiating number of registration turrets shows
     // if we have also valid configuration 
     else

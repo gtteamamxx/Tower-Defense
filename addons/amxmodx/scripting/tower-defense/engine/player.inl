@@ -5,18 +5,17 @@
 
 new g_SyncHudInfo;
 
-public onPlayerKilledMonster(playerId, bool:isByHeadshot)
+public onPlayerKilledMonster(playerId, bool:isByHeadshot, bool:isKilledByPlayer)
 {
     addPlayerFrags(playerId, .amount = 1);
 
-    createPlayerKilledIcon(playerId, isByHeadshot);
+    createPlayerKilledIcon(playerId, isByHeadshot, isKilledByPlayer);
 }
 
 public onPlayerSpawn(playerId)
 {
     @showPlayerHudIfAlive(playerId);
 }
-
 
 @showPlayerHudIfAlive(playerId)
 {

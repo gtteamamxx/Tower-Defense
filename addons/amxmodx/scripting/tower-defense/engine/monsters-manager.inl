@@ -10,6 +10,7 @@
 #define MONSTER_DATA_SPEED "monster_speed"
 #define MONSTER_DATA_HEALTHBAR_ENTITY "monster_healthbar"
 #define MONSTER_DATA_IS_LAST_SHOT_HEADSHOT "monster_headshot"
+#define MONSTER_LAST_SHOT_DAMAGE_BIT "monster_last_shot_damage_bit"
 #define MONSTER_DATA_TOWER_DAMAGE "monster_tower_damage"
 
 #define MONSTER_AMBIENT_SOUND_KEY "monster_"
@@ -101,29 +102,38 @@ public showMonsterTakenDamage(monsterEntity, inflictorId, playerId, Float:damage
         return;
     }
 
-    new bool:isPlayerShotHeadShot; CED_GetCell(monsterEntity, MONSTER_DATA_IS_LAST_SHOT_HEADSHOT, isPlayerShotHeadShot);
     new Float:actualMonsterHealth = entity_get_float(monsterEntity, EV_FL_health);
 
-    set_hudmessage(0, 255, 0, 0.55, -1.0, 0, 0.0, 0.1)
-    show_hudmessage(playerId, "%d%s", floatround(damage), isPlayerShotHeadShot ? " HS" : "");
+    // save last shot damage type
+    CED_SetCell(monsterEntity, MONSTER_LAST_SHOT_DAMAGE_BIT, damageTypeBit);
 
-    set_dhudmessage(255, 255, 255, -1.0, -1.0, 0, 0.0, 0.1);
-    show_dhudmessage(playerId, "x");
+    // If shot is from player gun
+    if (damageTypeBit & DMG_BULLET)
+    {
+        new bool:isPlayerShotHeadShot; 
+        CED_GetCell(monsterEntity, MONSTER_DATA_IS_LAST_SHOT_HEADSHOT, isPlayerShotHeadShot);
 
-    // if player killed monster
-    if (actualMonsterHealth < 0.0)
-    {
-        actualMonsterHealth = 0.0;
-    }
-    else
-    {
-        client_print(playerId, print_center, "HP: %0.0f", actualMonsterHealth);
+        set_hudmessage(0, 255, 0, 0.55, -1.0, 0, 0.0, 0.1)
+        show_hudmessage(playerId, "%d%s", floatround(damage), isPlayerShotHeadShot ? " HS" : "");
+
+        set_dhudmessage(255, 255, 255, -1.0, -1.0, 0, 0.0, 0.1);
+        show_dhudmessage(playerId, "x");
+
+        // if player killed monster
+        if (actualMonsterHealth < 0.0)
+        {
+            actualMonsterHealth = 0.0;
+        }
+        else
+        {
+            client_print(playerId, print_center, "HP: %0.0f", actualMonsterHealth);
+        }
     }
 
     @updateMonsterHealthbar(monsterEntity, actualMonsterHealth);
 }
 
-public monsterKilled(monsterEntity, playerId)
+public monsterKilled(monsterEntity, playerId, param1, param2, param3, param4)
 {
     if(!isMonster(monsterEntity))
     {
@@ -136,16 +146,21 @@ public monsterKilled(monsterEntity, playerId)
 
     g_AliveMonstersNum--;
 
-    new bool:isMonsterKilledbyHeadshot; CED_GetCell(monsterEntity, MONSTER_DATA_IS_LAST_SHOT_HEADSHOT, isMonsterKilledbyHeadshot);
-
-    createBloodEffectOnEntity(monsterEntity, .size = isMonsterKilledbyHeadshot ? 30 : 15)
-
     @setMonsterKilledProperties(monsterEntity);
     @setMonsterKilledAnimation(monsterEntity);
     @removeMonsterHealthbar(monsterEntity);
     @removeMonsterEntityByDelay(monsterEntity, 6.0);
+
+    // get information about who killed the monster    
+    new lastDamageBit;
+    CED_GetCell(monsterEntity, MONSTER_LAST_SHOT_DAMAGE_BIT, lastDamageBit);
+    new bool:isKilledByPlayer = lastDamageBit & DMG_BULLET == DMG_BULLET;
+
+    // get information if monster is killed by headshot
+    new bool:isMonsterKilledbyHeadshot; CED_GetCell(monsterEntity, MONSTER_DATA_IS_LAST_SHOT_HEADSHOT, isMonsterKilledbyHeadshot);
     
-    onPlayerKilledMonster(playerId, isMonsterKilledbyHeadshot);
+    createBloodEffectOnEntity(monsterEntity, .size = isMonsterKilledbyHeadshot ? 30 : 15);
+    onPlayerKilledMonster(playerId, isMonsterKilledbyHeadshot, isKilledByPlayer);
 
     checkIfWaveIsCompleted();
 

@@ -13,7 +13,9 @@ forward td_on_turret_stop_fire(ent, id);
 
 forward td_on_turret_no_ammo(ent, id);
 
-forward td_on_turret_shot(ent, monster, id);
+forward td_on_turret_shot(ent, monster, id, Float:damage);
+
+forward td_on_turret_shot_miss(ent, monster, id);
 
 forward td_on_turret_start_fire(ent, monster, id);
 

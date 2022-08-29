@@ -10,9 +10,9 @@ public addPlayerFrags(id, amount)
     @refreshPlayerFrags(id);
 }
 
-public createPlayerKilledIcon(id, bool: isHeadShot) 
+public createPlayerKilledIcon(id, bool: isHeadShot, bool:isKilledByPlayer) 
 {
-    @makeDeathMsg(id, isHeadShot, .isByGrenade = false);
+    @makeDeathMsg(id, isHeadShot, .isByGrenade = false, .isKilledByPlayer = isKilledByPlayer);
 }
 
 @refreshPlayerFrags(id)
@@ -29,7 +29,7 @@ public createPlayerKilledIcon(id, bool: isHeadShot)
     message_end();
 }
 
-@makeDeathMsg(id, bool:isHeadshot, bool:isByGrenade)
+@makeDeathMsg(id, bool:isHeadshot, bool:isByGrenade, bool:isKilledByPlayer)
 {
     static deathMessageId;
     if(!deathMessageId) deathMessageId = get_user_msgid("DeathMsg");
@@ -38,7 +38,13 @@ public createPlayerKilledIcon(id, bool: isHeadShot)
     new weaponId = get_user_weapon(id);
     
     if(isByGrenade)
+    {
         formatex(weaponName, 23, "grenade");
+    }
+    else if (!isKilledByPlayer)
+    {
+        formatex(weaponName, 23, "")
+    }
     else
     {
         get_weaponname(weaponId, weaponName, 23)	

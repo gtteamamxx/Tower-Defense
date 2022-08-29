@@ -32,10 +32,12 @@ public removeAllPlayerTurrets(id)
         }
     }
 
-    // free array handle and update players array
+    // free array handle and update players info
     ArrayDestroy(playerTurretsArray);
 
     CED_SetCell(id, CED_PLAYER_TURRETS_ARRAY_KEY, Invalid_Array);
+
+    CED_SetCell(id, CED_PLAYER_SHOWED_MENU_TURRET_KEY, -1);
 
     // remove additionaly player's moving turret if there's one
     removeMovingTurretForPlayer(id);
@@ -48,21 +50,8 @@ public removeTurretEntity(ent)
         return;
     }
 
-    // get rangers
-    new rangerMinEntity, rangerMaxEntity;
-    CED_GetCell(ent, CED_TURRET_RANGER_MIN_ENTITY_KEY, rangerMinEntity);
-    CED_GetCell(ent, CED_TURRET_RANGER_MAX_ENTITY_KEY, rangerMaxEntity);
-
-    // remove rangers
-    if (is_valid_ent(rangerMinEntity))
-    {
-        remove_entity(rangerMinEntity);
-    }
-
-    if (is_valid_ent(rangerMaxEntity))
-    {
-        remove_entity(rangerMaxEntity);
-    }
+    // remove turret rangers if exists
+    detachRangersFromTurret(ent);
 
     // remove turret
     remove_entity(ent);
