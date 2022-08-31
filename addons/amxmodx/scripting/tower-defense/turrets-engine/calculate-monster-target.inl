@@ -64,7 +64,7 @@ TURRET_SHOT_RESULT:@getStrongestMonster(ent, Float:distance)
     }
 
     new Float:strongestMonsterHealth = 0.0;
-    new strongestMonster = -1;
+    new TURRET_SHOT_RESULT:strongestMonster = No_Monster_Found;
 
     // loop through all monsters
     for (new i = 0; i < monstersNum; ++i)
@@ -78,7 +78,7 @@ TURRET_SHOT_RESULT:@getStrongestMonster(ent, Float:distance)
         if (monsterHealth > strongestMonsterHealth && fm_is_ent_visible(ent, monster))
         {
             strongestMonsterHealth = monsterHealth;
-            strongestMonster = monster;
+            strongestMonster = TURRET_SHOT_RESULT:monster;
         }
     }
 
@@ -98,7 +98,7 @@ TURRET_SHOT_RESULT:@getWeaknestMonster(ent, Float:distance)
     }
 
     new Float:weaknestMonsterHealth = 999999.9;
-    new weaknesMonster = -1;
+    new TURRET_SHOT_RESULT:weaknesMonster = No_Monster_Found;
 
     // loop through all monsters
     for (new i = 0; i < monstersNum; ++i)
@@ -112,11 +112,11 @@ TURRET_SHOT_RESULT:@getWeaknestMonster(ent, Float:distance)
         if (monsterHealth < weaknestMonsterHealth && fm_is_ent_visible(ent, monster))
         {
             weaknestMonsterHealth = monsterHealth;
-            weaknesMonster = monster;
+            weaknesMonster = TURRET_SHOT_RESULT:monster;
         }
     }
 
-    return TURRET_SHOT_RESULT:weaknesMonster;
+    return weaknesMonster;
 }
 
 
@@ -133,7 +133,7 @@ TURRET_SHOT_RESULT:@getFarthestMonster(ent, Float:distance)
     }
 
     new Float:farthestDistance = 0.0;
-    new farthestMonster = -1;
+    new TURRET_SHOT_RESULT:farthestMonster = No_Monster_Found;
 
     // loop through all monsters
     for (new i = 0; i < monstersNum; ++i)
@@ -147,11 +147,11 @@ TURRET_SHOT_RESULT:@getFarthestMonster(ent, Float:distance)
         if (distanceBetweenMonster > farthestDistance && fm_is_ent_visible(ent, monster))
         {
             farthestDistance = distanceBetweenMonster;
-            farthestMonster = monster;
+            farthestMonster = TURRET_SHOT_RESULT:monster;
         }
     }
 
-    return TURRET_SHOT_RESULT:farthestMonster;
+    return farthestMonster;
 }
 
 TURRET_SHOT_RESULT:@getNearestMonster(ent, Float:distance)
@@ -160,17 +160,24 @@ TURRET_SHOT_RESULT:@getNearestMonster(ent, Float:distance)
     new monsters[12];
     new monstersNum = td_get_monsters_in_sphere(ent, distance, monsters, 11);
 
+    new Float:nearestDistance = 999999.9;
+    new TURRET_SHOT_RESULT:nearestMonster = No_Monster_Found;
+
     // loop throgh all monsters
     for(new i = 0; i < monstersNum; ++i)
     {
         new monster = monsters[i];
 
+        // get distance between monster
+        new Float:distanceBetweenMonster = entity_range(ent, monster)
+
         // if monster is visible
-        if (fm_is_ent_visible(ent, monster))
+        if (distanceBetweenMonster < nearestDistance && fm_is_ent_visible(ent, monster))
         {
-            return TURRET_SHOT_RESULT:monster;
+            nearestDistance = distanceBetweenMonster;
+            nearestMonster = TURRET_SHOT_RESULT:monster; 
         }
     }
 
-    return No_Monster_Found;
+    return nearestMonster;
 }

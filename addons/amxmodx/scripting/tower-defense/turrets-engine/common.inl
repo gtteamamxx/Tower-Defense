@@ -13,6 +13,7 @@ public getNumberOfRegisteredTurrets()
     return TrieGetSize(g_RegisteredTurretsTrie);
 }
 
+
 public bool:isConfigurationExistForTurret(turretKey[33])
 {
     return bool:TrieKeyExists(g_TurretInfoTrie, turretKey);
@@ -274,6 +275,12 @@ public getShotModeName(TURRET_SHOT_MODE:shotMode, szName[33])
         case FOLLOW: formatex(szName, 32, "Follow");
         default: formatex(szName, 32, "Unknown");
     }
+}
+
+getCurrentTurretShotModeName(ent, shotModeName[33])
+{
+    new TURRET_SHOT_MODE:turretShotMode = getTurretShotMode(ent);
+    getShotModeName(turretShotMode, shotModeName);
 }
 
 public TURRET_SHOT_MODE:getTurretShotMode(ent)

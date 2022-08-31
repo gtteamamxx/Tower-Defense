@@ -214,7 +214,7 @@ public createAndAttachRangerToTurret(ent)
     entity_set_origin(ent, fFloatVal);
 
     // set range
-    entity_set_float(ent, EV_FL_scale, range / 250.0)
+    entity_set_float(ent, EV_FL_scale, range / 170.0)
 
     // set attached entity
     CED_SetCell(ent, CED_RANGER_TURRET_ENTITY_KEY, turretEntity);

@@ -23,7 +23,7 @@ public registerEventsForPlayerTurretTouchInformations()
         parameters[0] = id;
         parameters[1] = ent;
 
-        set_task(1.0, "@resetInformationAboutTouchedTurretByPlayer", .parameter = parameters, .len = 2);
+        set_task(0.5, "@resetInformationAboutTouchedTurretByPlayer", .parameter = parameters, .len = 2);
 
         // show hud information
         @showHudInformationAboutTurret(id, ent);
@@ -45,7 +45,7 @@ public registerEventsForPlayerTurretTouchInformations()
     }
     else
     {
-        set_dhudmessage(255, 255, 255, -1.0, 0.74, 0, 0.5, 1.0);
+        set_dhudmessage(255, 255, 255, -1.0, 0.74, 0, 0.5, 0.5);
         show_dhudmessage(id, "It is not your turret");
     }
 }
@@ -57,29 +57,29 @@ public registerEventsForPlayerTurretTouchInformations()
 
     if (!isTurretEnabled(ent))
     {
-        formatex(szTouchedTurretInfo, 127, "%s^nDISABLED", szTouchedTurretInfo);
+        format(szTouchedTurretInfo, 127, "%s^nDISABLED", szTouchedTurretInfo);
     }
     else
     {
-        formatex(szTouchedTurretInfo, 127, "%s^nAMMO: %d", szTouchedTurretInfo, getTurretAmmo(ent));
+        format(szTouchedTurretInfo, 127, "%s^nAMMO: %d", szTouchedTurretInfo, getTurretAmmo(ent));
 
         if (isTurretReloading(ent))
         {
-            formatex(szTouchedTurretInfo, 127, "%s - RELOADING!", szTouchedTurretInfo, getTurretAmmo(ent));
+            format(szTouchedTurretInfo, 127, "%s - RELOADING!", szTouchedTurretInfo, getTurretAmmo(ent));
         }
         if (isLowAmmoOnTurret(ent))
         {
-            formatex(szTouchedTurretInfo, 127, "%s [LOW AMMO]", szTouchedTurretInfo, getTurretAmmo(ent));
+            format(szTouchedTurretInfo, 127, "%s [LOW AMMO]", szTouchedTurretInfo, getTurretAmmo(ent));
         }
         else if(isTurretEmpty(ent))
         {
-            formatex(szTouchedTurretInfo, 127, "%s [EMPTY]", szTouchedTurretInfo, getTurretAmmo(ent));
+            format(szTouchedTurretInfo, 127, "%s [EMPTY]", szTouchedTurretInfo, getTurretAmmo(ent));
         }
 
         // if turret detail menu is not opened for turret
         if (getShowedTurretEntInDetailMenu(id) != ent)
         {
-            formatex(szTouchedTurretInfo, 127, "%s^nPRESS 'E' TO OPEN MENU", szTouchedTurretInfo);
+            format(szTouchedTurretInfo, 127, "%s^nPRESS 'E' TO OPEN MENU", szTouchedTurretInfo);
         }
     }
 
@@ -90,7 +90,10 @@ public registerEventsForPlayerTurretTouchInformations()
 @resetInformationAboutTouchedTurretByPlayer(parameters[2])
 {
     new id = parameters[0];
-    new touchedTurret = parameters[1];
+    new ent = parameters[1];
 
     CED_SetCell(id, CED_PLAYER_TOUCHING_TURRET_ENTITY_KEY, -1);
+
+    // refresh turret menu if is displayed to make items disabled
+    refreshTurretDetailMenuIfPlayerStillHaveItOpened(ent);
 }

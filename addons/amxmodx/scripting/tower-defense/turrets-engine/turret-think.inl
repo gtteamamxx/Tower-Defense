@@ -26,8 +26,9 @@ public @onTurretThink(ent)
 
     // get monster new target
     new TURRET_SHOT_MODE:turretShotMode = getTurretShotMode(ent);
+
     new TURRET_SHOT_RESULT:newMonsterTarget = getTargetByShotMode(ent, shotRange, turretShotMode);
-    
+
     // if no monster in range
     if (newMonsterTarget == No_Monster_Found)
     {
@@ -179,7 +180,7 @@ public @onTurretThink(ent)
 
     emit_sound(ent, CHAN_AUTO, "TDNew/turret_start.wav", 1.0, ATTN_NORM, 0, PITCH_NORM);
 
-    // start shotting after 1s
+    // start shotting after 0.1s
     entity_set_float(ent, EV_FL_nextthink, get_gametime() + 1.0);
 
     @showTurretHudInformationIfIsPlayerInDetailMenu(ent, "TARGET FOUND");
