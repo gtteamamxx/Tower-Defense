@@ -51,7 +51,7 @@ public createTurretForPlayer(id, turretKey[33])
     // play sound
     emit_sound(ent, CHAN_AUTO, "TDNew/turret_ready.wav", 1.0, ATTN_NORM, 0, PITCH_NORM);
 
-    // start turret think
+    // set turret enabled
     CED_SetCell(ent, CED_TURRET_IS_ENABLED, 1);
 
     // set next think

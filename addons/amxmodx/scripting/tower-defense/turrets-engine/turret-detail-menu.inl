@@ -33,39 +33,44 @@ public showTurretDetailMenu(id, ent)
     @hidePreviousRangersIfNewMenuIsOpened(id, ent);
 
     // initialize menu
-    new szHeader[256];
+    static szHeader[320];
     @getMenuHeader(id, ent, szHeader);
 
     new menu = menu_create(szHeader, "@onPlayerTurretDetailMenuSelected");
     new cb = menu_makecallback("@turretDetailMenuCallback");
 
     // Add increase damage option
-    new szDamageItem[128];
+    static szDamageItem[128];
     @getIncreaseDamageMenuOption(id, ent, szDamageItem);
     menu_additem(menu, szDamageItem, .callback = cb);
 
     // Add increase range option
-    new szRangeItem[128];
+    static szRangeItem[128];
     @getIncreaseRangeMenuOption(id, ent, szRangeItem);
     menu_additem(menu, szRangeItem, .callback = cb);
 
     // Add firerate option
-    new szFirerateItem[128];
+    static szFirerateItem[128];
     @getIncreaseFirerateMenuOption(id, ent, szFirerateItem);
     menu_additem(menu, szFirerateItem, .callback = cb);
 
     // Add accuracy option
-    new szAccuracyItem[128];
+    static szAccuracyItem[128];
     @getIncreaseAccuracyMenuOption(id, ent, szAccuracyItem);
     menu_additem(menu, szAccuracyItem, .callback = cb);
 
+    // Add agility option
+    static szAgilityItem[128];
+    @getIncreaseAgilityMenuOption(id, ent, szAgilityItem);
+    menu_additem(menu, szAgilityItem, .callback = cb);
+
     // Add buy ammo option
-    new szBuyAmmoItem[128];
+    static szBuyAmmoItem[128];
     @getBuyAmmoOption(id, ent, szBuyAmmoItem);
     menu_additem(menu, szBuyAmmoItem, .callback = cb);
 
     // Add change shot mode option
-    new szShotModeItem[128];
+    static szShotModeItem[128];
     @getChangeShotModeMenuOption(id, ent, szShotModeItem);
     menu_additem(menu, szShotModeItem);
 
@@ -117,7 +122,7 @@ public showTurretDetailMenu(id, ent)
     }
 }
 
-@getMenuHeader(id, ent, szHeader[256])
+@getMenuHeader(id, ent, szHeader[320])
 {
     new turretAmmo = getTurretAmmo(ent);
     static turretKey[33];
@@ -142,14 +147,19 @@ public showTurretDetailMenu(id, ent)
     new Float:turretAccuracy[2]; 
     getCurrentTurretAccuracy(ent, turretAccuracy);
 
+    new turretAgilityLevel = getCurrentTurretAgilityLevel(ent);
+    new Float:turretAgility[2]; 
+    getCurrentTurretAgility(ent, turretAgility);
+
     static shotModeName[33];
     getCurrentTurretShotModeName(ent, shotModeName);
 
-    formatex(szHeader, 255, "\y%s \w| AMMO: \r%d\w | SHOT MODE:\r %s", turretName, turretAmmo, shotModeName);
-    format(szHeader, 255, "%s^n\wCurrent damage level: %d \r[%d ~ %d]", szHeader, turretDamageLevel, floatround(turretDamage[0]), floatround(turretDamage[1]));
-    format(szHeader, 255, "%s^n\wCurrent range level: %d \r[%d ~ %d]", szHeader, turretRangeLevel, floatround(turretRange[0]), floatround(turretRange[1]));
-    format(szHeader, 255, "%s^n\wCurrent firerate level: %d \r[%0.2fs ~ %0.2fs]", szHeader, turretFirerateLevel, turretFirerate[0], turretFirerate[1]);
-    format(szHeader, 255, "%s^n\wCurrent accuracy level: %d \r[%d%% ~ %d%%]", szHeader, turretAccuracyLevel, floatround(turretAccuracy[0] * 100), floatround(turretAccuracy[1] * 100));
+    formatex(szHeader, 319, "%s | AMMO: %d | SHOT MODE: %s", turretName, turretAmmo, shotModeName);
+    format(szHeader, 319, "%s^nCurrent damage level: %d [%d ~ %d]", szHeader, turretDamageLevel, floatround(turretDamage[0]), floatround(turretDamage[1]));
+    format(szHeader, 319, "%s^nCurrent range level: %d [%d ~ %d]", szHeader, turretRangeLevel, floatround(turretRange[0]), floatround(turretRange[1]));
+    format(szHeader, 319, "%s^nCurrent firerate level: %d [%0.2fs ~ %0.2fs]", szHeader, turretFirerateLevel, turretFirerate[0], turretFirerate[1]);
+    format(szHeader, 319, "%s^nCurrent accuracy level: %d [%d%% ~ %d%%]", szHeader, turretAccuracyLevel, floatround(turretAccuracy[0] * 100), floatround(turretAccuracy[1] * 100));
+    format(szHeader, 319, "%s^nCurrent agility level: %d [%0.2fs ~ %0.2fs]", szHeader, turretAgilityLevel, turretAgility[0], turretAgility[1]);
 }
 
 @getIncreaseDamageMenuOption(id, ent, szOption[128])
@@ -169,7 +179,7 @@ public showTurretDetailMenu(id, ent)
 		new Float:damageForNextLevel[2];
 		getTurretDamageForLevel(turretKey, turretDamageLevel + 1, damageForNextLevel);
 
-		format(szOption, 127, "%s\r [\w+%d\r ~\w +%d\r]", szOption, 
+		format(szOption, 127, "%s [+%d ~ +%d]", szOption, 
 			floatround(damageForNextLevel[0] - floatround(turretDamage[0])),
 			floatround(damageForNextLevel[1] - floatround(turretDamage[1]))
 		);
@@ -197,7 +207,7 @@ public showTurretDetailMenu(id, ent)
 		new Float:rangeForNextLevel[2];
 		getTurretRangeForLevel(turretKey, turretRangeLevel + 1, rangeForNextLevel);
 
-		format(szOption, 127, "%s\r [\w+%d \r~\w +%d\r]", szOption, 
+		format(szOption, 127, "%s [+%d ~ +%d]", szOption, 
 			floatround(rangeForNextLevel[0] - floatround(turretRange[0])),
 			floatround(rangeForNextLevel[1] - floatround(turretRange[1]))
 		);
@@ -225,7 +235,7 @@ public showTurretDetailMenu(id, ent)
 		new Float:firerateForNextLevel[2];
 		getTurretFirerateForLevel(turretKey, turretFirerateLevel + 1, firerateForNextLevel);
 
-		format(szOption, 127, "%s\r [\w-%0.2fs\r ~\w -%0.2fs\r]", szOption, 
+		format(szOption, 127, "%s [-%0.2fs ~ -%0.2fs]", szOption, 
 			turretFirerate[0] - firerateForNextLevel[0],
 			turretFirerate[1] - firerateForNextLevel[1]
 		);
@@ -247,35 +257,63 @@ public showTurretDetailMenu(id, ent)
     getTurretKey(ent, turretKey);
 
     new reloadAmmo = getTurretReloadAmmo(turretKey);
-    formatex(szOption, 127, "Buy\r %d\w ammo", reloadAmmo);
+    formatex(szOption, 127, "Buy %d ammo", reloadAmmo);
 }
 
 @getIncreaseAccuracyMenuOption(id, ent, szOption[128])
 {
-	new turretKey[33];
-	getTurretKey(ent, turretKey);
+    new turretKey[33];
+    getTurretKey(ent, turretKey);
 
-	new turretAccuracyLevel = getCurrentTurretAccuracyLevel(ent);
+    new turretAccuracyLevel = getCurrentTurretAccuracyLevel(ent);
 
-	formatex(szOption, 127, "Increase accuracy");
+    formatex(szOption, 127, "Increase accuracy");
 
-	if (isAccuracyLevelExist(turretKey, turretAccuracyLevel + 1))
-	{
-		new Float:turretAccuracy[2];
-		getCurrentTurretAccuracy(ent, turretAccuracy);
+    if (isAccuracyLevelExist(turretKey, turretAccuracyLevel + 1))
+    {
+        new Float:turretAccuracy[2];
+        getCurrentTurretAccuracy(ent, turretAccuracy);
 
-		new Float:accuracyForNextLevel[2];
-		getTurretAccuracyForLevel(turretKey, turretAccuracyLevel + 1, accuracyForNextLevel);
+        new Float:accuracyForNextLevel[2];
+        getTurretAccuracyForLevel(turretKey, turretAccuracyLevel + 1, accuracyForNextLevel);
 
-		format(szOption, 127, "%s\r [\w+%d%%\r ~\w +%d%%\r]", szOption, 
-			floatround((accuracyForNextLevel[0] - turretAccuracy[0]) * 100.0),
-			floatround((accuracyForNextLevel[1] - turretAccuracy[1]) * 100.0)
-		);
-	}
-	else
-	{
-		format(szOption, 127, "%s [MAX LEVEL REACHED]", szOption);
-	}
+        format(szOption, 127, "%s [+%d%% ~ +%d%%]", szOption, 
+            floatround((accuracyForNextLevel[0] - turretAccuracy[0]) * 100.0),
+            floatround((accuracyForNextLevel[1] - turretAccuracy[1]) * 100.0)
+        );
+    }
+    else
+    {
+        format(szOption, 127, "%s [MAX LEVEL REACHED]", szOption);
+    }
+}
+
+@getIncreaseAgilityMenuOption(id, ent, szOption[128])
+{
+    new turretKey[33];
+    getTurretKey(ent, turretKey);
+
+    new turretAgilityLevel = getCurrentTurretAgilityLevel(ent);
+
+    formatex(szOption, 127, "Increase agility");
+
+    if (isAgilityLevelExist(turretKey, turretAgilityLevel + 1))
+    {
+        new Float:turretAgility[2];
+        getCurrentTurretAgility(ent, turretAgility);
+
+        new Float:agilityForNextLevel[2];
+        getTurretAgilityForLevel(turretKey, turretAgilityLevel + 1, agilityForNextLevel);
+
+        format(szOption, 127, "%s [-%0.2fs ~ -%0.2fs]", szOption, 
+            turretAgility[0] - agilityForNextLevel[0],
+            turretAgility[1] - agilityForNextLevel[1]
+        );
+    }
+    else
+    {
+        format(szOption, 127, "%s [MAX LEVEL REACHED]", szOption);
+    }
 }
 
 @turretDetailMenuCallback(id, menu, item)
@@ -309,14 +347,20 @@ public showTurretDetailMenu(id, ent)
         return PLUGIN_CONTINUE;
     }
 
-    // buy ammo
+    // agility lvl
     if (item == 4)
+    {
+        CED_SetCell(turretEntity, CED_TURRET_AGILITY_LEVEL, 4);
+        showTurretDetailMenu(id, turretEntity);
+    }
+    // buy ammo
+    if (item == 5)
     {
         @buyAmmoForTurret(turretEntity);
         showTurretDetailMenu(id, turretEntity);
     }
      //  change shot mode
-    else if (item == 5)
+    else if (item == 6)
     {
         @changeTurretShotModeToNext(turretEntity);
         showTurretDetailMenu(id, turretEntity);

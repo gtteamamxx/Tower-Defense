@@ -86,6 +86,7 @@ public createTurretForCreationForPlayer(id, turretKey[33])
     CED_SetCell(ent, CED_TURRET_FIRERATE_LEVEL, 1);
     CED_SetCell(ent, CED_TURRET_DAMAGE_LEVEL, 1);
     CED_SetCell(ent, CED_TURRET_RANGE_LEVEL, 1);
+    CED_SetCell(ent, CED_TURRET_AGILITY_LEVEL, 1);
     CED_SetCell(ent, CED_TURRET_SHOT_MODE, NEAREST);
 
     // assign moving entity to player

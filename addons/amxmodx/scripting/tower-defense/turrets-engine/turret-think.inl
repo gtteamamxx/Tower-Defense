@@ -180,8 +180,13 @@ public @onTurretThink(ent)
 
     emit_sound(ent, CHAN_AUTO, "TDNew/turret_start.wav", 1.0, ATTN_NORM, 0, PITCH_NORM);
 
-    // start shotting after 0.1s
-    entity_set_float(ent, EV_FL_nextthink, get_gametime() + 1.0);
+    // start shotting after agility level
+    new Float:turretAgility[2];
+    getCurrentTurretAgility(ent, turretAgility);
+
+    new Float:agility = random_float(turretAgility[0], turretAgility[1]);
+
+    entity_set_float(ent, EV_FL_nextthink, get_gametime() + agility);
 
     @showTurretHudInformationIfIsPlayerInDetailMenu(ent, "TARGET FOUND");
 }

@@ -388,12 +388,29 @@ public isAccuracyLevelExist(turretKey[33], accuracyLevel)
     return accuracyLevel <= ArraySize(accuracyArray) ;
 }
 
+public isAgilityLevelExist(turretKey[33], agilityLevel)
+{
+    new Array:turretInfoArray;
+    TrieGetCell(g_TurretInfoTrie, turretKey, turretInfoArray);
+    
+    new Array:agilityArray = ArrayGetCell(turretInfoArray, _:TURRET_AGILITY);
+    return agilityLevel <= ArraySize(agilityArray) ;
+}
+
 public getCurrentTurretAccuracyLevel(ent)
 {
     new accuracyLevel;
     CED_GetCell(ent, CED_TURRET_ACCURACY_LEVEL, accuracyLevel);
 
     return accuracyLevel;
+}
+
+public getCurrentTurretAgilityLevel(ent)
+{
+    new agilityLevel;
+    CED_GetCell(ent, CED_TURRET_AGILITY_LEVEL, agilityLevel);
+
+    return agilityLevel;
 }
 
 public getCurrentTurretAccuracy(ent, Float:accuracy[2])
@@ -408,6 +425,18 @@ public getCurrentTurretAccuracy(ent, Float:accuracy[2])
     getTurretAccuracyForLevel(turretKey, accuracyLevel, accuracy);
 }
 
+public getCurrentTurretAgility(ent, Float:agility[2])
+{
+    // get current turret agility level
+    new agilityLevel = getCurrentTurretAgilityLevel(ent);
+
+    // get turret key
+    new turretKey[33];
+    getTurretKey(ent, turretKey);
+
+    getTurretAgilityForLevel(turretKey, agilityLevel, agility);
+}
+
 public getTurretAccuracyForLevel(turretKey[33], accuracyLevel, Float:accuracy[2])
 {
     new Array:turretInfoArray;
@@ -415,6 +444,15 @@ public getTurretAccuracyForLevel(turretKey[33], accuracyLevel, Float:accuracy[2]
 
     new Array:accuracyArray = ArrayGetCell(turretInfoArray, _:TURRET_ACCURACY);
     ArrayGetArray(accuracyArray, accuracyLevel - 1, accuracy);
+}
+
+public getTurretAgilityForLevel(turretKey[33], agilityLevel, Float:agility[2])
+{
+    new Array:turretInfoArray;
+    TrieGetCell(g_TurretInfoTrie, turretKey, turretInfoArray);
+
+    new Array:agilityArray = ArrayGetCell(turretInfoArray, _:TURRET_AGILITY);
+    ArrayGetArray(agilityArray, agilityLevel - 1, agility);
 }
 
 public isTurret(ent)

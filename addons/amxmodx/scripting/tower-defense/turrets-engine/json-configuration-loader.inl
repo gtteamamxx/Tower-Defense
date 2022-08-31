@@ -220,6 +220,7 @@ Array:@createAndConfigurationArrayForTurret(turretKey[33])
     if (equali(configName, RANGE_SCHEMA)) return _:TURRET_RANGE;
     if (equali(configName, FIRERATE_SCHEMA)) return _:TURRET_FIRERATE;
     if (equali(configName, ACCURACY_SCHEMA)) return _:TURRET_ACCURACY;
-    
+    if (equali(configName, AGILITY_SCHEMA)) return _: TURRET_AGILITY;
+
     return -1;
 }
