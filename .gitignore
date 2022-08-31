@@ -1,0 +1,10 @@
+addons/amxmodx/scripting/include/*.*
+addons/amxmodx/scripting/include/amxmod_compat/*.*
+!addons/amxmodx/scripting/include/td*.*
+!addons/amxmodx/scripting/include/colorchat.inc
+!addons/amxmodx/scripting/include/customentdata.inc
+!addons/amxmodx/scripting/include/nvault_util.inc
+!addons/amxmodx/scripting/include/StripWeapons.inc
+
+addons/amxmodx/scripting/*
+!addons/amxmodx/scripting/td*.*
