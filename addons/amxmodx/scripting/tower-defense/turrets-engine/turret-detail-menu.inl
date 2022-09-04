@@ -350,7 +350,7 @@ public showTurretDetailMenu(id, ent)
     // agility lvl
     if (item == 4)
     {
-        CED_SetCell(turretEntity, CED_TURRET_AGILITY_LEVEL, 4);
+        CED_SetCell(turretEntity, CED_SKILL_AGILITY_LEVEL, 4);
         showTurretDetailMenu(id, turretEntity);
     }
     // buy ammo
@@ -411,7 +411,7 @@ public showTurretDetailMenu(id, ent)
     // then let's start from begin
     if (turretShotMode == TURRET_SHOT_MODE:(_:TURRET_SHOT_MODE - 1))
     {
-        turretShotMode = NEAREST;
+        turretShotMode = SHOT_MODE_NEAREST;
     }
     else
     {

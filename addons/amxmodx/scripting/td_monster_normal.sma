@@ -265,7 +265,7 @@ startAttackingPlayer(monsterEntity)
     }
 
     message_begin(MSG_BROADCAST, SVC_TEMPENTITY); 
-    write_byte(TE_BEAMFOLLOW); 
+    write_byte(TE_BEAMSHOT_MODE_FOLLOW); 
     write_short(stoneEntity);
     write_short(g_trailSprite); 
     write_byte(trailLength);

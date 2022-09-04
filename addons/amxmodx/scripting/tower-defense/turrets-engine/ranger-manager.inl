@@ -21,8 +21,8 @@ public detachRangersFromTurret(ent)
 {
     // get rangers of turret
     new minRangerEnt, maxRangerEnt;
-    CED_GetCell(ent, CED_TURRET_RANGER_MIN_ENTITY_KEY, minRangerEnt);
-    CED_GetCell(ent, CED_TURRET_RANGER_MAX_ENTITY_KEY, maxRangerEnt);
+    CED_GetCell(ent, CED_SKILL_RANGER_MIN_ENTITY_KEY, minRangerEnt);
+    CED_GetCell(ent, CED_SKILL_RANGER_MAX_ENTITY_KEY, maxRangerEnt);
 
     // remove rangers 
     if (is_valid_ent(minRangerEnt))
@@ -35,8 +35,8 @@ public detachRangersFromTurret(ent)
         remove_entity(maxRangerEnt);
     }
 
-    CED_SetCell(ent, CED_TURRET_RANGER_MIN_ENTITY_KEY, -1);
-    CED_SetCell(ent, CED_TURRET_RANGER_MAX_ENTITY_KEY, -1);
+    CED_SetCell(ent, CED_SKILL_RANGER_MIN_ENTITY_KEY, -1);
+    CED_SetCell(ent, CED_SKILL_RANGER_MAX_ENTITY_KEY, -1);
 }
 
 public createAndAttachRangerToTurret(ent)
@@ -56,8 +56,8 @@ public createAndAttachRangerToTurret(ent)
     new maxRangerEnt = @createRangerEnt(ent, minMaxRange[1], .r = 255, .g = 0, .b = 0);
 
     // save entity informations to turret
-    CED_SetCell(ent, CED_TURRET_RANGER_MIN_ENTITY_KEY, minRangerEnt);
-    CED_SetCell(ent, CED_TURRET_RANGER_MAX_ENTITY_KEY, maxRangerEnt);
+    CED_SetCell(ent, CED_SKILL_RANGER_MIN_ENTITY_KEY, minRangerEnt);
+    CED_SetCell(ent, CED_SKILL_RANGER_MAX_ENTITY_KEY, maxRangerEnt);
 }
 
 @hideRangerWhenPlayerIsNotTouchingTurret(ent)
@@ -119,8 +119,8 @@ public createAndAttachRangerToTurret(ent)
 
     // get current rangers for turret
     new minRangerEnt, maxRangerEnt;
-    CED_GetCell(ent, CED_TURRET_RANGER_MIN_ENTITY_KEY, minRangerEnt);
-    CED_GetCell(ent, CED_TURRET_RANGER_MAX_ENTITY_KEY, maxRangerEnt);
+    CED_GetCell(ent, CED_SKILL_RANGER_MIN_ENTITY_KEY, minRangerEnt);
+    CED_GetCell(ent, CED_SKILL_RANGER_MAX_ENTITY_KEY, maxRangerEnt);
 
 
     // if turret currently has rangers don't do anything

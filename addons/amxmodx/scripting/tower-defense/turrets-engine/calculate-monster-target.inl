@@ -7,11 +7,11 @@ public TURRET_SHOT_RESULT:getTargetByShotMode(ent, Float:distance, TURRET_SHOT_M
 {
     switch(shotMode)
     {
-        case NEAREST: return @getNearestMonster(ent, distance);
-        case FARTHEST: return @getFarthestMonster(ent, distance);
-        case STRONGEST: return @getStrongestMonster(ent, distance);
-        case WEAKEST: return @getWeaknestMonster(ent, distance);
-        case FOLLOW: return @getPreviousTurretMonster(ent, distance);
+        case SHOT_MODE_NEAREST: return @getNearestMonster(ent, distance);
+        case SHOT_MODE_FARTHEST: return @getFarthestMonster(ent, distance);
+        case SHOT_MODE_STRONGEST: return @getStrongestMonster(ent, distance);
+        case SHOT_MODE_WEAKEST: return @getWeaknestMonster(ent, distance);
+        case SHOT_MODE_FOLLOW: return @getPreviousTurretMonster(ent, distance);
         default: return No_Monster_Found;
     }
 

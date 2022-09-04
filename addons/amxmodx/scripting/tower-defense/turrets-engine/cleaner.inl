@@ -111,6 +111,14 @@ public removeMovingTurretForPlayer(id)
         // exactly turret info
         for(new TURRET_INFO:i; _:i < ArraySize(turretInfoArray); i = TURRET_INFO:(_:i + 1)) 
         {
+            if (i == TURRET_SKILLS)
+            {
+                new Array:turretSkillsInfoArray = ArrayCreate();
+                new Array:turretSkillsInfoDetails = ArrayGetCell(turretSkillsInfoArray, _:i);
+
+                ArrayDestroy(turretInfoDetails);
+            }
+
             // get item which is an array of levels
             new Array:turretInfoDetails = ArrayGetCell(turretInfoArray, _:i);
 

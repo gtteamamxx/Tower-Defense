@@ -67,12 +67,13 @@ public initializeConfigurationFromFile(configurationFilePath[128])
 @loadTurretInfo(JSON:turretJson, turretName[33])
 {
     new numberOfConfigurations = json_object_get_count(turretJson);
+    new requiredConfigurationsCount = _:TURRET_INFO;
 
     // if configuration provided for turret doesn't have
     // all informations then turret would not work so we can't load then
-    if (numberOfConfigurations != _:TURRET_INFO)
+    if (numberOfConfigurations != _:requiredConfigurationsCount)
     {
-        log_amx("[TURRETS] %s.%s.{} has invalid length (invalid number of configuration). %d / %d", TURRETS_SCHEMA, turretName, numberOfConfigurations, _:TURRET_INFO);
+        log_amx("[TURRETS] %s.%s.{} has invalid length (invalid number of configuration). %d / %d", TURRETS_SCHEMA, turretName, numberOfConfigurations, requiredConfigurationsCount);
         return;
     }
 
@@ -88,20 +89,16 @@ public initializeConfigurationFromFile(configurationFilePath[128])
 
         new JSON:configurationJson = JSON:json_object_get_value(turretJson, configName);
         
+        // if is 'skills' property
+        if (equali(configName, SKILLS_SCHEMA))
+        {
+            @loadSkillsForTurret(configurationJson, turretInfoArray);
+        }
         // if config value is number
-        if (json_is_number(configurationJson))
+        else if (json_is_number(configurationJson))
         {
-            @loadConfigurationInfoNumber(JSON:configurationJson, Array:turretInfoArray, configName);
+            @loadTurretPropertyNumber(JSON:configurationJson, Array:turretInfoArray, configName);
         }
-        // if config value is array
-        else if(json_is_array(configurationJson))
-        {
-            new Array:configurationArray = ArrayGetCell(turretInfoArray, @getArrayTurretInfoIndex(configName));
-
-            // load configuration data
-            @loadConfigurationInfo(configurationJson, configurationArray, turretName, configName);
-        }
-        // in other cases not supported
         else
         {
             log_amx("[TURRETS] %s.%s.%s is not valid config. Type mismatch maybe?", TURRETS_SCHEMA, turretName, configName);
@@ -112,6 +109,90 @@ public initializeConfigurationFromFile(configurationFilePath[128])
     }
 }
 
+@loadSkillsForTurret(JSON:skillsJson, Array:turretInfoArray)
+{
+    new loadedSkillsCount = json_object_get_count(skillsJson);
+    new skillsCount = _:TURRET_SKILLS;
+
+    // if skills provided for turret doesn't have
+    // all informations then turret would not work so we can't load then
+    if (loadedSkillsCount != _:skillsCount)
+    {
+        log_amx("[TURRETS] %s.%s.{} has invalid length (invalid number of skills). %d / %d", SKILLS_SCHEMA, turretName, loadedSkillsCount, skillsCount);
+        return;
+    }
+
+    // create skills array
+    Array:turretSkillsArray = @createSkillsArrayForTurret(turretInfoArray);
+    
+    // loop through skill properties
+    for(new i; i < skillsCount; i = ++i) 
+    {
+        // get skill name
+        new skillName[33];
+        json_object_get_name(turretJson, i, skillName, 32);
+
+        // get skill json with properties
+        new JSON:skillJson = JSON:json_object_get_value(skillsJson, skillName);
+
+        // get skill index in array by skill name
+        new skillIndex = getArrayTurretInfoIndex(skillName);
+        
+        // get skill array for skill with filled properties from json
+        new Array:skillArray = @getSkillArrayFromJson(skillName, skillJson);
+
+        // save skill properties
+        ArraySetCell(turretSkillsArray, skillIndex, skillArray);
+
+        // free memory
+        json_free(skillJson);
+    }
+}
+
+
+Array:@getSkillArrayFromJson(skillName[33], JSON:skillJson)
+{
+    new loadedSkillPropertiesCount = json_object_get_count(skillJson);
+    new skillPropertiesCount = _:TURRET_SKILL_INFO;
+
+    // if skills provided for turret doesn't have
+    // all informations then turret would not work so we can't load then
+    if (loadedSkillPropertiesCount != _:skillPropertiesCount)
+    {
+        log_amx("[TURRETS] %s.{} has invalid length (invalid number of skill properties). %d / %d", skillName, loadedSkillsCount, skillsCount);
+        return;
+    }
+
+    new Array:skillArray = ArrayCreate();
+
+    // Get and set upgrade points value to array
+    new JSON:upgradePointsJson = JSON:json_object_get_value(skillJson, UPGRADE_POINTS_SCHEMA);
+    new Float:upgradePointsValue = json_get_real(upgradePointsJson);
+
+    ArrayPushCell(skillArray, _:UPGRADE_POINTS, upgradePointsValue);
+
+    // Get and set levels array
+    new JSON:levelsJson = JSON:json_object_get_value(skillJson, LEVELS_SCHEMA);
+
+    // load configuration data
+    @loadConfigurationInfo(levelsJson, configurationArray);
+
+    levelValues[0] = json_array_get_real(levelJson, 0);
+
+    // free memory
+    json_free(upgradePointsJson);
+    json_free(levelsJson);
+}
+
+Array:@createSkillsArrayForTurret(Array:turretInfoArray)
+{
+    // get configured previously turret skills array
+    // to append skills arrays
+    new Array:turretSkillsArray = Array:ArrayGetCell(turretInfoArray, _:TURRET_SKILLS);
+
+    return turretSkillsArray;
+}
+
 Array:@createAndConfigurationArrayForTurret(turretKey[33])
 {
     // create configuration key with turret name
@@ -120,7 +201,6 @@ Array:@createAndConfigurationArrayForTurret(turretKey[33])
     // create and fill configuration array 
     for(new i = 0; i < _:TURRET_INFO; ++i)
     {
-        // if it's number configuration
         if (TURRET_INFO:i == TURRET_MAX_COUNT
         || TURRET_INFO:i == TURRET_ACTIVATION_TIME
         || TURRET_INFO:i == TURRET_RELOAD_TIME
@@ -130,11 +210,11 @@ Array:@createAndConfigurationArrayForTurret(turretKey[33])
         {
             ArrayPushCell(turretInfoArray, 0.0);
         }
-        // in other case it's an array
-        else
+        // If it is 'skills' index, we need to create new array
+        else if (TURRET_INFO:i == TURRET_SKILLS)
         {
-            new Array:configurationArray = ArrayCreate(2);
-            ArrayPushCell(turretInfoArray, configurationArray);
+            new Array:turretSkillsInfoArray = ArrayCreate();
+            ArrayPushCell(turretInfoArray, turretSkillsInfoArray);
         }
     }
 
@@ -143,7 +223,7 @@ Array:@createAndConfigurationArrayForTurret(turretKey[33])
     return turretInfoArray;
 }
 
-@loadConfigurationInfoNumber(JSON:configurationJson, Array:turretInfoArray, configName[33])
+@loadTurretPropertyNumber(JSON:configurationJson, Array:turretInfoArray, configName[33])
 {
     // get number value
     new Float:value = json_get_real(configurationJson);
@@ -169,19 +249,19 @@ Array:@createAndConfigurationArrayForTurret(turretKey[33])
     }
 }
 
-@loadConfigurationInfo(JSON:configurationJson, Array:configurationArray, turretName[33], configName[33])
+@loadLevelsForTurret(JSON:levelsJson, Array:configurationArray)
 {
-    new numberOfLevels = json_array_get_count(configurationJson);
+    new numberOfLevels = json_array_get_count(levelsJson);
 
     // loop through all levels
     for(new level = 0; level < numberOfLevels; ++level)
     {
-        new JSON:levelJson = json_array_get_value(configurationJson, level);
+        new JSON:levelJson = json_array_get_value(levelsJson, level);
 
         // if its not an array don't do anything
         if (!json_is_array(levelJson))
         {
-            log_amx("[TURRETS] %s.%s.%s.[%d] is not array", TURRETS_SCHEMA, turretName, configName, level);
+            log_amx("[TURRETS] %s.%s.%s.[%d] is not array", LEVELS_SCHEMA, turretName, configName, level);
         }
         else
         {
@@ -214,13 +294,19 @@ Array:@createAndConfigurationArrayForTurret(turretKey[33])
     }
 }
 
+@getArrayTurretSkillInfoIndex(configName[33])
+{
+    if (equali(configName, LEVELS_SCHEMA)) return _:LEVELS;
+    if (equali(configName, UPGRADE_POINTS_SCHEMA)) return _:UPGRADE_POINTS;
+}
+
 @getArrayTurretInfoIndex(configName[33])
 {
-    if (equali(configName, DAMAGE_SCHEMA)) return _:TURRET_DAMAGE;
-    if (equali(configName, RANGE_SCHEMA)) return _:TURRET_RANGE;
-    if (equali(configName, FIRERATE_SCHEMA)) return _:TURRET_FIRERATE;
-    if (equali(configName, ACCURACY_SCHEMA)) return _:TURRET_ACCURACY;
-    if (equali(configName, AGILITY_SCHEMA)) return _: TURRET_AGILITY;
+    if (equali(configName, DAMAGE_SCHEMA)) return _:SKILL_DAMAGE;
+    if (equali(configName, RANGE_SCHEMA)) return _:SKILL_RANGE;
+    if (equali(configName, FIRERATE_SCHEMA)) return _:SKILL_FIRERATE;
+    if (equali(configName, ACCURACY_SCHEMA)) return _:SKILL_ACCURACY;
+    if (equali(configName, AGILITY_SCHEMA)) return _: SKILL_AGILITY;
 
     return -1;
 }

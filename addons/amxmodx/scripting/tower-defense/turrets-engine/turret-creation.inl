@@ -33,6 +33,9 @@ public createTurretForPlayer(id, turretKey[33])
     // play plant sound
     emit_sound(turretEntity, CHAN_AUTO, "TDNew/turret_plant.wav", 1.0, ATTN_NORM, 0, PITCH_NORM);
 
+    // show teleport effect
+    createTeleportSplashEffectForTurret(turretEntity);
+    
     // stop turret & wait to activate
     new Float:activationTime = getTurretActivationTime(turretKey);
 

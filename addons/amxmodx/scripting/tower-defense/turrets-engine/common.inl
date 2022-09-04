@@ -177,7 +177,7 @@ public Float:getTurretRangeToShot(ent)
 {
     // get current turret range level
     new rangeLevel;
-    CED_GetCell(ent, CED_TURRET_RANGE_LEVEL, rangeLevel);
+    CED_GetCell(ent, CED_SKILL_RANGE_LEVEL, rangeLevel);
 
     // get turret key
     new turretKey[33];
@@ -225,14 +225,14 @@ public isFirerateLevelExist(turretKey[33], firerateLevel)
     new Array:turretInfoArray;
     TrieGetCell(g_TurretInfoTrie, turretKey, turretInfoArray);
     
-    new Array:firerateArray = ArrayGetCell(turretInfoArray, _:TURRET_FIRERATE);
+    new Array:firerateArray = ArrayGetCell(turretInfoArray, _:SKILL_FIRERATE);
     return firerateLevel <= ArraySize(firerateArray);
 }
 
 public getCurrentTurretFirerateLevel(ent)
 {
     new firerateLevel;
-    CED_GetCell(ent, CED_TURRET_FIRERATE_LEVEL, firerateLevel);
+    CED_GetCell(ent, CED_SKILL_FIRERATE_LEVEL, firerateLevel);
 
     return firerateLevel;
 }
@@ -252,14 +252,14 @@ public getTurretFirerateForLevel(turretKey[33], firerateLevel, Float:firerate[2]
     new Array:turretInfoArray;
     TrieGetCell(g_TurretInfoTrie, turretKey, turretInfoArray);
 
-    new Array:firerateArray = ArrayGetCell(turretInfoArray, _:TURRET_FIRERATE);
+    new Array:firerateArray = ArrayGetCell(turretInfoArray, _:SKILL_FIRERATE);
     ArrayGetArray(firerateArray, firerateLevel - 1, firerate);
 }
 
 public getCurrentTurretDamageLevel(ent)
 {
     new damageLevel;
-    CED_GetCell(ent, CED_TURRET_DAMAGE_LEVEL, damageLevel);
+    CED_GetCell(ent, CED_SKILL_DAMAGE_LEVEL, damageLevel);
 
     return damageLevel;
 }
@@ -268,11 +268,11 @@ public getShotModeName(TURRET_SHOT_MODE:shotMode, szName[33])
 {
     switch(shotMode)
     {
-        case NEAREST: formatex(szName, 32, "Nearest");
-        case FARTHEST: formatex(szName, 32, "Farthest");
-        case STRONGEST: formatex(szName, 32, "Strongest");
-        case WEAKEST: formatex(szName, 32, "Weakest");
-        case FOLLOW: formatex(szName, 32, "Follow");
+        case SHOT_MODE_NEAREST: formatex(szName, 32, "Nearest");
+        case SHOT_MODE_FARTHEST: formatex(szName, 32, "Farthest");
+        case SHOT_MODE_STRONGEST: formatex(szName, 32, "Strongest");
+        case SHOT_MODE_WEAKEST: formatex(szName, 32, "Weakest");
+        case SHOT_MODE_FOLLOW: formatex(szName, 32, "Follow");
         default: formatex(szName, 32, "Unknown");
     }
 }
@@ -304,7 +304,7 @@ public isDamageLevelExist(turretKey[33], damageLevel)
     new Array:turretInfoArray;
     TrieGetCell(g_TurretInfoTrie, turretKey, turretInfoArray);
     
-    new Array:damageArray = ArrayGetCell(turretInfoArray, _:TURRET_DAMAGE);
+    new Array:damageArray = ArrayGetCell(turretInfoArray, _:SKILL_DAMAGE);
     return damageLevel <= ArraySize(damageArray) ;
 }
 
@@ -323,7 +323,7 @@ public getTurretDamageForLevel(turretKey[33], damageLevel, Float:damage[2])
     new Array:turretInfoArray;
     TrieGetCell(g_TurretInfoTrie, turretKey, turretInfoArray);
 
-    new Array:damageArray = ArrayGetCell(turretInfoArray, _:TURRET_DAMAGE);
+    new Array:damageArray = ArrayGetCell(turretInfoArray, _:SKILL_DAMAGE);
     ArrayGetArray(damageArray, damageLevel - 1, damage);
 }
 
@@ -332,14 +332,14 @@ public isRangeLevelExist(turretKey[33], rangeLevel)
     new Array:turretInfoArray;
     TrieGetCell(g_TurretInfoTrie, turretKey, turretInfoArray);
     
-    new Array:rangeArray = ArrayGetCell(turretInfoArray, _:TURRET_RANGE);
+    new Array:rangeArray = ArrayGetCell(turretInfoArray, _:SKILL_RANGE);
     return rangeLevel <= ArraySize(rangeArray) ;
 }
 
 public getCurrentTurretRangeLevel(ent)
 {
     new rangeLevel;
-    CED_GetCell(ent, CED_TURRET_RANGE_LEVEL, rangeLevel);
+    CED_GetCell(ent, CED_SKILL_RANGE_LEVEL, rangeLevel);
 
     return rangeLevel;
 }
@@ -375,7 +375,7 @@ public getTurretRangeForLevel(turretKey[33], rangeLevel, Float:range[2])
     new Array:turretInfoArray;
     TrieGetCell(g_TurretInfoTrie, turretKey, turretInfoArray);
 
-    new Array:rangeArray = ArrayGetCell(turretInfoArray, _:TURRET_RANGE);
+    new Array:rangeArray = ArrayGetCell(turretInfoArray, _:SKILL_RANGE);
     ArrayGetArray(rangeArray, rangeLevel - 1, range);
 }
 
@@ -384,7 +384,7 @@ public isAccuracyLevelExist(turretKey[33], accuracyLevel)
     new Array:turretInfoArray;
     TrieGetCell(g_TurretInfoTrie, turretKey, turretInfoArray);
     
-    new Array:accuracyArray = ArrayGetCell(turretInfoArray, _:TURRET_ACCURACY);
+    new Array:accuracyArray = ArrayGetCell(turretInfoArray, _:SKILL_ACCURACY);
     return accuracyLevel <= ArraySize(accuracyArray) ;
 }
 
@@ -393,14 +393,14 @@ public isAgilityLevelExist(turretKey[33], agilityLevel)
     new Array:turretInfoArray;
     TrieGetCell(g_TurretInfoTrie, turretKey, turretInfoArray);
     
-    new Array:agilityArray = ArrayGetCell(turretInfoArray, _:TURRET_AGILITY);
+    new Array:agilityArray = ArrayGetCell(turretInfoArray, _:SKILL_AGILITY);
     return agilityLevel <= ArraySize(agilityArray) ;
 }
 
 public getCurrentTurretAccuracyLevel(ent)
 {
     new accuracyLevel;
-    CED_GetCell(ent, CED_TURRET_ACCURACY_LEVEL, accuracyLevel);
+    CED_GetCell(ent, CED_SKILL_ACCURACY_LEVEL, accuracyLevel);
 
     return accuracyLevel;
 }
@@ -408,7 +408,7 @@ public getCurrentTurretAccuracyLevel(ent)
 public getCurrentTurretAgilityLevel(ent)
 {
     new agilityLevel;
-    CED_GetCell(ent, CED_TURRET_AGILITY_LEVEL, agilityLevel);
+    CED_GetCell(ent, CED_SKILL_AGILITY_LEVEL, agilityLevel);
 
     return agilityLevel;
 }
@@ -442,7 +442,7 @@ public getTurretAccuracyForLevel(turretKey[33], accuracyLevel, Float:accuracy[2]
     new Array:turretInfoArray;
     TrieGetCell(g_TurretInfoTrie, turretKey, turretInfoArray);
 
-    new Array:accuracyArray = ArrayGetCell(turretInfoArray, _:TURRET_ACCURACY);
+    new Array:accuracyArray = ArrayGetCell(turretInfoArray, _:SKILL_ACCURACY);
     ArrayGetArray(accuracyArray, accuracyLevel - 1, accuracy);
 }
 
@@ -451,7 +451,7 @@ public getTurretAgilityForLevel(turretKey[33], agilityLevel, Float:agility[2])
     new Array:turretInfoArray;
     TrieGetCell(g_TurretInfoTrie, turretKey, turretInfoArray);
 
-    new Array:agilityArray = ArrayGetCell(turretInfoArray, _:TURRET_AGILITY);
+    new Array:agilityArray = ArrayGetCell(turretInfoArray, _:SKILL_AGILITY);
     ArrayGetArray(agilityArray, agilityLevel - 1, agility);
 }
 
@@ -574,4 +574,47 @@ stock getOriginByDistFromPlayer(id, Float:dist, Float:origin[3])
     origin[0] = playerOrigin[0] + dist * floatcos(angle[1], degrees) * (floatabs(floatcos(angle[0], degrees)));
     origin[1] = playerOrigin[1] + dist * floatsin(angle[1], degrees) * (floatabs(floatcos(angle[0], degrees)));
     origin[2] = playerOrigin[2];
+}
+
+public createTeleportSplashEffectForTurret (ent)
+{
+    new Float:fTurretOrigin[3];
+    new iTurretOrigin[3];
+
+    // get turret origin
+    entity_get_vector(ent, EV_VEC_origin, fTurretOrigin);
+
+    // add some height to effect
+    fTurretOrigin[2] += 25;
+
+    // convert float to integert values
+    FVecIVec(fTurretOrigin, iTurretOrigin);
+
+    // make effect
+    te_create_teleport_splash(iTurretOrigin);
+}
+
+// thanks to: https://forums.alliedmods.net/showthread.php?t=310276
+stock te_create_teleport_splash(position[3], receiver = 0, bool:reliable = true)
+{
+	if(receiver && !is_user_connected(receiver))
+		return 0;
+
+	message_begin(get_msg_destination(receiver, reliable), SVC_TEMPENTITY, .player = receiver);
+	write_byte(TE_TELEPORT);
+	write_coord(position[0]);
+	write_coord(position[1]);
+	write_coord(position[2]);
+	message_end();
+
+	return 1;
+}
+
+// thanks to: https://forums.alliedmods.net/showthread.php?t=310276
+stock get_msg_destination(id, bool:reliable)
+{
+	if(id)
+		return reliable ? MSG_ONE : MSG_ONE_UNRELIABLE;
+
+	return reliable ? MSG_ALL : MSG_BROADCAST;
 }
