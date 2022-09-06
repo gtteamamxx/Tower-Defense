@@ -1,3 +1,7 @@
+# Note
+This is `feature/2.0 branch`. Previous standalone version is available in `master` branch.
+https://github.com/gtteamamxx/Tower-Defense/tree/master
+
 # Tower-Defense
 Tower Defense mod to Counter-Strike 1.6
 
