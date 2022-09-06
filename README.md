@@ -14,3 +14,5 @@ alt="Tower defense live" width="240" height="180" border="10" /></a>
 ### Counter Strike 1.6 STEAM
 ### AMX Mod X 1.9+
 ### Custom Entity Data Module: https://forums.alliedmods.net/showthread.php?t=294188
+### [optional] +num_edicts 4096
+### [optional] ReHLDS for performance
